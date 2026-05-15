@@ -2,7 +2,7 @@
 
 ## Stack
 - Laravel 13 + Inertia.js + Vue 3 + Tailwind v4
-- SQLite (lokaal), te migreren naar MySQL in productie
+- MySQL (lokaal en productie), database naam: `ai_offerte`
 
 ## Conventies
 - Veldnamen in het Nederlands (bijv. `voornaam`, `aangemaakt_op`)

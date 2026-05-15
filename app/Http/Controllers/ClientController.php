@@ -1,0 +1,90 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\UpdateClientRequest;
+use App\Models\Client;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class ClientController extends Controller
+{
+    public function index(Request $request): Response
+    {
+        $clients = Client::query()
+            ->when($request->search, fn ($q, $s) => $q
+                ->where('naam', 'like', "%{$s}%")
+                ->orWhere('contactpersoon', 'like', "%{$s}%")
+                ->orWhere('email', 'like', "%{$s}%"))
+            ->when($request->sector, fn ($q, $s) => $q->where('sector', $s))
+            ->orderBy('naam')
+            ->paginate(20)
+            ->withQueryString();
+
+        return Inertia::render('Clients/Index', [
+            'clients' => $clients,
+            'filters' => $request->only(['search', 'sector']),
+            'sectoren' => Client::SECTOREN,
+        ]);
+    }
+
+    public function show(Client $client): Response
+    {
+        $client->loadCount('quotes');
+        $quotes = $client->quotes()
+            ->with('user:id,name')
+            ->orderByDesc('created_at')
+            ->get(['id', 'user_id', 'offerte_nummer', 'titel', 'status', 'totaal', 'geldig_tot', 'created_at', 'verzonden_op']);
+
+        return Inertia::render('Clients/Show', [
+            'client' => $client,
+            'quotes' => $quotes,
+        ]);
+    }
+
+    public function store(StoreClientRequest $request): RedirectResponse
+    {
+        Client::create($request->validated());
+
+        return redirect()->back()->with('success', 'Klant aangemaakt.');
+    }
+
+    public function update(UpdateClientRequest $request, Client $client): RedirectResponse
+    {
+        $client->update($request->validated());
+
+        return redirect()->back()->with('success', 'Klant bijgewerkt.');
+    }
+
+    public function destroy(Client $client): RedirectResponse
+    {
+        $client->delete();
+
+        return redirect()->back()->with('success', 'Klant verwijderd.');
+    }
+
+    public function storeInline(StoreClientRequest $request): JsonResponse
+    {
+        $client = Client::create($request->validated());
+
+        return response()->json($client, 201);
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $clients = Client::query()
+            ->when($request->q, fn ($q, $s) => $q
+                ->where('naam', 'like', "%{$s}%")
+                ->orWhere('contactpersoon', 'like', "%{$s}%")
+                ->orWhere('email', 'like', "%{$s}%"))
+            ->orderBy('naam')
+            ->limit($request->q ? 10 : 50)
+            ->get(['id', 'naam', 'contactpersoon', 'email', 'sector']);
+
+        return response()->json($clients);
+    }
+}
