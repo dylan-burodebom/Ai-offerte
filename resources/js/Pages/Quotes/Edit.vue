@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, reactive, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -360,7 +360,7 @@ function formatDatum(iso) {
             type="text"
             maxlength="500"
             placeholder="Bijv. klant koos voor lagere prijs, project uitgesteld…"
-            class="w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            class="w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
             @keydown.enter="bevestigReden"
             @keydown.esc="cancelReden"
           />
@@ -390,7 +390,7 @@ function formatDatum(iso) {
         </p>
 
         <!-- ── Meta ─────────────────────────────────────────────── -->
-        <div class="bg-white shadow rounded-lg p-6">
+        <div class="bg-white border border-gray-200 rounded-lg p-6">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Offerte details</h3>
             <span class="text-xs" :class="statusClass(metaStatus)">{{ statusLabel(metaStatus) }}</span>
@@ -406,7 +406,7 @@ function formatDatum(iso) {
               <input
                 v-model="meta.geldig_tot"
                 type="date"
-                class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 w-full"
+                class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 w-full"
                 @change="onMetaChange"
               />
             </div>
@@ -415,7 +415,7 @@ function formatDatum(iso) {
               <input
                 v-model="meta.titel"
                 type="text"
-                class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 w-full"
+                class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 w-full"
                 @input="onMetaChange"
               />
             </div>
@@ -426,7 +426,7 @@ function formatDatum(iso) {
         <div
           v-for="section in sections"
           :key="section.id"
-          class="bg-white shadow rounded-lg overflow-hidden"
+          class="bg-white border border-gray-200 rounded-lg overflow-hidden"
         >
           <div class="flex items-center justify-between px-6 py-3 border-b border-gray-100 bg-gray-50">
             <h3 class="text-sm font-semibold text-gray-800">{{ section.titel }}</h3>
@@ -435,7 +435,7 @@ function formatDatum(iso) {
               <button
                 v-if="section.hasAi"
                 type="button"
-                class="text-xs text-indigo-500 hover:text-indigo-700 transition-colors"
+                class="text-xs text-blue-500 hover:text-blue-700 transition-colors"
                 title="Terug naar AI-versie"
                 @click="restoreAi(section)"
               >↺ AI-versie</button>
@@ -452,7 +452,7 @@ function formatDatum(iso) {
         </div>
 
         <!-- ── Investering ───────────────────────────────────────── -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div class="flex items-center justify-between px-6 py-3 border-b border-gray-100 bg-gray-50">
             <h3 class="text-sm font-semibold text-gray-800">Investering</h3>
             <span class="text-xs" :class="statusClass(invStatus)">{{ statusLabel(invStatus) }}</span>
@@ -469,7 +469,7 @@ function formatDatum(iso) {
                   v-model="row.omschrijving"
                   type="text"
                   placeholder="Omschrijving"
-                  class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
                   @input="onInvChange"
                   @blur="saveInvestments"
                 />
@@ -478,7 +478,7 @@ function formatDatum(iso) {
                   type="text"
                   inputmode="decimal"
                   placeholder="0,00"
-                  class="w-28 rounded-md border-gray-300 shadow-sm text-sm text-right focus:ring-indigo-500 focus:border-indigo-500"
+                  class="w-28 rounded-md border-gray-300 shadow-sm text-sm text-right focus:ring-blue-500 focus:border-blue-500"
                   @input="onInvChange"
                   @blur="saveInvestments"
                 />
@@ -493,7 +493,7 @@ function formatDatum(iso) {
 
               <button
                 type="button"
-                class="w-full rounded-lg border-2 border-dashed border-gray-200 py-2 text-sm text-gray-400 hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+                class="w-full rounded-lg border-2 border-dashed border-gray-200 py-2 text-sm text-gray-400 hover:border-blue-400 hover:text-blue-600 transition-colors"
                 @click="addRow"
               >+ Regel toevoegen</button>
             </div>
@@ -506,7 +506,7 @@ function formatDatum(iso) {
                   :key="optie"
                   type="button"
                   class="px-3 py-1 rounded-full text-xs border transition-colors"
-                  :class="btw === optie ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-400'"
+                  :class="btw === optie ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'"
                   @click="btw = optie; onInvChange()"
                 >{{ optie }}</button>
               </div>
@@ -521,14 +521,14 @@ function formatDatum(iso) {
                 <span class="font-mono">{{ btw === '21%' ? fmt(btwBedrag) : '—' }}</span>
               </div>
               <div class="flex justify-between px-4 py-2.5 font-semibold text-gray-900">
-                <span>Totaal</span><span class="font-mono text-indigo-700">{{ fmt(eindtotaal) }}</span>
+                <span>Totaal</span><span class="font-mono text-blue-700">{{ fmt(eindtotaal) }}</span>
               </div>
             </div>
           </div>
         </div>
 
         <!-- ── Status Historie ────────────────────────────────────── -->
-        <div v-if="statusHistory.length" class="bg-white shadow rounded-lg overflow-hidden">
+        <div v-if="statusHistory.length" class="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div class="px-6 py-3 border-b border-gray-100 bg-gray-50">
             <h3 class="text-sm font-semibold text-gray-800">Status historie</h3>
           </div>

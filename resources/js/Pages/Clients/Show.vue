@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { Head, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import StatusBadge from '@/Components/StatusBadge.vue'
@@ -36,13 +36,13 @@ const omzetGewonnen = props.quotes
           >← Klanten</a>
           <span class="text-gray-300">/</span>
           <h2 class="text-xl font-semibold text-gray-800">{{ client.naam }}</h2>
-          <span v-if="client.sector" class="text-xs px-2 py-0.5 rounded bg-indigo-100 text-indigo-700">
+          <span v-if="client.sector" class="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-700">
             {{ client.sector }}
           </span>
         </div>
         <a
           :href="route('quotes.create')"
-          class="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+          class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           + Nieuwe offerte
         </a>
@@ -53,7 +53,7 @@ const omzetGewonnen = props.quotes
       <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
         <!-- Klant info -->
-        <div class="bg-white shadow rounded-xl p-6">
+        <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-6">
           <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">Klantgegevens</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 text-sm">
             <div v-if="client.contactpersoon">
@@ -62,7 +62,7 @@ const omzetGewonnen = props.quotes
             </div>
             <div>
               <p class="text-xs text-gray-400 mb-0.5">E-mail</p>
-              <a :href="`mailto:${client.email}`" class="text-indigo-600 hover:underline">{{ client.email }}</a>
+              <a :href="`mailto:${client.email}`" class="text-blue-600 hover:underline">{{ client.email }}</a>
             </div>
             <div v-if="client.telefoon">
               <p class="text-xs text-gray-400 mb-0.5">Telefoon</p>
@@ -84,19 +84,19 @@ const omzetGewonnen = props.quotes
 
         <!-- Statistieken -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="bg-white shadow rounded-xl p-4 text-center">
-            <p class="text-2xl font-bold text-indigo-700">{{ quotes.length }}</p>
+          <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-4 text-center">
+            <p class="text-2xl font-bold text-blue-700">{{ quotes.length }}</p>
             <p class="text-xs text-gray-400 mt-1">Totaal offertes</p>
           </div>
-          <div class="bg-white shadow rounded-xl p-4 text-center">
+          <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-amber-600">{{ statusTelling('concept') + statusTelling('verzonden') }}</p>
             <p class="text-xs text-gray-400 mt-1">Openstaand</p>
           </div>
-          <div class="bg-white shadow rounded-xl p-4 text-center">
+          <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-green-600">{{ statusTelling('gewonnen') }}</p>
             <p class="text-xs text-gray-400 mt-1">Gewonnen</p>
           </div>
-          <div class="bg-white shadow rounded-xl p-4 text-center">
+          <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-green-700">
               {{ new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(omzetGewonnen) }}
             </p>
@@ -105,7 +105,7 @@ const omzetGewonnen = props.quotes
         </div>
 
         <!-- Offertes tabel -->
-        <div class="bg-white shadow rounded-xl overflow-hidden">
+        <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h3 class="text-sm font-semibold text-gray-700">
               Offertes
@@ -136,7 +136,7 @@ const omzetGewonnen = props.quotes
                 class="hover:bg-gray-50 cursor-pointer transition-colors"
                 @click="router.visit(route('quotes.edit', q.id))"
               >
-                <td class="px-5 py-3 font-mono text-xs text-indigo-700 font-medium whitespace-nowrap">
+                <td class="px-5 py-3 font-mono text-xs text-blue-700 font-medium whitespace-nowrap">
                   {{ q.offerte_nummer }}
                 </td>
                 <td class="px-5 py-3 text-gray-600 max-w-xs truncate">{{ q.titel }}</td>
@@ -149,7 +149,7 @@ const omzetGewonnen = props.quotes
                 <td class="px-5 py-3 text-right">
                   <button
                     type="button"
-                    class="text-xs text-indigo-500 hover:text-indigo-700 font-medium whitespace-nowrap"
+                    class="text-xs text-blue-500 hover:text-blue-700 font-medium whitespace-nowrap"
                     @click.stop="router.visit(route('quotes.edit', q.id))"
                   >
                     Bewerken →

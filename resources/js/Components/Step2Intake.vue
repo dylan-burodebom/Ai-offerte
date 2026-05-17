@@ -58,7 +58,7 @@ const today = new Date().toISOString().slice(0, 10)
         v-model="form.projectbeschrijving"
         rows="5"
         placeholder="Beschrijf de wensen, doelen en context van het project..."
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
       />
       <InputError :message="errors.projectbeschrijving" class="mt-1" />
     </div>
@@ -100,8 +100,8 @@ const today = new Date().toISOString().slice(0, 10)
           type="button"
           class="px-3 py-1.5 rounded-full text-sm border transition-colors"
           :class="form.diensten.includes(dienst)
-            ? 'bg-indigo-600 text-white border-indigo-600'
-            : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-400 hover:text-indigo-600'"
+            ? 'bg-blue-600 text-white border-blue-600'
+            : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400 hover:text-blue-600'"
           @click="toggleDienst(dienst)"
         >
           {{ dienst }}
@@ -119,14 +119,14 @@ const today = new Date().toISOString().slice(0, 10)
           v-model="form.geldig_tot"
           type="date"
           :min="today"
-          class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+          class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
         />
         <div class="flex gap-2">
           <button
             v-for="dagen in [14, 30, 60]"
             :key="dagen"
             type="button"
-            class="px-2.5 py-1 rounded text-xs border border-gray-300 text-gray-600 hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+            class="px-2.5 py-1 rounded text-xs border border-gray-300 text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-colors"
             @click="setGeldigheid(dagen)"
           >
             +{{ dagen }} dagen

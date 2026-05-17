@@ -27,14 +27,46 @@ class PdfService
         return $this->mergePdfs($mainPdf, $bijlagen);
     }
 
-    /**
-     * Render the DomPDF quote PDF and return binary string.
-     */
     private function renderQuote(Quote $quote): string
     {
-        return Pdf::loadView('pdf.quote', compact('quote'))
+        $assets = $this->loadAssets();
+
+        return Pdf::loadView('pdf.quote', array_merge(compact('quote'), $assets))
             ->setPaper('a4', 'portrait')
             ->output();
+    }
+
+    private function loadAssets(): array
+    {
+        $fonts = [
+            'fira_regular'  => $this->fontUrl('FiraSans-Regular.otf'),
+            'fira_italic'   => $this->fontUrl('FiraSans-Italic.ttf'),
+            'fira_semibold' => $this->fontUrl('FiraSans-SemiBold.ttf'),
+            'fira_bold'     => $this->fontUrl('FiraSans-Bold.otf'),
+            'oxide_regular' => $this->fontUrl('OxideSolidPro.otf'),
+            'oxide_bold'    => $this->fontUrl('OxideSolidPro-Bold.otf'),
+        ];
+        $voorblad_bg   = $this->b64(public_path('images/voorblad_bg.png'), 'image/png');
+        $achterblad_bg = $this->b64(public_path('images/achterblad_bg.png'), 'image/png');
+        $watermark     = $this->b64(public_path('images/b_.png'), 'image/png');
+
+        return compact('fonts', 'voorblad_bg', 'achterblad_bg', 'watermark');
+    }
+
+    private function fontUrl(string $filename): string
+    {
+        $path = public_path('fonts/' . $filename);
+
+        return 'file:///' . str_replace('\\', '/', $path);
+    }
+
+    private function b64(string $path, string $mime): string
+    {
+        if (!file_exists($path)) {
+            return '';
+        }
+
+        return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($path));
     }
 
     /**

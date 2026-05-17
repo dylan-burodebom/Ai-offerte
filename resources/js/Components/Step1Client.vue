@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, reactive } from 'vue'
 import ClientSelector from '@/Components/ClientSelector.vue'
 import InputLabel from '@/Components/InputLabel.vue'
@@ -69,21 +69,21 @@ async function submitNewClient() {
     <!-- Geselecteerde klant banner -->
     <div
       v-if="selectedClient"
-      class="flex items-center justify-between rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-3"
+      class="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 px-4 py-3"
     >
       <div>
-        <p class="font-semibold text-indigo-900">{{ selectedClient.naam }}</p>
-        <p class="text-sm text-indigo-600">
+        <p class="font-semibold text-blue-900">{{ selectedClient.naam }}</p>
+        <p class="text-sm text-blue-600">
           {{ selectedClient.contactpersoon ?? selectedClient.email }}
           <span
             v-if="selectedClient.sector"
-            class="ml-2 inline-block rounded px-1.5 py-0.5 text-xs bg-indigo-100 text-indigo-700"
+            class="ml-2 inline-block rounded px-1.5 py-0.5 text-xs bg-blue-100 text-blue-700"
           >{{ selectedClient.sector }}</span>
         </p>
       </div>
       <button
         type="button"
-        class="text-indigo-400 hover:text-indigo-600 text-xl leading-none"
+        class="text-blue-400 hover:text-blue-600 text-xl leading-none"
         @click="onClientSelected(null)"
       >×</button>
     </div>
@@ -110,7 +110,7 @@ async function submitNewClient() {
       <button
         v-if="!showNewForm"
         type="button"
-        class="w-full rounded-lg border-2 border-dashed border-gray-300 py-4 text-sm text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+        class="w-full rounded-lg border-2 border-dashed border-gray-300 py-4 text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors"
         @click="toggleNewForm"
       >
         + Nieuwe klant aanmaken
@@ -152,7 +152,7 @@ async function submitNewClient() {
           <select
             id="nc_sector"
             v-model="form.sector"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">— Kies sector —</option>
             <option v-for="s in sectoren" :key="s" :value="s">{{ s }}</option>

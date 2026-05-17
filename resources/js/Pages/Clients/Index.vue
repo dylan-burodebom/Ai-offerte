@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, watch } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -66,11 +66,11 @@ function destroy(client) {
             v-model="search"
             type="text"
             placeholder="Zoek op naam, contactpersoon of e-mail..."
-            class="flex-1 rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            class="flex-1 rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
           />
           <select
             v-model="sector"
-            class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">Alle sectoren</option>
             <option v-for="s in sectoren" :key="s" :value="s">{{ s }}</option>
@@ -78,7 +78,7 @@ function destroy(client) {
         </div>
 
         <!-- Tabel -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <table class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50">
               <tr>
@@ -99,7 +99,7 @@ function destroy(client) {
                 <td class="px-4 py-3 text-gray-600">{{ client.contactpersoon ?? '—' }}</td>
                 <td class="px-4 py-3 text-gray-600">{{ client.email }}</td>
                 <td class="px-4 py-3">
-                  <span v-if="client.sector" class="inline-block px-2 py-0.5 rounded text-xs bg-indigo-100 text-indigo-700">
+                  <span v-if="client.sector" class="inline-block px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700">
                     {{ client.sector }}
                   </span>
                   <span v-else class="text-gray-400">—</span>
@@ -128,7 +128,7 @@ function destroy(client) {
             :href="link.url ?? undefined"
             v-html="link.label"
             class="px-3 py-1 rounded text-sm border"
-            :class="link.active ? 'bg-indigo-600 text-white border-indigo-600' : 'text-gray-600 border-gray-300 hover:bg-gray-50'"
+            :class="link.active ? 'bg-blue-600 text-white border-blue-600' : 'text-gray-600 border-gray-300 hover:bg-gray-50'"
           />
         </div>
       </div>

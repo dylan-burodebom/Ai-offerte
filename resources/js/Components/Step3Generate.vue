@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref } from 'vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
@@ -79,12 +79,12 @@ function retry() {
     <!-- Generating: streaming preview -->
     <div v-else-if="status === 'generating'">
       <div class="flex items-center gap-2 mb-3">
-        <span class="inline-block w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-        <span class="text-sm font-medium text-indigo-700">Offerte wordt gegenereerd…</span>
+        <span class="inline-block w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+        <span class="text-sm font-medium text-blue-700">Offerte wordt gegenereerd…</span>
       </div>
       <div
         class="font-mono text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg p-4 whitespace-pre-wrap min-h-[200px] max-h-[400px] overflow-y-auto"
-      >{{ streamText }}<span class="inline-block w-0.5 h-4 bg-indigo-500 animate-pulse ml-0.5 align-middle" /></div>
+      >{{ streamText }}<span class="inline-block w-0.5 h-4 bg-blue-500 animate-pulse ml-0.5 align-middle" /></div>
     </div>
 
     <!-- Done: sections preview -->

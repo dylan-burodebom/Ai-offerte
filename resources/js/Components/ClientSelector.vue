@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, watch } from 'vue'
 
 const props = defineProps({
@@ -87,7 +87,7 @@ watch([query, results], () => {
           type="text"
           placeholder="Zoek of kies een klant…"
           autocomplete="off"
-          class="w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 pr-8"
+          class="w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 pr-8"
           @focus="onFocus"
           @blur="onBlur"
         />
@@ -123,8 +123,8 @@ watch([query, results], () => {
       <li
         v-for="client in filtered"
         :key="client.id"
-        class="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-indigo-50"
-        :class="modelValue === client.id ? 'bg-indigo-50' : ''"
+        class="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-blue-50"
+        :class="modelValue === client.id ? 'bg-blue-50' : ''"
         @mousedown.prevent="select(client)"
       >
         <div>
@@ -132,8 +132,8 @@ watch([query, results], () => {
           <span v-if="client.contactpersoon" class="text-gray-500 ml-1.5 text-xs">{{ client.contactpersoon }}</span>
         </div>
         <div class="flex items-center gap-1.5 shrink-0">
-          <span v-if="client.sector" class="text-xs px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700">{{ client.sector }}</span>
-          <svg v-if="modelValue === client.id" class="w-3.5 h-3.5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+          <span v-if="client.sector" class="text-xs px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">{{ client.sector }}</span>
+          <svg v-if="modelValue === client.id" class="w-3.5 h-3.5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
           </svg>
         </div>

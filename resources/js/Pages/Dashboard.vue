@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, computed, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -40,7 +40,7 @@ const kpiCards = computed(() => [
     label: 'Totaal offertes',
     value: stats.value.totaal,
     sub:   null,
-    color: 'indigo',
+    color: 'blue',
     icon:  '📄',
   },
   {
@@ -68,7 +68,7 @@ const kpiCards = computed(() => [
 ])
 
 const colorMap = {
-  indigo: { card: 'border-indigo-200 bg-indigo-50', icon: 'bg-indigo-100 text-indigo-600', value: 'text-indigo-700' },
+  blue: { card: 'border-blue-200 bg-blue-50', icon: 'bg-blue-100 text-blue-600', value: 'text-blue-700' },
   amber:  { card: 'border-amber-200 bg-amber-50',   icon: 'bg-amber-100 text-amber-600',   value: 'text-amber-700' },
   green:  { card: 'border-green-200 bg-green-50',   icon: 'bg-green-100 text-green-600',   value: 'text-green-700' },
   blue:   { card: 'border-blue-200 bg-blue-50',     icon: 'bg-blue-100 text-blue-600',     value: 'text-blue-700' },
@@ -168,7 +168,7 @@ function openEdit(id) {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           <!-- Bar chart -->
-          <div class="lg:col-span-2 bg-white shadow rounded-xl p-6">
+          <div class="lg:col-span-2 bg-white shadow-sm border border-gray-200 rounded-xl p-6">
             <h3 class="text-sm font-semibold text-gray-700 mb-4">Offertes per maand (laatste 12 maanden)</h3>
             <VueApexCharts
               type="bar"
@@ -179,7 +179,7 @@ function openEdit(id) {
           </div>
 
           <!-- Conversie + verloren stat -->
-          <div class="bg-white shadow rounded-xl p-6 flex flex-col justify-between">
+          <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-6 flex flex-col justify-between">
             <h3 class="text-sm font-semibold text-gray-700 mb-4">Conversie</h3>
 
             <div class="flex-1 flex flex-col items-center justify-center gap-6">
@@ -220,17 +220,17 @@ function openEdit(id) {
         </div>
 
         <!-- ── Recente offertes ───────────────────────────────────── -->
-        <div class="bg-white shadow rounded-xl overflow-hidden">
+        <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h3 class="text-sm font-semibold text-gray-700">Recente offertes</h3>
             <a
               :href="route('quotes.create')"
-              class="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+              class="text-xs text-blue-600 hover:text-blue-800 font-medium"
             >+ Nieuwe offerte</a>
           </div>
 
           <div v-if="stats.recente.length === 0" class="px-6 py-10 text-center text-sm text-gray-400">
-            Nog geen offertes. <a :href="route('quotes.create')" class="text-indigo-600 hover:underline">Maak je eerste offerte aan.</a>
+            Nog geen offertes. <a :href="route('quotes.create')" class="text-blue-600 hover:underline">Maak je eerste offerte aan.</a>
           </div>
 
           <table v-else class="w-full text-sm">
@@ -252,7 +252,7 @@ function openEdit(id) {
                 class="hover:bg-gray-50 transition-colors cursor-pointer"
                 @click="openEdit(q.id)"
               >
-                <td class="px-6 py-3 font-mono text-xs text-indigo-700 font-medium">{{ q.offerte_nummer }}</td>
+                <td class="px-6 py-3 font-mono text-xs text-blue-700 font-medium">{{ q.offerte_nummer }}</td>
                 <td class="px-6 py-3 text-gray-700">{{ q.client?.naam ?? '—' }}</td>
                 <td class="px-6 py-3 text-gray-600 max-w-[200px] truncate">{{ q.titel }}</td>
                 <td class="px-6 py-3">
@@ -263,7 +263,7 @@ function openEdit(id) {
                 <td class="px-6 py-3 text-right">
                   <button
                     type="button"
-                    class="text-xs text-indigo-500 hover:text-indigo-700 font-medium"
+                    class="text-xs text-blue-500 hover:text-blue-700 font-medium"
                     @click.stop="openEdit(q.id)"
                   >
                     Bewerken →

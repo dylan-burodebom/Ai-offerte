@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
@@ -45,7 +45,7 @@ function setLink() {
 </script>
 
 <template>
-  <div class="border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
+  <div class="border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
     <!-- Toolbar -->
     <div class="flex flex-wrap items-center gap-0.5 border-b border-gray-200 bg-gray-50 px-2 py-1.5">
       <button
@@ -57,7 +57,7 @@ function setLink() {
         type="button"
         :title="title"
         class="px-2 py-0.5 rounded text-sm font-medium transition-colors"
-        :class="active ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="active ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
         @click="action"
       >{{ label }}</button>
 
@@ -69,7 +69,7 @@ function setLink() {
         type="button"
         :title="'Koptekst ' + level"
         class="px-2 py-0.5 rounded text-xs font-semibold transition-colors"
-        :class="editor?.isActive('heading', { level }) ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="editor?.isActive('heading', { level }) ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
         @click="editor?.chain().focus().toggleHeading({ level }).run()"
       >H{{ level }}</button>
 
@@ -79,7 +79,7 @@ function setLink() {
         type="button"
         title="Opsomming"
         class="px-2 py-0.5 rounded text-sm transition-colors"
-        :class="editor?.isActive('bulletList') ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="editor?.isActive('bulletList') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
         @click="editor?.chain().focus().toggleBulletList().run()"
       >≡</button>
 
@@ -87,7 +87,7 @@ function setLink() {
         type="button"
         title="Genummerde lijst"
         class="px-2 py-0.5 rounded text-sm transition-colors"
-        :class="editor?.isActive('orderedList') ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="editor?.isActive('orderedList') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
         @click="editor?.chain().focus().toggleOrderedList().run()"
       >1.</button>
 
@@ -95,7 +95,7 @@ function setLink() {
         type="button"
         title="Link"
         class="px-2 py-0.5 rounded text-sm transition-colors"
-        :class="editor?.isActive('link') ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="editor?.isActive('link') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
         @click="setLink"
       >🔗</button>
 

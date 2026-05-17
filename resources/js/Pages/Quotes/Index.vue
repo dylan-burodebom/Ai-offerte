@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, computed, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -169,7 +169,7 @@ function fmtDatum(iso) {
           </a>
           <a
             :href="route('quotes.create')"
-            class="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+            class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
           >
             + Nieuwe offerte
           </a>
@@ -186,19 +186,19 @@ function fmtDatum(iso) {
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
 
         <!-- Filters -->
-        <div class="bg-white shadow rounded-xl p-4">
+        <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-4">
           <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
             <input
               v-model="search"
               type="text"
               placeholder="Zoek nummer, titel, klant…"
-              class="col-span-2 md:col-span-1 rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+              class="col-span-2 md:col-span-1 rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
             />
-            <select v-model="status" class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <select v-model="status" class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500">
               <option value="">Alle statussen</option>
               <option v-for="s in statussen" :key="s" :value="s">{{ STATUS_LABELS[s] ?? s }}</option>
             </select>
-            <select v-model="sector" class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <select v-model="sector" class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500">
               <option value="">Alle sectoren</option>
               <option v-for="s in sectoren" :key="s" :value="s">{{ s }}</option>
             </select>
@@ -206,14 +206,14 @@ function fmtDatum(iso) {
               v-model="datumVan"
               type="date"
               title="Aangemaakt vanaf"
-              class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+              class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
             />
             <div class="flex gap-2">
               <input
                 v-model="datumTot"
                 type="date"
                 title="Aangemaakt tot"
-                class="flex-1 rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                class="flex-1 rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
               />
               <button
                 v-if="hasFilters"
@@ -235,13 +235,13 @@ function fmtDatum(iso) {
         >
           <div
             v-if="selected.size > 0"
-            class="bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-3 flex items-center gap-4"
+            class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex items-center gap-4"
           >
-            <span class="text-sm font-medium text-indigo-700">{{ selected.size }} geselecteerd</span>
+            <span class="text-sm font-medium text-blue-700">{{ selected.size }} geselecteerd</span>
             <div class="flex items-center gap-2 flex-1">
               <select
                 v-model="bulkStatus"
-                class="rounded-md border-indigo-300 text-sm focus:ring-indigo-500 focus:border-indigo-500 py-1"
+                class="rounded-md border-blue-300 text-sm focus:ring-blue-500 focus:border-blue-500 py-1"
               >
                 <option value="">Status wijzigen naar…</option>
                 <option v-for="s in statussen" :key="s" :value="s">{{ STATUS_LABELS[s] ?? s }}</option>
@@ -249,7 +249,7 @@ function fmtDatum(iso) {
               <button
                 type="button"
                 :disabled="!bulkStatus || bulkBezig"
-                class="px-3 py-1 rounded bg-indigo-600 text-white text-sm disabled:opacity-40 hover:bg-indigo-700 transition-colors"
+                class="px-3 py-1 rounded bg-blue-600 text-white text-sm disabled:opacity-40 hover:bg-blue-700 transition-colors"
                 @click="doBulkActie('status')"
               >Toepassen</button>
             </div>
@@ -263,7 +263,7 @@ function fmtDatum(iso) {
         </Transition>
 
         <!-- Tabel -->
-        <div class="bg-white shadow rounded-xl overflow-hidden">
+        <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
           <table class="min-w-full text-sm">
             <thead class="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -271,7 +271,7 @@ function fmtDatum(iso) {
                   <input
                     type="checkbox"
                     :checked="alleGeselecteerd"
-                    class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     @change="toggleAlles"
                   />
                 </th>
@@ -304,27 +304,27 @@ function fmtDatum(iso) {
               <tr v-if="quotes.data.length === 0">
                 <td colspan="9" class="px-4 py-10 text-center text-gray-400">
                   Geen offertes gevonden.
-                  <a :href="route('quotes.create')" class="text-indigo-600 hover:underline ml-1">Maak de eerste aan.</a>
+                  <a :href="route('quotes.create')" class="text-blue-600 hover:underline ml-1">Maak de eerste aan.</a>
                 </td>
               </tr>
               <tr
                 v-for="q in quotes.data"
                 :key="q.id"
                 class="hover:bg-gray-50 transition-colors"
-                :class="selected.has(q.id) ? 'bg-indigo-50/50' : ''"
+                :class="selected.has(q.id) ? 'bg-blue-50/50' : ''"
               >
                 <!-- Checkbox -->
                 <td class="px-4 py-3" @click.stop>
                   <input
                     type="checkbox"
                     :checked="selected.has(q.id)"
-                    class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     @change="toggleRij(q.id)"
                   />
                 </td>
 
                 <!-- Nummer -->
-                <td class="px-4 py-3 font-mono text-xs text-indigo-700 font-medium whitespace-nowrap cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
+                <td class="px-4 py-3 font-mono text-xs text-blue-700 font-medium whitespace-nowrap cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
                   {{ q.offerte_nummer }}
                 </td>
 
@@ -412,7 +412,7 @@ function fmtDatum(iso) {
               v-html="link.label"
               class="px-3 py-1 rounded text-sm border"
               :class="link.active
-                ? 'bg-indigo-600 text-white border-indigo-600'
+                ? 'bg-blue-600 text-white border-blue-600'
                 : link.url ? 'text-gray-600 border-gray-300 hover:bg-gray-50' : 'text-gray-300 border-gray-200 cursor-not-allowed'"
             />
           </div>

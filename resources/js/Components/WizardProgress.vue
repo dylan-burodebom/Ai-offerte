@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 defineProps({
   currentStep: { type: Number, required: true },
   steps: {
@@ -16,9 +16,9 @@ defineProps({
           class="flex items-center justify-center w-9 h-9 rounded-full text-sm font-semibold transition-colors"
           :class="
             i + 1 < currentStep
-              ? 'bg-indigo-600 text-white'
+              ? 'bg-blue-600 text-white'
               : i + 1 === currentStep
-                ? 'bg-indigo-600 text-white ring-4 ring-indigo-200'
+                ? 'bg-blue-600 text-white ring-4 ring-blue-200'
                 : 'bg-gray-200 text-gray-400'
           "
         >
@@ -36,7 +36,7 @@ defineProps({
         </div>
         <span
           class="mt-1.5 text-xs font-medium"
-          :class="i + 1 === currentStep ? 'text-indigo-600' : i + 1 < currentStep ? 'text-indigo-400' : 'text-gray-400'"
+          :class="i + 1 === currentStep ? 'text-blue-600' : i + 1 < currentStep ? 'text-blue-400' : 'text-gray-400'"
         >
           {{ step }}
         </span>
@@ -45,7 +45,7 @@ defineProps({
       <div
         v-if="i < steps.length - 1"
         class="w-16 h-0.5 mb-5 transition-colors"
-        :class="i + 1 < currentStep ? 'bg-indigo-600' : 'bg-gray-200'"
+        :class="i + 1 < currentStep ? 'bg-blue-600' : 'bg-gray-200'"
       />
     </template>
   </div>

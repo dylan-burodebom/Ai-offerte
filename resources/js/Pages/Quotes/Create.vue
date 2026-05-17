@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, reactive, computed } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -170,7 +170,7 @@ function prev() {
         <h2 class="text-xl font-semibold text-gray-800">Nieuwe offerte</h2>
         <span
           v-if="wizard.offerteNummer"
-          class="text-xs font-mono px-2 py-0.5 rounded bg-indigo-100 text-indigo-700"
+          class="text-xs font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-700"
         >
           {{ wizard.offerteNummer }}
         </span>
@@ -181,17 +181,17 @@ function prev() {
       <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- Succes na finalisatie -->
-        <div v-if="finalized" class="bg-white shadow rounded-lg p-10 text-center">
+        <div v-if="finalized" class="bg-white border border-gray-200 rounded-lg p-10 text-center">
           <div class="text-5xl mb-4">✓</div>
           <h3 class="text-xl font-semibold text-gray-900 mb-2">Offerte opgeslagen</h3>
           <p class="text-gray-500 mb-1">
-            <span class="font-mono text-indigo-700">{{ wizard.offerteNummer }}</span> is opgeslagen als concept.
+            <span class="font-mono text-blue-700">{{ wizard.offerteNummer }}</span> is opgeslagen als concept.
           </p>
           <p class="text-sm text-gray-400 mb-8">Open de editor om de tekst te verfijnen en de offerte te versturen.</p>
           <div class="flex justify-center gap-3">
             <button
               type="button"
-              class="inline-flex items-center px-5 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+              class="inline-flex items-center px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
               @click="router.visit(route('quotes.edit', wizard.quoteId))"
             >
               ✏ Offerte bewerken
@@ -209,7 +209,7 @@ function prev() {
         <template v-else>
           <WizardProgress :current-step="currentStep" :steps="STEPS" />
 
-          <div class="bg-white shadow rounded-lg p-6">
+          <div class="bg-white border border-gray-200 rounded-lg p-6">
 
             <!-- Stap 1: Klant -->
             <div v-if="currentStep === 1">

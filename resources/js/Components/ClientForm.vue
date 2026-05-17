@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import Modal from '@/Components/Modal.vue'
@@ -98,7 +98,7 @@ function submit() {
           <select
             id="sector"
             v-model="form.sector"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">— Kies sector —</option>
             <option v-for="s in sectoren" :key="s" :value="s">{{ s }}</option>
@@ -133,7 +133,7 @@ function submit() {
             rows="4"
             maxlength="2000"
             placeholder="Notities over de klant, het bedrijf, de samenwerking…"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 resize-none"
           />
           <div class="flex justify-between mt-1">
             <InputError :message="form.errors.beschrijving" />

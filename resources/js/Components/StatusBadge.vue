@@ -4,7 +4,7 @@ defineProps({
 })
 
 const CONFIG = {
-  concept:   { label: 'Concept',   classes: 'bg-amber-100 text-amber-700' },
+  concept:   { label: 'Concept',   classes: 'bg-gray-100 text-gray-600' },
   verzonden: { label: 'Verzonden', classes: 'bg-blue-100 text-blue-700' },
   gewonnen:  { label: 'Gewonnen',  classes: 'bg-green-100 text-green-700' },
   verloren:  { label: 'Verloren',  classes: 'bg-red-100 text-red-600' },

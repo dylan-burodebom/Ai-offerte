@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, computed, watch } from 'vue'
 import draggable from 'vuedraggable'
 import InputError from '@/Components/InputError.vue'
@@ -96,7 +96,7 @@ defineExpose({ canProceed })
               v-model="row.omschrijving"
               type="text"
               placeholder="bijv. Website ontwikkeling"
-              class="w-full rounded border-gray-300 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              class="w-full rounded border-gray-300 text-sm shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
 
             <!-- Bedrag -->
@@ -105,7 +105,7 @@ defineExpose({ canProceed })
               type="text"
               inputmode="decimal"
               placeholder="1.500,00"
-              class="w-32 rounded border-gray-300 text-sm shadow-sm text-right focus:ring-indigo-500 focus:border-indigo-500"
+              class="w-32 rounded border-gray-300 text-sm shadow-sm text-right focus:ring-blue-500 focus:border-blue-500"
             />
 
             <!-- Verwijder -->
@@ -126,7 +126,7 @@ defineExpose({ canProceed })
 
       <button
         type="button"
-        class="mt-3 w-full rounded-lg border-2 border-dashed border-gray-200 py-2.5 text-sm text-gray-400 hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+        class="mt-3 w-full rounded-lg border-2 border-dashed border-gray-200 py-2.5 text-sm text-gray-400 hover:border-blue-400 hover:text-blue-600 transition-colors"
         @click="addRow"
       >
         + Regel toevoegen
@@ -143,8 +143,8 @@ defineExpose({ canProceed })
           type="button"
           class="px-4 py-1.5 rounded-full text-sm border transition-colors"
           :class="btw === optie
-            ? 'bg-indigo-600 text-white border-indigo-600'
-            : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-400'"
+            ? 'bg-blue-600 text-white border-blue-600'
+            : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'"
           @click="btw = optie"
         >
           {{ optie }}
@@ -170,7 +170,7 @@ defineExpose({ canProceed })
 
       <div class="flex justify-between px-4 py-3 font-semibold text-gray-900">
         <span>Totaal incl. BTW</span>
-        <span class="font-mono text-indigo-700">{{ fmt(eindtotaal) }}</span>
+        <span class="font-mono text-blue-700">{{ fmt(eindtotaal) }}</span>
       </div>
     </div>
 
