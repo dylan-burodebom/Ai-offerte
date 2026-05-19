@@ -48,12 +48,12 @@ function destroy(client) {
 </script>
 
 <template>
-  <Head title="Klanten" />
+  <Head title="Bedrijven" />
   <AuthenticatedLayout>
     <template #header>
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-800">Klanten</h2>
-        <PrimaryButton @click="openCreate">+ Nieuwe klant</PrimaryButton>
+        <h2 class="text-xl font-semibold text-gray-800">Bedrijven</h2>
+        <PrimaryButton @click="openCreate">+ Nieuwe bedrijf</PrimaryButton>
       </div>
     </template>
 
@@ -92,7 +92,7 @@ function destroy(client) {
             </thead>
             <tbody class="divide-y divide-gray-100">
               <tr v-if="clients.data.length === 0">
-                <td colspan="6" class="px-4 py-8 text-center text-gray-400">Geen klanten gevonden.</td>
+                <td colspan="6" class="px-4 py-8 text-center text-gray-400">Geen bedrijfen gevonden.</td>
               </tr>
               <tr v-for="client in clients.data" :key="client.id" class="hover:bg-gray-50">
                 <td class="px-4 py-3 font-medium text-gray-900">{{ client.naam }}</td>
@@ -105,14 +105,21 @@ function destroy(client) {
                   <span v-else class="text-gray-400">—</span>
                 </td>
                 <td class="px-4 py-3 text-gray-600">{{ client.stad ?? '—' }}</td>
-                <td class="px-4 py-3 text-right space-x-2">
-                  <a
-                    :href="route('clients.show', client.id)"
-                    class="inline-flex items-center px-2 py-1 rounded border border-gray-300 text-xs text-gray-600 hover:bg-gray-50 transition-colors"
-                    @click.stop
-                  >Bekijken</a>
-                  <SecondaryButton class="text-xs py-1 px-2" @click="openEdit(client)">Bewerken</SecondaryButton>
-                  <DangerButton class="text-xs py-1 px-2" @click="destroy(client)">Verwijderen</DangerButton>
+                <td class="px-4 py-3 text-right whitespace-nowrap">
+                  <div class="inline-flex gap-1.5">
+                    <a
+                      :href="route('clients.show', client.id)"
+                      class="px-3 py-1.5 rounded border border-gray-300 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                    >Bekijken</a>
+                    <button
+                      class="px-3 py-1.5 rounded border border-gray-400 text-xs font-medium text-gray-700 bg-white hover:bg-gray-100 transition-colors"
+                      @click="openEdit(client)"
+                    >Bewerken</button>
+                    <button
+                      class="px-3 py-1.5 rounded border border-red-500 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+                      @click="destroy(client)"
+                    >Verwijderen</button>
+                  </div>
                 </td>
               </tr>
             </tbody>

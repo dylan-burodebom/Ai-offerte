@@ -11,12 +11,15 @@ class DatabaseSeeder extends Seeder
     {
         User::firstOrCreate(
             ['email' => 'dylan.burodebom@gmail.com'],
-            User::factory()->make(['name' => 'Dylan'])->toArray(),
+            [
+                'name' => 'Dylan',
+                'password' => 'password',
+                'email_verified_at' => now(),
+            ]
         );
 
         $this->call([
             ClientSeeder::class,
-            QuoteSeeder::class,
         ]);
     }
 }

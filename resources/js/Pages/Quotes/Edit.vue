@@ -159,6 +159,13 @@ const statusHistory  = ref(props.quote.status_history ?? [])
 const statusSaving   = ref(false)
 const statusError    = ref(null)
 
+const huidigeReden = computed(() => {
+  if (!['gewonnen', 'verloren'].includes(huidigStatus.value)) return null
+  return statusHistory.value.find(
+    h => h.nieuwe_status === huidigStatus.value && h.reden
+  )?.reden ?? null
+})
+
 // Gewonnen/Verloren reden panel
 const redenPanel     = ref(null) // null | 'gewonnen' | 'verloren'
 const redenTekst     = ref('')
@@ -205,7 +212,11 @@ function bevestigReden() {
 const pdfPreviewOpen  = ref(false)
 const pdfData         = ref(null)
 const pdfLoading      = ref(false)
-const pdfPageCount    = ref(null)
+const pdfPageCount    = ref(0)
+
+function onPdfLoaded(pdf) {
+  pdfPageCount.value = pdf.numPages
+}
 const pdfContainer    = ref(null)
 const pdfViewerWidth  = ref(850)
 
@@ -217,6 +228,7 @@ function updatePdfWidth() {
 
 async function openPdfPreview() {
   pdfPreviewOpen.value = true
+  pdfPageCount.value   = 0
   await nextTick()
   updatePdfWidth()
 
@@ -268,6 +280,12 @@ function formatDatum(iso) {
           <h2 class="text-xl font-semibold text-gray-800 font-mono">{{ quote.offerte_nummer }}</h2>
           <StatusBadge :status="huidigStatus" />
           <span class="text-xs text-gray-400">v{{ quote.versie }}</span>
+          <span
+            v-if="huidigeReden"
+            class="text-xs px-2 py-0.5 rounded-full italic max-w-xs truncate"
+            :class="huidigStatus === 'gewonnen' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'"
+            :title="huidigeReden"
+          >{{ huidigeReden }}</span>
         </div>
         <div class="flex items-center gap-2">
           <!-- Verzenden knop (concept → verzonden) -->
@@ -353,21 +371,21 @@ function formatDatum(iso) {
           :class="redenPanel === 'gewonnen' ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'"
         >
           <h3 class="text-sm font-semibold" :class="redenPanel === 'gewonnen' ? 'text-green-800' : 'text-red-800'">
-            {{ redenPanel === 'gewonnen' ? '✓ Offerte gewonnen' : '✗ Offerte verloren' }} — voeg een reden toe (optioneel)
+            {{ redenPanel === 'gewonnen' ? '✓ Offerte gewonnen' : '✗ Offerte verloren' }} — wat is de reden?
           </h3>
           <input
             v-model="redenTekst"
             type="text"
             maxlength="500"
-            placeholder="Bijv. klant koos voor lagere prijs, project uitgesteld…"
+            :placeholder="redenPanel === 'gewonnen' ? 'Bijv. prijs, snelheid, vertrouwen…' : 'Bijv. klant koos voor lagere prijs, project uitgesteld…'"
             class="w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
             @keydown.enter="bevestigReden"
             @keydown.esc="cancelReden"
           />
-          <div class="flex gap-2">
+          <div class="flex items-center gap-2">
             <button
               type="button"
-              :disabled="statusSaving"
+              :disabled="statusSaving || !redenTekst.trim()"
               class="px-4 py-1.5 rounded text-sm font-medium text-white disabled:opacity-50 transition-colors"
               :class="redenPanel === 'gewonnen' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'"
               @click="bevestigReden"
@@ -583,18 +601,23 @@ function formatDatum(iso) {
       </div>
 
       <!-- PDF canvas -->
-      <div ref="pdfContainer" class="flex-1 overflow-y-auto bg-gray-600 flex flex-col items-center py-6 gap-3">
-        <!-- Laden indicator -->
+      <div ref="pdfContainer" class="flex-1 overflow-y-auto bg-[#3a3a3a] flex flex-col items-center py-8">
         <div v-if="pdfLoading" class="text-gray-200 text-sm mt-20">PDF laden…</div>
 
         <VuePdfEmbed
           v-else-if="pdfData"
           :source="pdfData"
           :width="pdfViewerWidth"
-          class="shadow-2xl"
-          @loaded="(pdf) => pdfPageCount = pdf.numPages"
+          class="pdf-preview"
+          @loaded="onPdfLoaded"
         />
       </div>
     </div>
   </Teleport>
 </template>
+
+<style>
+.pdf-preview > div:not(:last-child) {
+  border-bottom: 14px solid #111;
+}
+</style>

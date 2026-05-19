@@ -15,16 +15,17 @@ class PromptController extends Controller
 
     public function index(): Response
     {
-        $sectoren = [];
-        foreach (array_keys(PromptService::SECTOREN) as $slug) {
+        $sectorLabels = $this->prompts->getSectorenLijst();
+        $sectoren     = [];
+        foreach (array_keys($sectorLabels) as $slug) {
             $sectoren[$slug] = $this->prompts->getSectorPrompt($slug);
         }
 
         return Inertia::render('Admin/Prompts', [
-            'stijlgids'      => $this->prompts->getStijlgids(),
-            'sectoren'       => $sectoren,
-            'sectorLabels'   => PromptService::SECTOREN,
-            'meta'           => $this->prompts->getMeta(),
+            'stijlgids'    => $this->prompts->getStijlgids(),
+            'sectoren'     => $sectoren,
+            'sectorLabels' => $sectorLabels,
+            'meta'         => $this->prompts->getMeta(),
         ]);
     }
 
@@ -38,9 +39,29 @@ class PromptController extends Controller
         ]);
     }
 
+    public function storeSector(Request $request): JsonResponse
+    {
+        $request->validate([
+            'slug'  => ['required', 'string', 'regex:/^[a-z0-9_]+$/'],
+            'label' => ['required', 'string', 'max:60'],
+        ]);
+
+        $sectoren = $this->prompts->getSectorenLijst();
+        if (array_key_exists($request->slug, $sectoren)) {
+            return response()->json(['message' => 'Deze sector bestaat al.'], 422);
+        }
+
+        $this->prompts->addSector($request->slug, $request->label);
+
+        return response()->json([
+            'sectoren' => $this->prompts->getSectorenLijst(),
+            'versie'   => $this->prompts->getCurrentVersion(),
+        ]);
+    }
+
     public function updateSector(Request $request, string $sector): JsonResponse
     {
-        abort_unless(array_key_exists($sector, PromptService::SECTOREN), 404);
+        abort_unless(array_key_exists($sector, $this->prompts->getSectorenLijst()), 404);
         $request->validate(['content' => ['required', 'string']]);
         $this->prompts->saveSectorPrompt($sector, $request->content);
 

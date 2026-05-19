@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contactpersoon;
 use App\Models\Quote;
+use App\Models\QuoteStatusHistory;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -16,7 +20,27 @@ class DashboardController extends Controller
     {
         return Inertia::render('Dashboard', [
             'initialStats' => $this->buildStats(auth()->id(), 'jaar'),
+            'jarigen'      => $this->aankomendJarigen(),
         ]);
+    }
+
+    private function aankomendJarigen(): array
+    {
+        $vandaag = Carbon::today();
+
+        return Contactpersoon::whereNotNull('geboortedatum')
+            ->whereMonth('geboortedatum', $vandaag->month)
+            ->whereDay('geboortedatum', $vandaag->day)
+            ->with('client:id,naam')
+            ->get()
+            ->map(fn ($cp) => [
+                'id'          => $cp->id,
+                'naam'        => $cp->naam,
+                'client_id'   => $cp->client_id,
+                'client_naam' => $cp->client->naam ?? '—',
+            ])
+            ->values()
+            ->all();
     }
 
     public function stats(Request $request): JsonResponse
@@ -34,6 +58,49 @@ class DashboardController extends Controller
         });
 
         return response()->json($stats);
+    }
+
+    public function redenen(): Response
+    {
+        $userId = Auth::id();
+
+        $entries = QuoteStatusHistory::query()
+            ->whereIn('nieuwe_status', ['gewonnen', 'verloren'])
+            ->whereNotNull('reden')
+            ->whereHas('quote', fn ($q) => $q->where('user_id', $userId))
+            ->with(['quote:id,titel,offerte_nummer,client_id,totaal', 'quote.client:id,naam'])
+            ->orderByDesc('datum')
+            ->get();
+
+        $gewonnenEntries = $entries->where('nieuwe_status', 'gewonnen')->values();
+        $verlorenEntries = $entries->where('nieuwe_status', 'verloren')->values();
+
+        $topGewonnen = $gewonnenEntries
+            ->groupBy('reden')
+            ->map(fn ($g) => ['reden' => $g->first()->reden, 'aantal' => $g->count()])
+            ->sortByDesc('aantal')
+            ->values()
+            ->take(5);
+
+        $topVerloren = $verlorenEntries
+            ->groupBy('reden')
+            ->map(fn ($g) => ['reden' => $g->first()->reden, 'aantal' => $g->count()])
+            ->sortByDesc('aantal')
+            ->values()
+            ->take(5);
+
+        return Inertia::render('Dashboard/Redenen', [
+            'gewonnen' => [
+                'totaal'      => Quote::where('user_id', $userId)->where('status', 'gewonnen')->count(),
+                'top_redenen' => $topGewonnen,
+                'recent'      => $gewonnenEntries->take(8),
+            ],
+            'verloren' => [
+                'totaal'      => Quote::where('user_id', $userId)->where('status', 'verloren')->count(),
+                'top_redenen' => $topVerloren,
+                'recent'      => $verlorenEntries->take(8),
+            ],
+        ]);
     }
 
     private function buildStats(int $userId, string $periode): array

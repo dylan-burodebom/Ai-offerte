@@ -30,4 +30,14 @@ class Client extends Model
     {
         return $this->hasMany(Quote::class);
     }
+
+    public function contactpersonen(): HasMany
+    {
+        return $this->hasMany(Contactpersoon::class);
+    }
+
+    public function opmerkingen(): HasMany
+    {
+        return $this->hasMany(ClientOpmerking::class)->orderByDesc('created_at');
+    }
 }

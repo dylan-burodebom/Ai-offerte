@@ -7,6 +7,7 @@ import VueApexCharts from 'vue3-apexcharts'
 
 const props = defineProps({
   initialStats: { type: Object, required: true },
+  jarigen:      { type: Array, default: () => [] },
 })
 
 const PERIODES = [
@@ -142,6 +143,25 @@ function openEdit(id) {
         class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 transition-opacity duration-200"
         :class="loading ? 'opacity-60 pointer-events-none' : ''"
       >
+
+        <!-- ── Verjaardagen ───────────────────────────────────────── -->
+        <div v-if="jarigen.length" class="rounded-xl border border-amber-200 bg-amber-50 px-5 py-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-lg">🎂</span>
+            <p class="text-sm font-semibold text-amber-800">Vandaag jarig</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a
+              v-for="j in jarigen"
+              :key="j.id"
+              :href="route('clients.show', j.client_id)"
+              class="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-400 text-white font-medium text-sm hover:bg-amber-500 transition-colors"
+            >
+              🎉 {{ j.naam }}
+              <span class="opacity-80 text-xs font-normal">· {{ j.client_naam }}</span>
+            </a>
+          </div>
+        </div>
 
         <!-- ── KPI Cards ──────────────────────────────────────────── -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">

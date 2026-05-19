@@ -5,17 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class QuoteStatusController extends Controller
 {
     public function update(Request $request, Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
+
+        $nieuweStatus = $request->input('status');
 
         $request->validate([
             'status' => ['required', 'string', 'in:' . implode(',', Quote::STATUSSEN)],
-            'reden'  => ['nullable', 'string', 'max:500'],
+            'reden'  => [
+                in_array($nieuweStatus, ['gewonnen', 'verloren']) ? 'required' : 'nullable',
+                'string',
+                'max:500',
+            ],
+        ], [
+            'reden.required' => 'Geef een reden op voor deze statuswijziging.',
         ]);
 
         $nieuweStatus = $request->status;
@@ -38,7 +47,7 @@ class QuoteStatusController extends Controller
             $quote->update($updateData);
 
             $quote->statusHistory()->create([
-                'user_id'       => auth()->id(),
+                'user_id'       => Auth::id(),
                 'oude_status'   => $oudeStatus,
                 'nieuwe_status' => $nieuweStatus,
                 'reden'         => $request->reden,

@@ -4,16 +4,52 @@ namespace App\Services;
 
 class PromptService
 {
-    private const META_FILE = 'prompts/meta.json';
+    private const META_FILE     = 'prompts/meta.json';
+    private const SECTOREN_FILE = 'prompts/sectoren.json';
 
-    // Sectors that have dedicated prompt files
-    public const SECTOREN = [
-        'bouw'             => 'Bouw',
+    private const SECTOREN_DEFAULT = [
+        'bouw'                => 'Bouw',
         'installatietechniek' => 'Installatietechniek',
-        'transport'        => 'Transport',
-        'industrie'        => 'Industrie',
-        'overig'           => 'Overig',
+        'transport'           => 'Transport',
+        'industrie'           => 'Industrie',
+        'overig'              => 'Overig',
     ];
+
+    // Keep for backward compatibility
+    public const SECTOREN = self::SECTOREN_DEFAULT;
+
+    public function getSectorenLijst(): array
+    {
+        $path = storage_path('app/' . self::SECTOREN_FILE);
+
+        if (file_exists($path)) {
+            return json_decode(file_get_contents($path), true) ?? self::SECTOREN_DEFAULT;
+        }
+
+        return self::SECTOREN_DEFAULT;
+    }
+
+    public function addSector(string $slug, string $label): void
+    {
+        $sectoren         = $this->getSectorenLijst();
+        $sectoren[$slug]  = $label;
+
+        $path = storage_path('app/' . self::SECTOREN_FILE);
+        $dir  = dirname($path);
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        file_put_contents($path, json_encode($sectoren, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+        // Create an empty prompt file so the editor has something to open
+        $storageMd   = storage_path("app/prompts/sectoren/{$slug}.md");
+        $resourcesMd = base_path("resources/prompts/sectoren/{$slug}.md");
+        if (! file_exists($storageMd) && ! file_exists($resourcesMd)) {
+            $this->writePrompt("sectoren/{$slug}.md", "# Sectorcontext: {$label}\n\n");
+        }
+
+        $this->incrementVersion();
+    }
 
     public function getStijlgids(): string
     {
@@ -125,12 +161,19 @@ class PromptService
 
     private function sectorSlug(string $sector): string
     {
-        return match (strtolower(trim($sector))) {
-            'bouw'                              => 'bouw',
-            'transport', 'logistiek'            => 'transport',
-            'industrie', 'maakindustrie'        => 'industrie',
-            'installatie', 'installatietechniek' => 'installatietechniek',
-            default                             => 'overig',
-        };
+        $input    = strtolower(trim($sector));
+        $sectoren = $this->getSectorenLijst();
+
+        if (array_key_exists($input, $sectoren)) {
+            return $input;
+        }
+
+        foreach ($sectoren as $slug => $label) {
+            if (strtolower($label) === $input) {
+                return $slug;
+            }
+        }
+
+        return array_key_exists('overig', $sectoren) ? 'overig' : array_key_first($sectoren);
     }
 }

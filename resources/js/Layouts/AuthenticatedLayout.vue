@@ -27,10 +27,13 @@ const showingNavigationDropdown = ref(false)
                                 Dashboard
                             </NavLink>
                             <NavLink :href="route('clients.index')" :active="route().current('clients.*')">
-                                Klanten
+                                Bedrijven
                             </NavLink>
                             <NavLink :href="route('quotes.index')" :active="route().current('quotes.*')">
                                 Offertes
+                            </NavLink>
+                            <NavLink :href="route('dashboard.redenen')" :active="route().current('dashboard.redenen')">
+                                Redenen
                             </NavLink>
                             <NavLink
                                 v-if="$page.props.auth.isAdmin"
@@ -85,8 +88,9 @@ const showingNavigationDropdown = ref(false)
                 <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="sm:hidden">
                     <div class="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">Dashboard</ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('clients.index')" :active="route().current('clients.*')">Klanten</ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('clients.index')" :active="route().current('clients.*')">Bedrijven</ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('quotes.index')" :active="route().current('quotes.*')">Offertes</ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('dashboard.redenen')" :active="route().current('dashboard.redenen')">Redenen</ResponsiveNavLink>
                         <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.prompts')" :active="route().current('admin.*')">Prompts</ResponsiveNavLink>
                     </div>
                     <div class="border-t border-gray-200 pb-1 pt-4">

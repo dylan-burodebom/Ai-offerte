@@ -40,9 +40,14 @@ class ClientController extends Controller
             ->orderByDesc('created_at')
             ->get(['id', 'user_id', 'offerte_nummer', 'titel', 'status', 'totaal', 'geldig_tot', 'created_at', 'verzonden_op']);
 
+        $contactpersonen = $client->contactpersonen()->get();
+        $opmerkingen = $client->opmerkingen()->get();
+
         return Inertia::render('Clients/Show', [
-            'client' => $client,
-            'quotes' => $quotes,
+            'client'          => $client,
+            'quotes'          => $quotes,
+            'contactpersonen' => $contactpersonen,
+            'opmerkingen'     => $opmerkingen,
         ]);
     }
 
@@ -50,21 +55,21 @@ class ClientController extends Controller
     {
         Client::create($request->validated());
 
-        return redirect()->back()->with('success', 'Klant aangemaakt.');
+        return redirect()->back()->with('success', 'Bedrijf aangemaakt.');
     }
 
     public function update(UpdateClientRequest $request, Client $client): RedirectResponse
     {
         $client->update($request->validated());
 
-        return redirect()->back()->with('success', 'Klant bijgewerkt.');
+        return redirect()->back()->with('success', 'Bedrijf bijgewerkt.');
     }
 
     public function destroy(Client $client): RedirectResponse
     {
         $client->delete();
 
-        return redirect()->back()->with('success', 'Klant verwijderd.');
+        return redirect()->back()->with('success', 'Bedrijf verwijderd.');
     }
 
     public function storeInline(StoreClientRequest $request): JsonResponse

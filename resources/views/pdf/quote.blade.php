@@ -27,18 +27,6 @@
     font-style: normal;
     src: url('{{ $fonts["fira_bold"] }}') format('opentype');
 }
-@font-face {
-    font-family: 'OxideSolidPro';
-    font-weight: 400;
-    font-style: normal;
-    src: url('{{ $fonts["oxide_regular"] }}') format('opentype');
-}
-@font-face {
-    font-family: 'OxideSolidPro';
-    font-weight: 700;
-    font-style: normal;
-    src: url('{{ $fonts["oxide_bold"] }}') format('opentype');
-}
 
 * { margin: 0; padding: 0; box-sizing: border-box; word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; }
 @page { size: A4; margin: 0; }
@@ -67,7 +55,7 @@ body {
 .voorblad-content {
     position: absolute;
     left: 56mm; top: 116mm;
-    max-width: 130mm;
+    max-width: 100%;
 }
 .voorblad-label {
     font-family: 'Fira Sans', sans-serif;
@@ -82,7 +70,7 @@ body {
 }
 .voorblad-titel {
     font-family: 'OxideSolidPro', sans-serif;
-    font-weight: 700; font-size: 20pt;
+    font-weight: bold; font-size: 20pt;
     color: #ffffff; letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 14mm; line-height: 1.15;
@@ -112,35 +100,37 @@ body {
     padding: 0;
     margin: 0;
 }
-.content-header {
-    margin-left: 19.1mm;
-    margin-right: 19.1mm;
+/* ── VASTE PAGINAKOP ── */
+.page-header {
+    position: fixed;
+    top: 0;
+    left: 19.1mm;
+    width: 171.8mm;
     padding-top: 10mm;
     padding-bottom: 3.5mm;
-    margin-bottom: 8mm;
     border-bottom: 1px solid #e0e0e0;
     display: table;
-    width: calc(100% - 38.2mm);
 }
-.content-header-left {
+.page-header-left {
     display: table-cell;
     vertical-align: bottom;
     font-family: 'Fira Sans', sans-serif;
     font-weight: 700; font-size: 9pt;
-    color: #0a0a0a; letter-spacing: 0.04em;
+    color: #0a0a0a;
 }
-.content-header-left span { color: #4076f0; }
-.content-header-right {
+.page-header-left span { color: #4076f0; }
+.page-header-right {
     display: table-cell;
     vertical-align: bottom;
     text-align: right;
     font-family: 'Fira Sans', sans-serif;
     font-weight: 400; font-size: 8pt;
-    color: #999999; letter-spacing: 0.02em;
+    color: #999999;
 }
 .content-inner {
     margin-left: 19.1mm;
     margin-right: 19.1mm;
+    padding-top: 22mm;
     padding-bottom: 20mm;
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -276,12 +266,12 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
             <table>
                 <tr>
                     <td class="label">Offertedatum</td>
-                    <td class="value">{{ $quote->created_at->locale('nl')->isoFormat('D MMMM YYYY') }}</td>
+                    <td class="value">{{ $quote->created_at->format('d-m-Y') }}</td>
                 </tr>
                 @if($quote->geldig_tot)
                 <tr>
                     <td class="label">Geldig tot</td>
-                    <td class="value">{{ $quote->geldig_tot->locale('nl')->isoFormat('D MMMM YYYY') }}</td>
+                    <td class="value">{{ $quote->geldig_tot->format('d-m-Y') }}</td>
                 </tr>
                 @endif
                 <tr>
@@ -307,11 +297,7 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
     $inhoud = $section->content['html'] ?? '';
     $hasSubitems = str_contains($inhoud, 'class="subitem"');
 @endphp
-<div class="content-page" style="page-break-before: always;">
-    <div class="content-header">
-        <div class="content-header-left">buro<span>_</span>deBom</div>
-        <div class="content-header-right">{{ $quote->offerte_nummer }}</div>
-    </div>
+<div class="content-page" style="{{ $loop->first ? 'page-break-before: always; ' : '' }}page-break-inside: avoid;">
     <div class="content-inner {{ $hasSubitems ? 'subitem-section' : '' }}">
         <h2>{{ $section->titel }}</h2>
         @if($hasSubitems)
@@ -335,10 +321,6 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
     $fmt        = fn($v) => number_format($v, 2, ',', '.');
 @endphp
 <div class="content-page" style="page-break-before: always;">
-    <div class="content-header">
-        <div class="content-header-left">buro<span>_</span>deBom</div>
-        <div class="content-header-right">{{ $quote->offerte_nummer }}</div>
-    </div>
     <div class="content-inner">
         <h2>Investering</h2>
         <table class="inv-table">
@@ -376,7 +358,7 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
 
         @if($quote->geldig_tot)
         <div class="geldigheid-box">
-            Deze offerte is geldig tot en met <strong>{{ $quote->geldig_tot->locale('nl')->isoFormat('D MMMM YYYY') }}</strong>.
+            Deze offerte is geldig tot en met <strong>{{ $quote->geldig_tot->format('d-m-Y') }}</strong>.
             Neem contact op voor vragen of aanpassingen.
         </div>
         @endif

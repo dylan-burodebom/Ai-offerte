@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\PromptController as AdminPromptController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientOpmerkingController;
+use App\Http\Controllers\ContactpersoonController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
@@ -21,6 +23,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->middleware(['auth', 'verified'])->name('dashboard.stats');
+Route::get('/dashboard/redenen', [DashboardController::class, 'redenen'])->middleware(['auth', 'verified'])->name('dashboard.redenen');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -47,11 +50,19 @@ Route::middleware('auth')->group(function () {
     Route::post('clients/inline', [ClientController::class, 'storeInline'])->name('clients.store-inline');
     Route::get('clients/search', [ClientController::class, 'search'])->name('clients.search');
     Route::resource('clients', ClientController::class)->except(['create', 'edit']);
+
+    Route::post('clients/{client}/contactpersonen', [ContactpersoonController::class, 'store'])->name('clients.contactpersonen.store');
+    Route::patch('clients/{client}/contactpersonen/{contactpersoon}', [ContactpersoonController::class, 'update'])->name('clients.contactpersonen.update');
+    Route::delete('clients/{client}/contactpersonen/{contactpersoon}', [ContactpersoonController::class, 'destroy'])->name('clients.contactpersonen.destroy');
+
+    Route::post('clients/{client}/opmerkingen', [ClientOpmerkingController::class, 'store'])->name('clients.opmerkingen.store');
+    Route::delete('clients/{client}/opmerkingen/{opmerking}', [ClientOpmerkingController::class, 'destroy'])->name('clients.opmerkingen.destroy');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('prompts', [AdminPromptController::class, 'index'])->name('prompts');
     Route::patch('prompts/stijlgids', [AdminPromptController::class, 'updateStijlgids'])->name('prompts.stijlgids');
+    Route::post('prompts/sectoren', [AdminPromptController::class, 'storeSector'])->name('prompts.sector.store');
     Route::patch('prompts/sectoren/{sector}', [AdminPromptController::class, 'updateSector'])->name('prompts.sector');
     Route::post('prompts/preview', [AdminPromptController::class, 'preview'])->name('prompts.preview');
 });

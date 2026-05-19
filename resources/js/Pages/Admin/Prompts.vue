@@ -28,6 +28,38 @@ const currentContent = computed({
   },
 })
 
+// ── Sectoren (dynamisch) ──────────────────────────────────────────────────────
+const sectorLabelsRef  = ref({ ...props.sectorLabels })
+const addingSector     = ref(false)
+const newLabel         = ref('')
+const newSlug          = computed(() =>
+  newLabel.value.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '')
+)
+const sectorSaving     = ref(false)
+const sectorError      = ref(null)
+
+async function saveSector() {
+  if (!newLabel.value.trim()) return
+  sectorSaving.value = true
+  sectorError.value  = null
+  try {
+    const res = await window.axios.post(route('admin.prompts.sector.store'), {
+      slug:  newSlug.value,
+      label: newLabel.value.trim(),
+    })
+    sectorLabelsRef.value             = res.data.sectoren
+    sectorContent.value[newSlug.value] = ''
+    activeSector.value                = newSlug.value
+    versie.value                      = res.data.versie
+    newLabel.value                    = ''
+    addingSector.value                = false
+  } catch (e) {
+    sectorError.value = e.response?.data?.message ?? 'Toevoegen mislukt.'
+  } finally {
+    sectorSaving.value = false
+  }
+}
+
 // ── Save ──────────────────────────────────────────────────────────────────────
 const saving    = ref(false)
 const versie    = ref(props.meta?.versie ?? '1.0')
@@ -150,19 +182,55 @@ async function loadPreview() {
             </div>
 
             <!-- Sector kiezer -->
-            <div v-if="activeTab === 'sectoren'" class="flex gap-2 flex-wrap">
-              <button
-                v-for="(label, slug) in sectorLabels"
-                :key="slug"
-                type="button"
-                class="px-3 py-1.5 rounded-full text-sm border transition-colors"
-                :class="activeSector === slug
-                  ? 'bg-violet-600 text-white border-violet-600'
-                  : 'bg-white text-gray-600 border-gray-300 hover:border-violet-400'"
-                @click="activeSector = slug"
-              >
-                {{ label }}
-              </button>
+            <div v-if="activeTab === 'sectoren'" class="space-y-3">
+              <div class="flex gap-2 flex-wrap items-center">
+                <button
+                  v-for="(label, slug) in sectorLabelsRef"
+                  :key="slug"
+                  type="button"
+                  class="px-3 py-1.5 rounded-full text-sm border transition-colors"
+                  :class="activeSector === slug
+                    ? 'bg-violet-600 text-white border-violet-600'
+                    : 'bg-white text-gray-600 border-gray-300 hover:border-violet-400'"
+                  @click="activeSector = slug; addingSector = false"
+                >
+                  {{ label }}
+                </button>
+                <button
+                  type="button"
+                  class="px-3 py-1.5 rounded-full text-sm border border-dashed border-gray-300 text-gray-400 hover:border-violet-400 hover:text-violet-600 transition-colors"
+                  @click="addingSector = !addingSector; newLabel = ''"
+                >
+                  {{ addingSector ? '✕' : '+ Sector' }}
+                </button>
+              </div>
+
+              <!-- Nieuw sector form -->
+              <Transition enter-active-class="transition duration-150" enter-from-class="opacity-0 -translate-y-1" leave-to-class="opacity-0">
+                <div v-if="addingSector" class="flex items-start gap-2 p-3 bg-violet-50 rounded-lg border border-violet-200">
+                  <div class="flex-1 space-y-1.5">
+                    <input
+                      v-model="newLabel"
+                      type="text"
+                      placeholder="Naam (bijv. Retail)"
+                      class="w-full rounded border-gray-300 text-sm focus:ring-violet-500 focus:border-violet-500"
+                      @keydown.enter.prevent="saveSector"
+                    />
+                    <p class="text-xs text-gray-400 font-mono pl-0.5">
+                      slug: <span class="text-violet-600">{{ newSlug || '…' }}</span>
+                    </p>
+                    <p v-if="sectorError" class="text-xs text-red-500">{{ sectorError }}</p>
+                  </div>
+                  <button
+                    type="button"
+                    :disabled="sectorSaving || !newSlug"
+                    class="px-3 py-2 rounded bg-violet-600 text-white text-sm hover:bg-violet-700 disabled:opacity-50 transition-colors shrink-0"
+                    @click="saveSector"
+                  >
+                    {{ sectorSaving ? '…' : 'Toevoegen' }}
+                  </button>
+                </div>
+              </Transition>
             </div>
 
             <!-- Uitleg -->
@@ -171,7 +239,7 @@ async function loadPreview() {
                 Dit is de <strong class="text-gray-600">system prompt</strong> — de schrijfregels die de AI altijd krijgt, voor elke offerte.
               </p>
               <p v-else>
-                Dit is de <strong class="text-gray-600">sectorcontext</strong> — extra instructies die worden toegevoegd voor offertes in de sector <em>{{ sectorLabels[activeSector] }}</em>.
+                Dit is de <strong class="text-gray-600">sectorcontext</strong> — extra instructies die worden toegevoegd voor offertes in de sector <em>{{ sectorLabelsRef[activeSector] }}</em>.
               </p>
               <p>Elke opslag verhoogt de versie met 0.1 en wordt gelogd bij alle nieuwe generaties.</p>
             </div>
@@ -198,7 +266,7 @@ async function loadPreview() {
                   v-model="previewSector"
                   class="flex-1 rounded border-gray-300 text-xs focus:ring-violet-500 focus:border-violet-500"
                 >
-                  <option v-for="(label, slug) in sectorLabels" :key="slug" :value="slug">
+                  <option v-for="(label, slug) in sectorLabelsRef" :key="slug" :value="slug">
                     {{ label }}
                   </option>
                 </select>

@@ -63,7 +63,7 @@ function submit() {
   <Modal :show="show" max-width="lg" @close="emit('close')">
     <div class="p-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-4">
-        {{ client ? 'Klant bewerken' : 'Nieuwe klant' }}
+        {{ client ? 'Bedrijf bewerken' : 'Nieuwe klant' }}
       </h2>
 
       <form @submit.prevent="submit" class="space-y-4">
