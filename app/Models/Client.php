@@ -38,6 +38,6 @@ class Client extends Model
 
     public function opmerkingen(): HasMany
     {
-        return $this->hasMany(ClientOpmerking::class)->orderByDesc('created_at');
+        return $this->hasMany(ClientOpmerking::class)->orderBy('created_at');
     }
 }

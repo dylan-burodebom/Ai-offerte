@@ -13,7 +13,7 @@ class ClientOpmerkingController extends Controller
     {
         $request->validate(['tekst' => 'required|string|max:5000']);
 
-        $client->opmerkingen()->create(['tekst' => $request->tekst]);
+        $client->opmerkingen()->create(['tekst' => $request->tekst, 'user_id' => $request->user()->id]);
 
         return back()->with('success', 'Opmerking toegevoegd.');
     }

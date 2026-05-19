@@ -73,11 +73,6 @@ function submit() {
             <TextInput id="naam" v-model="form.naam" class="mt-1 block w-full" required />
             <InputError :message="form.errors.naam" class="mt-1" />
           </div>
-          <div>
-            <InputLabel for="contactpersoon" value="Contactpersoon" />
-            <TextInput id="contactpersoon" v-model="form.contactpersoon" class="mt-1 block w-full" />
-            <InputError :message="form.errors.contactpersoon" class="mt-1" />
-          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">

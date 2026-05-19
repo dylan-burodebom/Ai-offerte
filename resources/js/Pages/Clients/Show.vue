@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { Head, router, useForm } from '@inertiajs/vue3'
+import { Head, router, useForm, usePage } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import StatusBadge from '@/Components/StatusBadge.vue'
 
@@ -61,10 +61,12 @@ function openContactEdit(c) {
 function submitContact() {
   if (editingContact.value) {
     contactForm.patch(route('clients.contactpersonen.update', [props.client.id, editingContact.value.id]), {
+      preserveScroll: true,
       onSuccess: () => { showContactForm.value = false }
     })
   } else {
     contactForm.post(route('clients.contactpersonen.store', props.client.id), {
+      preserveScroll: true,
       onSuccess: () => { showContactForm.value = false; contactForm.reset() }
     })
   }
@@ -72,22 +74,24 @@ function submitContact() {
 
 function destroyContact(c) {
   if (confirm(`Contactpersoon "${c.naam}" verwijderen?`)) {
-    router.delete(route('clients.contactpersonen.destroy', [props.client.id, c.id]))
+    router.delete(route('clients.contactpersonen.destroy', [props.client.id, c.id]), { preserveScroll: true })
   }
 }
 
 // ── Opmerkingen ──────────────────────────────────────────────
+const currentUserId = usePage().props.auth.user.id
 const opmerkingForm = useForm({ tekst: '' })
 
 function submitOpmerking() {
   opmerkingForm.post(route('clients.opmerkingen.store', props.client.id), {
+    preserveScroll: true,
     onSuccess: () => opmerkingForm.reset()
   })
 }
 
 function destroyOpmerking(o) {
   if (confirm('Opmerking verwijderen?')) {
-    router.delete(route('clients.opmerkingen.destroy', [props.client.id, o.id]))
+    router.delete(route('clients.opmerkingen.destroy', [props.client.id, o.id]), { preserveScroll: true })
   }
 }
 </script>
@@ -116,10 +120,6 @@ function destroyOpmerking(o) {
         <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-6">
           <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">Bedrijfsgegevens</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 text-sm">
-            <div v-if="client.contactpersoon">
-              <p class="text-xs text-gray-400 mb-0.5">Contactpersoon (oud)</p>
-              <p class="text-gray-800 font-medium">{{ client.contactpersoon }}</p>
-            </div>
             <div>
               <p class="text-xs text-gray-400 mb-0.5">E-mail</p>
               <a :href="`mailto:${client.email}`" class="text-blue-600 hover:underline">{{ client.email }}</a>
@@ -225,8 +225,8 @@ function destroyOpmerking(o) {
           </div>
         </div>
 
-        <!-- Opmerkingen -->
-        <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
+        <!-- Opmerkingen (chat) -->
+        <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden flex flex-col">
           <div class="px-6 py-4 border-b border-gray-100">
             <h3 class="text-sm font-semibold text-gray-700">
               Opmerkingen
@@ -234,34 +234,68 @@ function destroyOpmerking(o) {
             </h3>
           </div>
 
-          <!-- Nieuwe opmerking -->
-          <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
-            <form @submit.prevent="submitOpmerking" class="flex gap-3">
-              <textarea
-                v-model="opmerkingForm.tekst"
-                rows="2"
-                placeholder="Opmerking toevoegen…"
-                class="flex-1 rounded border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500 resize-none"
-                required
-              />
-              <button type="submit" :disabled="opmerkingForm.processing" class="self-end px-4 py-2 rounded bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 whitespace-nowrap">
-                Toevoegen
-              </button>
-            </form>
+          <!-- Berichten -->
+          <div class="flex-1 overflow-y-auto px-6 py-4 space-y-2 min-h-[180px] max-h-[400px] bg-gray-50">
+            <div v-if="opmerkingen.length === 0" class="h-full flex items-center justify-center text-sm text-gray-400">
+              Nog geen opmerkingen.
+            </div>
+            <div
+              v-for="o in opmerkingen"
+              :key="o.id"
+              class="flex group"
+              :class="o.user_id === currentUserId ? 'justify-end' : 'justify-start'"
+            >
+              <div class="relative max-w-[75%]">
+                <!-- Naam (alleen bij anderen) -->
+                <p v-if="o.user_id !== currentUserId" class="text-xs text-gray-400 mb-1 px-1">
+                  {{ o.user?.name ?? 'Onbekend' }}
+                </p>
+                <!-- Bubbel -->
+                <div
+                  class="text-sm px-4 py-2.5 whitespace-pre-wrap leading-relaxed"
+                  :class="o.user_id === currentUserId
+                    ? 'bg-blue-600 text-white rounded-2xl rounded-br-sm'
+                    : 'bg-white border border-gray-200 text-gray-800 rounded-2xl rounded-bl-sm'"
+                >
+                  {{ o.tekst }}
+                </div>
+                <!-- Meta -->
+                <div
+                  class="flex items-center gap-2 mt-1 px-1"
+                  :class="o.user_id === currentUserId ? 'justify-end' : 'justify-start'"
+                >
+                  <span class="text-xs text-gray-400">{{ fmtTijd(o.created_at) }}</span>
+                  <button
+                    @click="destroyOpmerking(o)"
+                    class="text-xs text-gray-300 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                  >verwijderen</button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Lijst -->
-          <div v-if="opmerkingen.length === 0" class="px-6 py-8 text-center text-sm text-gray-400">
-            Nog geen opmerkingen.
-          </div>
-          <div v-else class="divide-y divide-gray-100">
-            <div v-for="o in opmerkingen" :key="o.id" class="px-6 py-4 flex gap-4">
-              <div class="flex-1 min-w-0">
-                <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ o.tekst }}</p>
-                <p class="text-xs text-gray-400 mt-1">{{ fmtTijd(o.created_at) }}</p>
-              </div>
-              <button @click="destroyOpmerking(o)" class="shrink-0 text-xs text-gray-400 hover:text-red-500 transition-colors">Verwijderen</button>
-            </div>
+          <!-- Input -->
+          <div class="px-4 py-3 border-t border-gray-100 bg-white">
+            <form @submit.prevent="submitOpmerking" class="flex items-end gap-2">
+              <textarea
+                v-model="opmerkingForm.tekst"
+                rows="1"
+                placeholder="Schrijf een opmerking…"
+                class="flex-1 rounded-2xl border-gray-200 bg-gray-50 text-sm focus:ring-blue-500 focus:border-blue-500 resize-none px-4 py-2.5"
+                style="min-height: 40px; max-height: 120px;"
+                required
+                @keydown.enter.exact.prevent="submitOpmerking"
+              />
+              <button
+                type="submit"
+                :disabled="opmerkingForm.processing"
+                class="shrink-0 w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 rotate-90">
+                  <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                </svg>
+              </button>
+            </form>
           </div>
         </div>
 

@@ -41,7 +41,7 @@ class ClientController extends Controller
             ->get(['id', 'user_id', 'offerte_nummer', 'titel', 'status', 'totaal', 'geldig_tot', 'created_at', 'verzonden_op']);
 
         $contactpersonen = $client->contactpersonen()->get();
-        $opmerkingen = $client->opmerkingen()->get();
+        $opmerkingen = $client->opmerkingen()->with('user:id,name')->get();
 
         return Inertia::render('Clients/Show', [
             'client'          => $client,
