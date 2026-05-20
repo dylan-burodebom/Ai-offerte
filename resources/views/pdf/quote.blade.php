@@ -7,7 +7,7 @@
     font-family: 'Fira Sans';
     font-weight: 400;
     font-style: normal;
-    src: url('{{ $fonts["fira_regular"] }}') format('opentype');
+    src: url('{{ $fonts["fira_regular"] }}') format('truetype');
 }
 @font-face {
     font-family: 'Fira Sans';
@@ -25,7 +25,7 @@
     font-family: 'Fira Sans';
     font-weight: 700;
     font-style: normal;
-    src: url('{{ $fonts["fira_bold"] }}') format('opentype');
+    src: url('{{ $fonts["fira_bold"] }}') format('truetype');
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; }
@@ -137,6 +137,7 @@ body {
     word-break: break-word;
 }
 /* Voorkom slechte pagina-afbrekingen */
+.section-title { page-break-after: avoid; }
 h2 { page-break-after: avoid; }
 h3 { page-break-after: avoid; }
 strong { page-break-after: avoid; }
@@ -147,18 +148,31 @@ li { page-break-inside: avoid; }
 .subitem strong { display: block; margin-bottom: 2mm; }
 .subitem-section h2 { padding-bottom: 14mm; }
 
-/* Typography */
-h2 {
+/* Sectietitel (grote paginakop) */
+.section-title {
     font-family: 'Fira Sans', sans-serif;
     font-weight: 700; font-size: 22pt;
     color: #0a0a0a; margin-bottom: 0; padding-bottom: 5mm; line-height: 1.2;
     max-width: 100%;
     word-wrap: break-word;
 }
+
+/* Typography — tussenkopjes in de content (vanuit editor) */
+h2 {
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 700; font-size: 12pt;
+    color: #0a0a0a;
+    margin-top: 6mm; margin-bottom: 0; padding-bottom: 2mm;
+    line-height: 1.3;
+    border-bottom: 0.5px solid #e0e0e0;
+    max-width: 100%;
+    word-wrap: break-word;
+}
 h3 {
     font-family: 'Fira Sans', sans-serif;
-    font-weight: 700; font-size: 10pt;
-    color: #0a0a0a; margin-bottom: 1.5mm; margin-top: 5mm;
+    font-weight: 600; font-size: 10.5pt;
+    color: #111111; margin-bottom: 1mm; margin-top: 4mm;
+    line-height: 1.3;
 }
 p {
     font-family: 'Fira Sans', sans-serif;
@@ -299,7 +313,7 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
 @endphp
 <div class="content-page" style="{{ $loop->first ? 'page-break-before: always; ' : '' }}page-break-inside: avoid;">
     <div class="content-inner {{ $hasSubitems ? 'subitem-section' : '' }}">
-        <h2>{{ $section->titel }}</h2>
+        @unless($loop->first)<div class="section-title">{{ $section->titel }}</div>@endunless
         @if($hasSubitems)
             {!! $inhoud !!}
         @else
@@ -322,7 +336,7 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
 @endphp
 <div class="content-page" style="page-break-before: always;">
     <div class="content-inner">
-        <h2>Investering</h2>
+        <div class="section-title">Investering</div>
         <table class="inv-table">
             @foreach($quote->investments as $inv)
             <tr>

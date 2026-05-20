@@ -218,12 +218,21 @@ function destroyOpmerking(o) {
           </div>
           <div v-else class="divide-y divide-gray-100 dark:divide-gray-700">
             <div v-for="c in contactpersonen" :key="c.id" class="px-6 py-4 flex items-center justify-between gap-4">
-              <div class="min-w-0">
-                <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ c.naam }}</p>
-                <div class="flex flex-wrap gap-x-4 gap-y-0.5 mt-0.5">
-                  <a v-if="c.email" :href="`mailto:${c.email}`" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">{{ c.email }}</a>
-                  <a v-if="c.telefoon" :href="`tel:${c.telefoon}`" class="text-xs text-gray-500 dark:text-gray-400">{{ c.telefoon }}</a>
-                  <span v-if="c.geboortedatum" class="text-xs text-gray-400 dark:text-gray-500">{{ fmtDatum(c.geboortedatum) }}</span>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-1.5">{{ c.naam }}</p>
+                <div class="flex flex-wrap gap-3">
+                  <a v-if="c.email" :href="`mailto:${c.email}`" class="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                    <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    {{ c.email }}
+                  </a>
+                  <a v-if="c.telefoon" :href="`tel:${c.telefoon}`" class="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200">
+                    <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                    {{ c.telefoon }}
+                  </a>
+                  <span v-if="c.geboortedatum" class="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                    <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    {{ fmtDatum(c.geboortedatum) }}
+                  </span>
                 </div>
               </div>
               <div class="flex gap-1.5 shrink-0">

@@ -39,10 +39,10 @@ class PdfService
     private function loadAssets(): array
     {
         $fonts = [
-            'fira_regular'  => $this->b64(public_path('fonts/FiraSans-Regular.otf'),  'font/otf'),
+            'fira_regular'  => $this->b64(public_path('fonts/FiraSans-Regular.otf'),  'font/ttf'),
             'fira_italic'   => $this->b64(public_path('fonts/FiraSans-Italic.ttf'),   'font/ttf'),
             'fira_semibold' => $this->b64(public_path('fonts/FiraSans-SemiBold.ttf'), 'font/ttf'),
-            'fira_bold'     => $this->b64(public_path('fonts/FiraSans-Bold.otf'),     'font/otf'),
+            'fira_bold'     => $this->b64(public_path('fonts/FiraSans-Bold.otf'),     'font/ttf'),
         ];
         $voorblad_bg   = $this->b64(public_path('images/voorblad_bg.png'), 'image/png');
         $achterblad_bg = $this->b64(public_path('images/achterblad_bg.png'), 'image/png');

@@ -243,6 +243,13 @@ function openEdit(id) {
                 </div>
               </div>
             </div>
+
+            <a
+              :href="route('dashboard.redenen')"
+              class="mt-4 w-full text-center text-xs py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-violet-400 dark:hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-colors block"
+            >
+              Bekijk redenen →
+            </a>
           </div>
         </div>
 
