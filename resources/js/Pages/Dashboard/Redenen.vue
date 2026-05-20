@@ -25,79 +25,75 @@ function formatBedrag(val) {
     <Head title="Redenen" />
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex items-center gap-3">
-                <button
-                    type="button"
-                    class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-                    @click="router.visit(route('dashboard'))"
-                >
-                    ← Dashboard
-                </button>
-                <span class="text-gray-300 dark:text-gray-600">|</span>
-                <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Gewonnen &amp; Verloren — Redenen</h2>
+            <div class="flex items-center gap-2 min-w-0">
+                <a :href="route('dashboard')" class="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors shrink-0">Dashboard</a>
+                <svg class="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+                <span class="text-sm font-semibold text-gray-800 dark:text-white">Redenen</span>
             </div>
         </template>
 
-        <div class="py-8">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-
+        <div class="py-6">
+            <div class="max-w-6xl mx-auto px-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     <!-- GEWONNEN -->
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full bg-green-500 shrink-0"></span>
-                            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Gewonnen</h3>
+                            <div class="w-9 h-9 rounded-xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Gewonnen</h3>
                             <span class="ml-auto text-2xl font-bold text-green-600 dark:text-green-400">{{ gewonnen.totaal }}</span>
                         </div>
 
                         <!-- Top redenen -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 space-y-3">
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Top redenen</p>
-
+                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5 space-y-3">
+                            <p class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Top redenen</p>
                             <div v-if="gewonnen.top_redenen.length === 0" class="text-sm text-gray-400 dark:text-gray-500 py-2">
                                 Nog geen redenen vastgelegd.
                             </div>
-
-                            <div v-for="(item, i) in gewonnen.top_redenen" :key="i" class="space-y-1">
-                                <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300">
-                                    <span class="truncate max-w-[80%]" :title="item.reden">
-                                        <span v-if="i === 0" class="mr-1 text-green-500 font-bold">★</span>
+                            <div v-for="(item, i) in gewonnen.top_redenen" :key="i" class="space-y-1.5">
+                                <div class="flex justify-between items-center">
+                                    <span class="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-200 truncate max-w-[80%]" :title="item.reden">
+                                        <svg v-if="i === 0" class="w-3.5 h-3.5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
                                         {{ item.reden }}
                                     </span>
-                                    <span class="font-semibold shrink-0 ml-2">{{ item.aantal }}×</span>
+                                    <span class="text-sm font-semibold text-gray-400 dark:text-gray-500 shrink-0 ml-2">{{ item.aantal }}×</span>
                                 </div>
-                                <div class="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                                    <div
-                                        class="h-full bg-green-400 rounded-full transition-all"
-                                        :style="{ width: barWidth(item.aantal, maxGewonnen) }"
-                                    />
+                                <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-green-400 dark:bg-green-500 rounded-full transition-all" :style="{ width: barWidth(item.aantal, maxGewonnen) }"/>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Recent -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide px-5 pt-4 pb-2">Recent</p>
-                            <div v-if="gewonnen.recent.length === 0" class="text-sm text-gray-400 dark:text-gray-500 px-5 pb-4">Geen entries.</div>
-                            <div
-                                v-for="entry in gewonnen.recent"
-                                :key="entry.id"
-                                class="px-5 py-3 border-t border-gray-50 dark:border-gray-700 first:border-t-0"
-                            >
-                                <div class="flex items-start justify-between gap-2">
-                                    <div class="min-w-0">
-                                        <Link
-                                            :href="route('quotes.edit', entry.quote.id)"
-                                            class="text-sm font-medium text-gray-800 dark:text-white hover:text-violet-600 dark:hover:text-violet-400 truncate block"
-                                        >
-                                            {{ entry.quote.offerte_nummer }} — {{ entry.quote.titel }}
-                                        </Link>
-                                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ entry.quote.client?.naam }}</p>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700">
+                                <p class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Recent</p>
+                            </div>
+                            <div v-if="gewonnen.recent.length === 0" class="text-sm text-gray-400 dark:text-gray-500 px-5 py-4">Geen entries.</div>
+                            <div class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <div v-for="entry in gewonnen.recent" :key="entry.id" class="px-5 py-3.5">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="min-w-0">
+                                            <Link
+                                                :href="route('quotes.edit', entry.quote.id)"
+                                                class="text-sm font-medium text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 truncate block transition-colors"
+                                            >
+                                                <span class="font-mono text-xs text-blue-600 dark:text-blue-400 mr-1">{{ entry.quote.offerte_nummer }}</span>{{ entry.quote.titel }}
+                                            </Link>
+                                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ entry.quote.client?.naam }}</p>
+                                        </div>
+                                        <span class="text-sm font-medium text-green-600 dark:text-green-400 shrink-0 font-mono whitespace-nowrap">{{ formatBedrag(entry.quote.totaal) }}</span>
                                     </div>
-                                    <span class="text-xs text-green-600 dark:text-green-400 font-medium shrink-0">{{ formatBedrag(entry.quote.totaal) }}</span>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1.5 italic">{{ entry.reden }}</p>
                                 </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 italic">{{ entry.reden }}</p>
                             </div>
                         </div>
                     </div>
@@ -105,58 +101,59 @@ function formatBedrag(val) {
                     <!-- VERLOREN -->
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full bg-red-400 shrink-0"></span>
-                            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Verloren</h3>
+                            <div class="w-9 h-9 rounded-xl bg-red-50 dark:bg-red-900/30 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Verloren</h3>
                             <span class="ml-auto text-2xl font-bold text-red-500 dark:text-red-400">{{ verloren.totaal }}</span>
                         </div>
 
                         <!-- Top redenen -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 space-y-3">
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Top redenen</p>
-
+                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5 space-y-3">
+                            <p class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Top redenen</p>
                             <div v-if="verloren.top_redenen.length === 0" class="text-sm text-gray-400 dark:text-gray-500 py-2">
                                 Nog geen redenen vastgelegd.
                             </div>
-
-                            <div v-for="(item, i) in verloren.top_redenen" :key="i" class="space-y-1">
-                                <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300">
-                                    <span class="truncate max-w-[80%]" :title="item.reden">
-                                        <span v-if="i === 0" class="mr-1 text-red-400 font-bold">★</span>
+                            <div v-for="(item, i) in verloren.top_redenen" :key="i" class="space-y-1.5">
+                                <div class="flex justify-between items-center">
+                                    <span class="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-200 truncate max-w-[80%]" :title="item.reden">
+                                        <svg v-if="i === 0" class="w-3.5 h-3.5 text-red-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
                                         {{ item.reden }}
                                     </span>
-                                    <span class="font-semibold shrink-0 ml-2">{{ item.aantal }}×</span>
+                                    <span class="text-sm font-semibold text-gray-400 dark:text-gray-500 shrink-0 ml-2">{{ item.aantal }}×</span>
                                 </div>
-                                <div class="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                                    <div
-                                        class="h-full bg-red-400 rounded-full transition-all"
-                                        :style="{ width: barWidth(item.aantal, maxVerloren) }"
-                                    />
+                                <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-red-400 dark:bg-red-500 rounded-full transition-all" :style="{ width: barWidth(item.aantal, maxVerloren) }"/>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Recent -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide px-5 pt-4 pb-2">Recent</p>
-                            <div v-if="verloren.recent.length === 0" class="text-sm text-gray-400 dark:text-gray-500 px-5 pb-4">Geen entries.</div>
-                            <div
-                                v-for="entry in verloren.recent"
-                                :key="entry.id"
-                                class="px-5 py-3 border-t border-gray-50 dark:border-gray-700 first:border-t-0"
-                            >
-                                <div class="flex items-start justify-between gap-2">
-                                    <div class="min-w-0">
-                                        <Link
-                                            :href="route('quotes.edit', entry.quote.id)"
-                                            class="text-sm font-medium text-gray-800 dark:text-white hover:text-violet-600 dark:hover:text-violet-400 truncate block"
-                                        >
-                                            {{ entry.quote.offerte_nummer }} — {{ entry.quote.titel }}
-                                        </Link>
-                                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ entry.quote.client?.naam }}</p>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700">
+                                <p class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Recent</p>
+                            </div>
+                            <div v-if="verloren.recent.length === 0" class="text-sm text-gray-400 dark:text-gray-500 px-5 py-4">Geen entries.</div>
+                            <div class="divide-y divide-gray-100 dark:divide-gray-700">
+                                <div v-for="entry in verloren.recent" :key="entry.id" class="px-5 py-3.5">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="min-w-0">
+                                            <Link
+                                                :href="route('quotes.edit', entry.quote.id)"
+                                                class="text-sm font-medium text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 truncate block transition-colors"
+                                            >
+                                                <span class="font-mono text-xs text-blue-600 dark:text-blue-400 mr-1">{{ entry.quote.offerte_nummer }}</span>{{ entry.quote.titel }}
+                                            </Link>
+                                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ entry.quote.client?.naam }}</p>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400 shrink-0 font-mono whitespace-nowrap">{{ formatBedrag(entry.quote.totaal) }}</span>
                                     </div>
-                                    <span class="text-xs text-gray-400 dark:text-gray-500 font-medium shrink-0">{{ formatBedrag(entry.quote.totaal) }}</span>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1.5 italic">{{ entry.reden }}</p>
                                 </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 italic">{{ entry.reden }}</p>
                             </div>
                         </div>
                     </div>

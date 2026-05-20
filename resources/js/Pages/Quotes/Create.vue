@@ -11,21 +11,22 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 
 const props = defineProps({
-  sectoren:      { type: Array, default: () => [] },
-  dienstenLijst: { type: Array, default: () => [] },
+  sectoren:          { type: Array,   default: () => [] },
+  dienstenLijst:     { type: Array,   default: () => [] },
+  preselectedClient: { type: Object,  default: null },
 })
 
 const STEPS = ['Klant', 'Offerte', 'Generatie', 'Investering']
 
-const currentStep    = ref(1)
+const currentStep    = ref(props.preselectedClient ? 2 : 1)
 const saving         = ref(false)
 const step2Errors    = ref({})
 const step4Errors    = ref({})
 const finalized      = ref(false)
 
 const wizard = reactive({
-  clientId:       null,
-  selectedClient: null,
+  clientId:       props.preselectedClient?.id ?? null,
+  selectedClient: props.preselectedClient ?? null,
   quoteId:        null,
   offerteNummer:  null,
   titel:                   '',

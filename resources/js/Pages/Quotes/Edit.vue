@@ -275,110 +275,141 @@ function formatDatum(iso) {
   <Head :title="quote.offerte_nummer" />
   <AuthenticatedLayout>
     <template #header>
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-white font-mono">{{ quote.offerte_nummer }}</h2>
+      <div class="flex items-center justify-between w-full gap-4">
+
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 min-w-0">
+          <a :href="route('quotes.index')" class="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors shrink-0">Offertes</a>
+          <svg class="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+          <span class="text-sm font-semibold font-mono text-gray-800 dark:text-white truncate">{{ quote.offerte_nummer }}</span>
           <StatusBadge :status="huidigStatus" />
-          <span class="text-xs text-gray-400 dark:text-gray-500">v{{ quote.versie }}</span>
           <span
             v-if="huidigeReden"
-            class="text-xs px-2 py-0.5 rounded-full italic max-w-xs truncate"
-            :class="huidigStatus === 'gewonnen' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400'"
+            class="text-xs px-2 py-0.5 rounded-full italic max-w-[160px] truncate shrink-0"
+            :class="huidigStatus === 'gewonnen' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'"
             :title="huidigeReden"
           >{{ huidigeReden }}</span>
         </div>
-        <div class="flex items-center gap-2">
-          <!-- Verzenden knop (concept → verzonden) -->
+
+        <!-- Acties -->
+        <div class="flex items-center gap-2 shrink-0">
+
+          <!-- Concept → Verzonden -->
           <button
             v-if="kanNaar('verzonden')"
             type="button"
             :disabled="statusSaving"
-            class="text-sm px-3 py-1.5 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
             @click="updateStatus('verzonden')"
           >
-            {{ statusSaving ? 'Bezig…' : '✉ Verzenden' }}
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+            {{ statusSaving ? 'Bezig…' : 'Verzenden' }}
           </button>
 
-          <!-- Terug naar concept (verzonden → concept) -->
+          <!-- Verzonden → Concept -->
           <button
             v-if="kanNaar('concept')"
             type="button"
             :disabled="statusSaving"
-            class="text-sm px-3 py-1.5 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
             @click="updateStatus('concept')"
           >
-            ← Concept
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+            </svg>
+            Concept
           </button>
 
-          <!-- Gewonnen (verzonden → gewonnen) -->
+          <!-- Verzonden → Gewonnen -->
           <button
             v-if="kanNaar('gewonnen')"
             type="button"
             :disabled="statusSaving"
-            class="text-sm px-3 py-1.5 rounded bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 disabled:opacity-50 transition-colors"
             @click="openRedenPanel('gewonnen')"
           >
-            ✓ Gewonnen
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            Gewonnen
           </button>
 
-          <!-- Verloren (verzonden → verloren) -->
+          <!-- Verzonden → Verloren -->
           <button
             v-if="kanNaar('verloren')"
             type="button"
             :disabled="statusSaving"
-            class="text-sm px-3 py-1.5 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 transition-colors"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-50 transition-colors"
             @click="openRedenPanel('verloren')"
           >
-            ✗ Verloren
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+            Verloren
           </button>
 
-          <!-- PDF preview -->
+          <!-- Preview -->
           <button
             type="button"
-            class="text-sm px-3 py-1.5 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             @click="openPdfPreview"
           >
-            👁 Preview
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            Preview
           </button>
 
           <!-- PDF download -->
           <a
             :href="route('quotes.pdf', quote.id)"
-            class="text-sm px-3 py-1.5 rounded bg-gray-800 text-white hover:bg-gray-900 transition-colors inline-flex items-center gap-1"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
-            ↓ PDF
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            PDF
           </a>
 
+          <!-- Nieuwe versie -->
           <button
             type="button"
-            class="text-sm px-3 py-1.5 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
             :disabled="versioning"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
             @click="createVersion"
           >
-            {{ versioning ? 'Bezig…' : '+ Nieuwe versie' }}
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            {{ versioning ? 'Bezig…' : 'Nieuwe versie' }}
           </button>
         </div>
       </div>
     </template>
 
-    <div class="py-8">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="py-6">
+      <div class="max-w-3xl mx-auto px-6 space-y-5">
 
-        <!-- Reden panel (gewonnen / verloren) -->
+        <!-- Reden panel -->
         <div
           v-if="redenPanel"
-          class="rounded-lg border-2 p-5 space-y-3"
+          class="rounded-xl border-2 p-5 space-y-3"
           :class="redenPanel === 'gewonnen' ? 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20' : 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20'"
         >
           <h3 class="text-sm font-semibold" :class="redenPanel === 'gewonnen' ? 'text-green-800 dark:text-green-400' : 'text-red-800 dark:text-red-400'">
-            {{ redenPanel === 'gewonnen' ? '✓ Offerte gewonnen' : '✗ Offerte verloren' }} — wat is de reden?
+            {{ redenPanel === 'gewonnen' ? 'Offerte gewonnen' : 'Offerte verloren' }} — wat is de reden?
           </h3>
           <input
             v-model="redenTekst"
             type="text"
             maxlength="500"
             :placeholder="redenPanel === 'gewonnen' ? 'Bijv. prijs, snelheid, vertrouwen…' : 'Bijv. klant koos voor lagere prijs, project uitgesteld…'"
-            class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             @keydown.enter="bevestigReden"
             @keydown.esc="cancelReden"
           />
@@ -386,169 +417,180 @@ function formatDatum(iso) {
             <button
               type="button"
               :disabled="statusSaving || !redenTekst.trim()"
-              class="px-4 py-1.5 rounded text-sm font-medium text-white disabled:opacity-50 transition-colors"
+              class="px-4 py-1.5 rounded-lg text-sm font-medium text-white disabled:opacity-50 transition-colors"
               :class="redenPanel === 'gewonnen' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'"
               @click="bevestigReden"
-            >
-              {{ statusSaving ? 'Opslaan…' : 'Bevestigen' }}
-            </button>
+            >{{ statusSaving ? 'Opslaan…' : 'Bevestigen' }}</button>
             <button
               type="button"
-              class="px-4 py-1.5 rounded text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              class="px-4 py-1.5 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               @click="cancelReden"
-            >
-              Annuleren
-            </button>
+            >Annuleren</button>
           </div>
         </div>
 
-        <!-- Status foutmelding -->
-        <p v-if="statusError" class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg px-4 py-2">
+        <!-- Status fout -->
+        <p v-if="statusError" class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl px-4 py-3">
           {{ statusError }}
         </p>
 
-        <!-- ── Meta ─────────────────────────────────────────────── -->
-        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wide">Offerte details</h3>
+        <!-- ── Offerte details ────────────────────────────────── -->
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Offerte details</h3>
             <span class="text-xs" :class="statusClass(metaStatus)">{{ statusLabel(metaStatus) }}</span>
           </div>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2 gap-6 mb-5">
             <div>
-              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Klant</label>
-              <p class="text-sm text-gray-900 dark:text-white font-medium">{{ quote.client?.naam }}</p>
-              <p class="text-xs text-gray-400 dark:text-gray-500">{{ quote.client?.contactpersoon }}</p>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mb-1.5">Klant</p>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ quote.client?.naam }}</p>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ quote.client?.contactpersoon }}</p>
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Geldig tot</label>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mb-1.5">Geldig tot</p>
               <input
                 v-model="meta.geldig_tot"
                 type="date"
-                class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 w-full"
+                class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 @change="onMetaChange"
               />
             </div>
-            <div class="col-span-2">
-              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Titel</label>
-              <input
-                v-model="meta.titel"
-                type="text"
-                class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 w-full"
-                @input="onMetaChange"
-              />
-            </div>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mb-1.5">Titel</p>
+            <input
+              v-model="meta.titel"
+              type="text"
+              class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+              @input="onMetaChange"
+            />
           </div>
         </div>
 
-        <!-- ── Secties ───────────────────────────────────────────── -->
+        <!-- ── Secties ────────────────────────────────────────── -->
         <div
           v-for="section in sections"
           :key="section.id"
-          class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+          class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6"
         >
-          <div class="flex items-center justify-between px-6 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-            <h3 class="text-sm font-semibold text-gray-800 dark:text-white">{{ section.titel }}</h3>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ section.titel }}</h3>
             <div class="flex items-center gap-3">
               <span class="text-xs" :class="statusClass(section.status)">{{ statusLabel(section.status) }}</span>
               <button
                 v-if="section.hasAi"
                 type="button"
-                class="text-xs text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                class="inline-flex items-center gap-1 text-sm text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                 title="Terug naar AI-versie"
                 @click="restoreAi(section)"
-              >↺ AI-versie</button>
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+                AI herschrijven
+              </button>
             </div>
           </div>
-          <div class="p-4">
-            <RichTextEditor
-              v-model="section.html"
-              :placeholder="`Schrijf hier de ${section.titel.toLowerCase()}…`"
-              @update:model-value="onSectionChange(section)"
-              @blur="saveOnBlur(section)"
-            />
-          </div>
+          <RichTextEditor
+            v-model="section.html"
+            :placeholder="`Schrijf hier de ${section.titel.toLowerCase()}…`"
+            @update:model-value="onSectionChange(section)"
+            @blur="saveOnBlur(section)"
+          />
         </div>
 
-        <!-- ── Investering ───────────────────────────────────────── -->
-        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-          <div class="flex items-center justify-between px-6 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-            <h3 class="text-sm font-semibold text-gray-800 dark:text-white">Investering</h3>
+        <!-- ── Investering ────────────────────────────────────── -->
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Investering</h3>
             <span class="text-xs" :class="statusClass(invStatus)">{{ statusLabel(invStatus) }}</span>
           </div>
-          <div class="p-6 space-y-4">
 
-            <div class="space-y-2">
-              <div
-                v-for="(row, i) in rows"
-                :key="i"
-                class="grid grid-cols-[1fr_auto_auto] gap-2 items-center"
-              >
-                <input
-                  v-model="row.omschrijving"
-                  type="text"
-                  placeholder="Omschrijving"
-                  class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
-                  @input="onInvChange"
-                  @blur="saveInvestments"
-                />
+          <!-- Regels -->
+          <div class="space-y-2 mb-3">
+            <div
+              v-for="(row, i) in rows"
+              :key="i"
+              class="flex gap-2 items-center"
+            >
+              <input
+                v-model="row.omschrijving"
+                type="text"
+                placeholder="Omschrijving"
+                class="flex-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                @input="onInvChange"
+                @blur="saveInvestments"
+              />
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 pointer-events-none">€</span>
                 <input
                   v-model="row.bedrag"
                   type="text"
                   inputmode="decimal"
                   placeholder="0,00"
-                  class="w-28 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 shadow-sm text-sm text-right focus:ring-blue-500 focus:border-blue-500"
+                  class="w-32 pl-7 pr-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 text-sm text-right focus:outline-none focus:ring-1 focus:ring-blue-500"
                   @input="onInvChange"
                   @blur="saveInvestments"
                 />
-                <button
-                  type="button"
-                  class="w-7 h-7 flex items-center justify-center rounded text-gray-300 dark:text-gray-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                  :disabled="rows.length === 1"
-                  :class="rows.length === 1 ? 'opacity-30 cursor-not-allowed' : ''"
-                  @click="removeRow(i); onInvChange()"
-                >×</button>
               </div>
-
               <button
                 type="button"
-                class="w-full rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-600 py-2 text-sm text-gray-400 dark:text-gray-500 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                @click="addRow"
-              >+ Regel toevoegen</button>
+                class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-300 dark:text-gray-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shrink-0"
+                :disabled="rows.length === 1"
+                :class="rows.length === 1 ? 'opacity-0 pointer-events-none' : ''"
+                @click="removeRow(i); onInvChange()"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
             </div>
 
-            <div class="flex items-center gap-3">
-              <span class="text-sm text-gray-600 dark:text-gray-300">BTW:</span>
-              <div class="flex gap-2">
-                <button
-                  v-for="optie in BTW_OPTIES"
-                  :key="optie"
-                  type="button"
-                  class="px-3 py-1 rounded-full text-xs border transition-colors"
-                  :class="btw === optie ? 'bg-blue-600 text-white border-blue-600' : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'"
-                  @click="btw = optie; onInvChange()"
-                >{{ optie }}</button>
-              </div>
-            </div>
+            <button
+              type="button"
+              class="w-full rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-600 py-2.5 text-sm text-gray-400 dark:text-gray-500 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              @click="addRow"
+            >+ Regel toevoegen</button>
+          </div>
 
-            <div class="rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700 text-sm">
-              <div class="flex justify-between px-4 py-2 text-gray-600 dark:text-gray-300">
-                <span>Subtotaal</span><span class="font-mono">{{ fmt(subtotaal) }}</span>
-              </div>
-              <div class="flex justify-between px-4 py-2 text-gray-600 dark:text-gray-300">
-                <span>BTW ({{ btw }})</span>
-                <span class="font-mono">{{ btw === '21%' ? fmt(btwBedrag) : '—' }}</span>
-              </div>
-              <div class="flex justify-between px-4 py-2.5 font-semibold text-gray-900 dark:text-white">
-                <span>Totaal</span><span class="font-mono text-blue-700 dark:text-blue-400">{{ fmt(eindtotaal) }}</span>
-              </div>
+          <!-- BTW -->
+          <div class="flex items-center gap-3 mt-5">
+            <span class="text-sm text-gray-600 dark:text-gray-300 font-medium">BTW:</span>
+            <div class="flex gap-1.5">
+              <button
+                v-for="optie in BTW_OPTIES"
+                :key="optie"
+                type="button"
+                class="px-4 py-1.5 rounded-full text-sm border transition-colors"
+                :class="btw === optie
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'"
+                @click="btw = optie; onInvChange()"
+              >{{ optie }}</button>
+            </div>
+          </div>
+
+          <!-- Totalen -->
+          <div class="mt-5 rounded-xl border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700 text-sm overflow-hidden">
+            <div class="flex justify-between px-5 py-3 text-gray-600 dark:text-gray-300">
+              <span>Subtotaal</span>
+              <span>{{ fmt(subtotaal) }}</span>
+            </div>
+            <div class="flex justify-between px-5 py-3 text-gray-600 dark:text-gray-300">
+              <span>BTW ({{ btw }})</span>
+              <span>{{ btw === '21%' ? fmt(btwBedrag) : '—' }}</span>
+            </div>
+            <div class="flex justify-between px-5 py-3.5 font-semibold text-gray-900 dark:text-white">
+              <span>Totaal</span>
+              <span class="text-blue-600 dark:text-blue-400">{{ fmt(eindtotaal) }}</span>
             </div>
           </div>
         </div>
 
-        <!-- ── Status Historie ────────────────────────────────────── -->
-        <div v-if="statusHistory.length" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-          <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-            <h3 class="text-sm font-semibold text-gray-800 dark:text-white">Status historie</h3>
+        <!-- ── Status Historie ─────────────────────────────────── -->
+        <div v-if="statusHistory.length" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Status historie</h3>
           </div>
           <ul class="divide-y divide-gray-100 dark:divide-gray-700">
             <li
@@ -556,7 +598,7 @@ function formatDatum(iso) {
               :key="i"
               class="flex items-start gap-3 px-6 py-3"
             >
-              <div class="mt-0.5 flex-shrink-0">
+              <div class="mt-0.5 shrink-0">
                 <StatusBadge :status="item.nieuwe_status" />
               </div>
               <div class="flex-1 min-w-0">
@@ -567,7 +609,7 @@ function formatDatum(iso) {
                 </p>
                 <p v-if="item.reden" class="text-xs text-gray-400 dark:text-gray-500 mt-0.5 italic">{{ item.reden }}</p>
               </div>
-              <span class="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">{{ formatDatum(item.datum) }}</span>
+              <span class="text-xs text-gray-400 dark:text-gray-500 shrink-0">{{ formatDatum(item.datum) }}</span>
             </li>
           </ul>
         </div>

@@ -1,147 +1,155 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import Dropdown from '@/Components/Dropdown.vue'
-import DropdownLink from '@/Components/DropdownLink.vue'
-import NavLink from '@/Components/NavLink.vue'
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
+import { onMounted } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { useDarkMode } from '@/composables/useDarkMode'
 
-const showingNavigationDropdown = ref(false)
 const { dark, toggle, init } = useDarkMode()
 onMounted(init)
 </script>
 
 <template>
-    <div>
-        <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-            <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
 
-                    <!-- Logo + navigatie -->
-                    <div class="flex items-center space-x-8">
-                        <Link :href="route('dashboard')" class="font-black text-xl tracking-tight shrink-0 text-gray-900 dark:text-white">
-                            buro<span class="text-blue-500">_</span>deBom
-                            <span class="ml-1 text-sm font-normal text-gray-400 dark:text-gray-500">offertes</span>
-                        </Link>
+        <!-- ── Sidebar ────────────────────────────────────────── -->
+        <aside class="fixed inset-y-0 left-0 w-52 bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 flex flex-col z-30">
 
-                        <div class="hidden sm:flex items-center space-x-1">
-                            <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                Dashboard
-                            </NavLink>
-                            <NavLink :href="route('clients.index')" :active="route().current('clients.*')">
-                                Bedrijven
-                            </NavLink>
-                            <NavLink :href="route('quotes.index')" :active="route().current('quotes.*')">
-                                Offertes
-                            </NavLink>
-                            <NavLink
-                                v-if="$page.props.auth.isAdmin"
-                                :href="route('admin.prompts')"
-                                :active="route().current('admin.*')"
-                            >
-                                Prompts
-                            </NavLink>
-                        </div>
-                    </div>
+            <!-- Logo -->
+            <div class="px-5 pt-5 pb-5">
+                <Link :href="route('dashboard')" class="font-black text-lg tracking-tight text-gray-900 dark:text-white">
+                    buro<span class="text-blue-500">.</span>deBom
+                </Link>
+            </div>
 
-                    <!-- Rechts: dark toggle + gebruiker dropdown + nieuwe offerte -->
-                    <div class="hidden sm:flex items-center gap-3">
+            <!-- Nav -->
+            <nav class="flex-1 overflow-y-auto pb-2">
 
-                        <!-- Dark mode toggle -->
-                        <button
-                            type="button"
-                            @click="toggle"
-                            class="p-2 rounded-md text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                            :title="dark ? 'Lichte modus' : 'Donkere modus'"
-                        >
-                            <!-- Sun -->
-                            <svg v-if="dark" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14A7 7 0 0012 5z" />
-                            </svg>
-                            <!-- Moon -->
-                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-                            </svg>
-                        </button>
+                <Link
+                    :href="route('dashboard')"
+                    class="flex items-center gap-3 py-2.5 pr-3 text-sm font-medium transition-colors"
+                    :class="route().current('dashboard')
+                        ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                >
+                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </Link>
 
-                        <Dropdown align="right" width="48">
-                            <template #trigger>
-                                <button type="button" class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition">
-                                    {{ $page.props.auth.user.name }}
-                                    <svg class="inline-block ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </template>
-                            <template #content>
-                                <DropdownLink :href="route('profile.edit')">Profiel</DropdownLink>
-                                <DropdownLink :href="route('logout')" method="post" as="button">Uitloggen</DropdownLink>
-                            </template>
-                        </Dropdown>
+                <Link
+                    :href="route('clients.index')"
+                    class="flex items-center gap-3 py-2.5 pr-3 text-sm font-medium transition-colors"
+                    :class="route().current('clients.*')
+                        ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                >
+                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    Bedrijven
+                </Link>
 
-                        <Link
-                            :href="route('quotes.create')"
-                            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition"
-                        >
-                            + Nieuwe offerte
-                        </Link>
-                    </div>
+                <Link
+                    :href="route('quotes.index')"
+                    class="flex items-center gap-3 py-2.5 pr-3 text-sm font-medium transition-colors"
+                    :class="route().current('quotes.*')
+                        ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                >
+                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Offertes
+                </Link>
 
-                    <!-- Hamburger -->
-                    <div class="-me-2 flex items-center gap-2 sm:hidden">
-                        <button
-                            type="button"
-                            @click="toggle"
-                            class="p-2 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                        >
-                            <svg v-if="dark" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14A7 7 0 0012 5z" />
-                            </svg>
-                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-                            </svg>
-                        </button>
-                        <button
-                            @click="showingNavigationDropdown = !showingNavigationDropdown"
-                            class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-500 focus:outline-none"
-                        >
-                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <path :class="{ hidden: showingNavigationDropdown, 'inline-flex': !showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                <path :class="{ hidden: !showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+                <Link
+                    v-if="$page.props.auth.isAdmin"
+                    :href="route('admin.prompts')"
+                    class="flex items-center gap-3 py-2.5 pr-3 text-sm font-medium transition-colors"
+                    :class="route().current('admin.*')
+                        ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                >
+                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m1.636-6.364l.707.707M6.343 17.657l-.707.707M17.657 17.657l.707.707M12 21v-1M15.536 8.464a5 5 0 11-7.072 0"/>
+                    </svg>
+                    Prompts
+                </Link>
 
-                <!-- Responsive menu -->
-                <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="sm:hidden">
-                    <div class="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">Dashboard</ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('clients.index')" :active="route().current('clients.*')">Bedrijven</ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('quotes.index')" :active="route().current('quotes.*')">Offertes</ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.prompts')" :active="route().current('admin.*')">Prompts</ResponsiveNavLink>
-                    </div>
-                    <div class="border-t border-gray-200 dark:border-gray-700 pb-1 pt-4">
-                        <div class="px-4 text-base font-medium text-gray-800 dark:text-gray-200">{{ $page.props.auth.user.name }}</div>
-                        <div class="px-4 text-sm text-gray-500 dark:text-gray-400">{{ $page.props.auth.user.email }}</div>
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')">Profiel</ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button">Uitloggen</ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
             </nav>
 
-            <!-- Paginakop -->
-            <header v-if="$slots.header" class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-                <div class="max-w-7xl mx-auto px-6 py-5">
+            <!-- Bottom: user section -->
+            <div class="border-t border-gray-100 dark:border-gray-700 p-3 space-y-0.5">
+
+                <!-- Mijn profiel -->
+                <Link
+                    :href="route('profile.edit')"
+                    class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
+                    :class="route().current('profile.*')
+                        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white'"
+                >
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Mijn profiel
+                </Link>
+
+                <!-- Dark mode toggle -->
+                <button
+                    type="button"
+                    class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    @click="toggle"
+                >
+                    <svg v-if="dark" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14A7 7 0 0012 5z"/>
+                    </svg>
+                    <svg v-else class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                    {{ dark ? 'Lichte modus' : 'Donkere modus' }}
+                </button>
+
+                <!-- Uitloggen -->
+                <Link
+                    :href="route('logout')"
+                    method="post"
+                    as="button"
+                    class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Uitloggen
+                </Link>
+
+            </div>
+        </aside>
+
+        <!-- ── Main ──────────────────────────────────────────── -->
+        <div class="ml-52 flex-1 min-w-0 flex flex-col">
+
+            <!-- Top header bar -->
+            <header class="sticky top-0 z-20 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 h-14 flex items-center gap-4 px-6">
+                <div class="flex-1 min-w-0">
                     <slot name="header" />
                 </div>
+                <Link
+                    :href="route('profile.edit')"
+                    class="flex items-center gap-2.5 shrink-0 group"
+                >
+                    <div class="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                        {{ $page.props.auth.user.name.charAt(0).toUpperCase() }}
+                    </div>
+                    <div class="text-left hidden sm:block">
+                        <p class="text-xs font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">{{ $page.props.auth.user.name }}</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 leading-tight">{{ $page.props.auth.isAdmin ? 'Beheerder' : 'Gebruiker' }}</p>
+                    </div>
+                </Link>
             </header>
 
-            <!-- Inhoud -->
-            <main>
+            <!-- Content -->
+            <main class="flex-1">
                 <slot />
             </main>
         </div>

@@ -51,7 +51,7 @@ class DashboardController extends Controller
 
         $userId  = auth()->id();
         $periode = $request->periode;
-        $cacheKey = "dashboard_stats_{$userId}_{$periode}";
+        $cacheKey = "dashboard_stats_v2_{$userId}_{$periode}";
 
         $stats = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($userId, $periode) {
             return $this->buildStats($userId, $periode);
@@ -120,10 +120,19 @@ class DashboardController extends Controller
         $gewonnen     = (clone $base)->where('status', 'gewonnen')->count();
         $verloren     = (clone $base)->where('status', 'verloren')->count();
         $verzonden    = (clone $base)->where('status', 'verzonden')->count();
-        $omzetGewonnen = (clone $base)->where('status', 'gewonnen')->sum('totaal');
+        $omzetGewonnen    = (clone $base)->where('status', 'gewonnen')->sum('totaal');
+        $omzetOpenstaand  = (clone $base)->whereIn('status', ['concept', 'verzonden'])->sum('totaal');
 
         $afgesloten   = $gewonnen + $verloren;
         $conversie    = $afgesloten > 0 ? round($gewonnen / $afgesloten * 100, 1) : null;
+
+        $omzetVorigjaar = Quote::where('user_id', $userId)
+            ->where('status', 'gewonnen')
+            ->whereYear('created_at', now()->subYear()->year)
+            ->sum('totaal');
+        $omzetGroei = $omzetVorigjaar > 0
+            ? round(($omzetGewonnen - $omzetVorigjaar) / $omzetVorigjaar * 100)
+            : null;
 
         // Offertes per maand (last 12 months regardless of period filter)
         $perMaand = Quote::where('user_id', $userId)
@@ -162,8 +171,10 @@ class DashboardController extends Controller
             'gewonnen'      => $gewonnen,
             'verloren'      => $verloren,
             'verzonden'     => $verzonden,
-            'omzetGewonnen' => (float) $omzetGewonnen,
-            'conversie'     => $conversie,
+            'omzetGewonnen'   => (float) $omzetGewonnen,
+            'omzetOpenstaand' => (float) $omzetOpenstaand,
+            'omzetGroei'      => $omzetGroei,
+            'conversie'       => $conversie,
             'perMaand'      => $maanden,
             'recente'       => $recente,
         ];

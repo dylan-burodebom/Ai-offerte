@@ -123,11 +123,17 @@ class QuoteController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
+        $preselectedClient = null;
+        if ($request->client_id) {
+            $preselectedClient = Client::find($request->client_id);
+        }
+
         return Inertia::render('Quotes/Create', [
-            'sectoren'      => Client::SECTOREN,
-            'dienstenLijst' => config('diensten'),
+            'sectoren'          => Client::SECTOREN,
+            'dienstenLijst'     => config('diensten'),
+            'preselectedClient' => $preselectedClient,
         ]);
     }
 
