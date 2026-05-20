@@ -1,55 +1,56 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-import { Head } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue'
+import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
+import DeleteUserForm from './Partials/DeleteUserForm.vue'
+import { Head } from '@inertiajs/vue3'
 
 defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+    mustVerifyEmail: { type: Boolean },
+    status: { type: String },
+})
 </script>
 
 <template>
-    <Head title="Profile" />
-
+    <Head title="Mijn profiel" />
     <AuthenticatedLayout>
         <template #header>
-            <h2
-                class="text-xl font-semibold leading-tight text-gray-800 dark:text-white"
-            >
-                Profile
-            </h2>
+            <h2 class="text-base font-semibold text-gray-800 dark:text-white">Mijn profiel</h2>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <div
-                    class="bg-white dark:bg-gray-800 border border-transparent dark:border-gray-700 p-4 shadow sm:rounded-lg sm:p-8"
-                >
-                    <UpdateProfileInformationForm
-                        :must-verify-email="mustVerifyEmail"
-                        :status="status"
-                        class="max-w-xl"
-                    />
+        <div class="py-6">
+            <div class="max-w-2xl mx-auto px-6 space-y-5">
+
+                <!-- Profielfoto + gegevens -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                        <h3 class="text-sm font-semibold text-gray-800 dark:text-white">Profielgegevens</h3>
+                    </div>
+                    <div class="p-6">
+                        <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
+                    </div>
                 </div>
 
-                <div
-                    class="bg-white dark:bg-gray-800 border border-transparent dark:border-gray-700 p-4 shadow sm:rounded-lg sm:p-8"
-                >
-                    <UpdatePasswordForm class="max-w-xl" />
+                <!-- Wachtwoord -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                        <h3 class="text-sm font-semibold text-gray-800 dark:text-white">Wachtwoord wijzigen</h3>
+                    </div>
+                    <div class="p-6">
+                        <UpdatePasswordForm />
+                    </div>
                 </div>
 
-                <div
-                    class="bg-white dark:bg-gray-800 border border-transparent dark:border-gray-700 p-4 shadow sm:rounded-lg sm:p-8"
-                >
-                    <DeleteUserForm class="max-w-xl" />
+                <!-- Account verwijderen -->
+                <div class="bg-white dark:bg-gray-800 border border-red-100 dark:border-red-900/40 rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-red-100 dark:border-red-900/40">
+                        <h3 class="text-sm font-semibold text-red-600 dark:text-red-400">Account verwijderen</h3>
+                    </div>
+                    <div class="p-6">
+                        <DeleteUserForm />
+                    </div>
                 </div>
+
             </div>
         </div>
     </AuthenticatedLayout>

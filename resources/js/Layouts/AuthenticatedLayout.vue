@@ -1,10 +1,12 @@
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { useDarkMode } from '@/composables/useDarkMode'
 
 const { dark, toggle, init } = useDarkMode()
 onMounted(init)
+
+const avatarError = ref(false)
 </script>
 
 <template>
@@ -138,7 +140,14 @@ onMounted(init)
                     :href="route('profile.edit')"
                     class="flex items-center gap-2.5 shrink-0 group"
                 >
-                    <div class="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    <img
+                        v-if="$page.props.auth.user.avatar_url && !avatarError"
+                        :src="$page.props.auth.user.avatar_url"
+                        class="w-8 h-8 rounded-full object-cover shrink-0"
+                        alt=""
+                        @error="avatarError = true"
+                    />
+                    <div v-else class="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center text-white text-xs font-bold shrink-0">
                         {{ $page.props.auth.user.name.charAt(0).toUpperCase() }}
                     </div>
                     <div class="text-left hidden sm:block">

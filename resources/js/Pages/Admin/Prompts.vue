@@ -265,7 +265,7 @@ async function loadPreview() {
                 :key="activeTab + activeSector"
                 v-model="currentContent"
                 rows="28"
-                class="w-full px-5 py-4 text-sm font-mono bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none resize-y leading-relaxed"
+                class="w-full px-5 py-4 text-sm font-mono bg-white dark:bg-gray-800 dark:text-gray-100 border-0 focus:outline-none focus:ring-0 resize-y leading-relaxed block"
                 spellcheck="false"
               />
             </div>
