@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { ref, reactive } from 'vue'
 import ClientSelector from '@/Components/ClientSelector.vue'
 import InputLabel from '@/Components/InputLabel.vue'
@@ -69,26 +69,26 @@ async function submitNewClient() {
     <!-- Geselecteerde klant banner -->
     <div
       v-if="selectedClient"
-      class="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-50 px-4 py-3"
+      class="flex items-center justify-between rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 px-4 py-3"
     >
       <div>
-        <p class="font-semibold text-blue-900">{{ selectedClient.naam }}</p>
-        <p class="text-sm text-blue-600">
+        <p class="font-semibold text-blue-900 dark:text-blue-300">{{ selectedClient.naam }}</p>
+        <p class="text-sm text-blue-600 dark:text-blue-400">
           {{ selectedClient.contactpersoon ?? selectedClient.email }}
           <span
             v-if="selectedClient.sector"
-            class="ml-2 inline-block rounded px-1.5 py-0.5 text-xs bg-blue-100 text-blue-700"
+            class="ml-2 inline-block rounded px-1.5 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400"
           >{{ selectedClient.sector }}</span>
         </p>
       </div>
       <button
         type="button"
-        class="text-blue-400 hover:text-blue-600 text-xl leading-none"
+        class="text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 text-xl leading-none"
         @click="onClientSelected(null)"
       >×</button>
     </div>
 
-    <!-- Zoekbalk (verborgen als al geselecteerd) -->
+    <!-- Zoekbalk -->
     <div v-if="!selectedClient">
       <InputLabel value="Bestaande klant zoeken" class="mb-1.5" />
       <ClientSelector
@@ -99,10 +99,10 @@ async function submitNewClient() {
     </div>
 
     <!-- Scheidingslijn -->
-    <div v-if="!selectedClient" class="flex items-center gap-3 text-sm text-gray-400">
-      <div class="flex-1 h-px bg-gray-200" />
+    <div v-if="!selectedClient" class="flex items-center gap-3 text-sm text-gray-400 dark:text-gray-500">
+      <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
       of
-      <div class="flex-1 h-px bg-gray-200" />
+      <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
     </div>
 
     <!-- Nieuwe klant knop / formulier -->
@@ -110,16 +110,16 @@ async function submitNewClient() {
       <button
         v-if="!showNewForm"
         type="button"
-        class="w-full rounded-lg border-2 border-dashed border-gray-300 py-4 text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors"
+        class="w-full rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 py-4 text-sm text-gray-500 dark:text-gray-400 hover:border-blue-400 hover:text-blue-600 dark:hover:border-blue-500 dark:hover:text-blue-400 transition-colors"
         @click="toggleNewForm"
       >
         + Nieuwe klant aanmaken
       </button>
 
-      <div v-else class="rounded-lg border border-gray-200 bg-gray-50 p-5 space-y-4">
+      <div v-else class="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 p-5 space-y-4">
         <div class="flex items-center justify-between mb-1">
-          <h3 class="text-sm font-semibold text-gray-700">Nieuwe klant</h3>
-          <button type="button" class="text-gray-400 hover:text-gray-600" @click="toggleNewForm">×</button>
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Nieuwe klant</h3>
+          <button type="button" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" @click="toggleNewForm">×</button>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -152,7 +152,7 @@ async function submitNewClient() {
           <select
             id="nc_sector"
             v-model="form.sector"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">— Kies sector —</option>
             <option v-for="s in sectoren" :key="s" :value="s">{{ s }}</option>

@@ -13,6 +13,7 @@ class Client extends Model
     use HasFactory, SoftDeletes;
 
     const SECTOREN = ['Bouw', 'Industrie', 'Transport', 'Installatie', 'Overig'];
+    const RELATIE_STATUSSEN = ['prospect', 'klant', 'inactief'];
 
     protected $fillable = [
         'naam',
@@ -20,6 +21,7 @@ class Client extends Model
         'email',
         'telefoon',
         'sector',
+        'relatie_status',
         'adres',
         'postcode',
         'stad',

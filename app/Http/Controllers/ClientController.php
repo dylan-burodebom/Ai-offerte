@@ -21,14 +21,16 @@ class ClientController extends Controller
                 ->orWhere('contactpersoon', 'like', "%{$s}%")
                 ->orWhere('email', 'like', "%{$s}%"))
             ->when($request->sector, fn ($q, $s) => $q->where('sector', $s))
+            ->when($request->relatie_status, fn ($q, $s) => $q->where('relatie_status', $s))
             ->orderBy('naam')
             ->paginate(20)
             ->withQueryString();
 
         return Inertia::render('Clients/Index', [
-            'clients' => $clients,
-            'filters' => $request->only(['search', 'sector']),
-            'sectoren' => Client::SECTOREN,
+            'clients'          => $clients,
+            'filters'          => $request->only(['search', 'sector', 'relatie_status']),
+            'sectoren'         => Client::SECTOREN,
+            'relatie_statussen' => Client::RELATIE_STATUSSEN,
         ]);
     }
 

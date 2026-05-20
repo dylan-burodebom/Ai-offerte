@@ -45,9 +45,9 @@ function setLink() {
 </script>
 
 <template>
-  <div class="border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+  <div class="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
     <!-- Toolbar -->
-    <div class="flex flex-wrap items-center gap-0.5 border-b border-gray-200 bg-gray-50 px-2 py-1.5">
+    <div class="flex flex-wrap items-center gap-0.5 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-2 py-1.5">
       <button
         v-for="{ action, label, active, title } in [
           { action: () => editor?.chain().focus().toggleBold().run(), label: 'B', active: editor?.isActive('bold'), title: 'Vet' },
@@ -57,11 +57,11 @@ function setLink() {
         type="button"
         :title="title"
         class="px-2 py-0.5 rounded text-sm font-medium transition-colors"
-        :class="active ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="active ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
         @click="action"
       >{{ label }}</button>
 
-      <div class="w-px h-4 bg-gray-300 mx-1" />
+      <div class="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1" />
 
       <button
         v-for="level in [2, 3]"
@@ -69,17 +69,17 @@ function setLink() {
         type="button"
         :title="'Koptekst ' + level"
         class="px-2 py-0.5 rounded text-xs font-semibold transition-colors"
-        :class="editor?.isActive('heading', { level }) ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="editor?.isActive('heading', { level }) ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
         @click="editor?.chain().focus().toggleHeading({ level }).run()"
       >H{{ level }}</button>
 
-      <div class="w-px h-4 bg-gray-300 mx-1" />
+      <div class="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1" />
 
       <button
         type="button"
         title="Opsomming"
         class="px-2 py-0.5 rounded text-sm transition-colors"
-        :class="editor?.isActive('bulletList') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="editor?.isActive('bulletList') ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
         @click="editor?.chain().focus().toggleBulletList().run()"
       >≡</button>
 
@@ -87,7 +87,7 @@ function setLink() {
         type="button"
         title="Genummerde lijst"
         class="px-2 py-0.5 rounded text-sm transition-colors"
-        :class="editor?.isActive('orderedList') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="editor?.isActive('orderedList') ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
         @click="editor?.chain().focus().toggleOrderedList().run()"
       >1.</button>
 
@@ -95,23 +95,23 @@ function setLink() {
         type="button"
         title="Link"
         class="px-2 py-0.5 rounded text-sm transition-colors"
-        :class="editor?.isActive('link') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-200'"
+        :class="editor?.isActive('link') ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
         @click="setLink"
       >🔗</button>
 
-      <div class="w-px h-4 bg-gray-300 mx-1" />
+      <div class="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1" />
 
       <button
         type="button"
         title="Ongedaan maken"
-        class="px-2 py-0.5 rounded text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-30 transition-colors"
+        class="px-2 py-0.5 rounded text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-30 transition-colors"
         :disabled="!editor?.can().undo()"
         @click="editor?.chain().focus().undo().run()"
       >↩</button>
       <button
         type="button"
         title="Opnieuw"
-        class="px-2 py-0.5 rounded text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-30 transition-colors"
+        class="px-2 py-0.5 rounded text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-30 transition-colors"
         :disabled="!editor?.can().redo()"
         @click="editor?.chain().focus().redo().run()"
       >↪</button>
@@ -139,4 +139,9 @@ function setLink() {
 .tiptap h2 { font-size: 1.1rem; font-weight: 700; margin: 0.75rem 0 0.25rem; }
 .tiptap h3 { font-size: 1rem; font-weight: 600; margin: 0.5rem 0 0.25rem; }
 .tiptap a  { color: #4f46e5; text-decoration: underline; }
+
+/* Dark mode editor content */
+.dark .tiptap { background-color: #1f2937; color: #f3f4f6; }
+.dark .tiptap p.is-editor-empty:first-child::before { color: #6b7280; }
+.dark .tiptap a { color: #818cf8; }
 </style>

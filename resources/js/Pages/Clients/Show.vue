@@ -102,10 +102,19 @@ function destroyOpmerking(o) {
     <template #header>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <a :href="route('clients.index')" class="text-gray-400 hover:text-gray-600 transition-colors text-sm">← Bedrijven</a>
-          <span class="text-gray-300">/</span>
-          <h2 class="text-xl font-semibold text-gray-800">{{ client.naam }}</h2>
-          <span v-if="client.sector" class="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-700">{{ client.sector }}</span>
+          <a :href="route('clients.index')" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors text-sm">← Bedrijven</a>
+          <span class="text-gray-300 dark:text-gray-600">/</span>
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-white">{{ client.naam }}</h2>
+          <span v-if="client.sector" class="text-xs px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400">{{ client.sector }}</span>
+          <span
+            v-if="client.relatie_status"
+            class="text-xs px-2 py-0.5 rounded"
+            :class="{
+              'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400': client.relatie_status === 'klant',
+              'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400': client.relatie_status === 'prospect',
+              'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400': client.relatie_status === 'inactief',
+            }"
+          >{{ client.relatie_status }}</span>
         </div>
         <a :href="route('quotes.create')" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors">
           + Nieuwe offerte
@@ -117,54 +126,54 @@ function destroyOpmerking(o) {
       <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
         <!-- Bedrijfsgegevens -->
-        <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-6">
-          <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">Bedrijfsgegevens</h3>
+        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-4">Bedrijfsgegevens</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 text-sm">
             <div>
-              <p class="text-xs text-gray-400 mb-0.5">E-mail</p>
-              <a :href="`mailto:${client.email}`" class="text-blue-600 hover:underline">{{ client.email }}</a>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mb-0.5">E-mail</p>
+              <a :href="`mailto:${client.email}`" class="text-blue-600 dark:text-blue-400 hover:underline">{{ client.email }}</a>
             </div>
             <div v-if="client.telefoon">
-              <p class="text-xs text-gray-400 mb-0.5">Telefoon</p>
-              <a :href="`tel:${client.telefoon}`" class="text-gray-800">{{ client.telefoon }}</a>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Telefoon</p>
+              <a :href="`tel:${client.telefoon}`" class="text-gray-800 dark:text-gray-200">{{ client.telefoon }}</a>
             </div>
             <div v-if="client.adres || client.postcode || client.stad">
-              <p class="text-xs text-gray-400 mb-0.5">Adres</p>
-              <p class="text-gray-800">{{ [client.adres, client.postcode, client.stad].filter(Boolean).join(', ') }}</p>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Adres</p>
+              <p class="text-gray-800 dark:text-gray-200">{{ [client.adres, client.postcode, client.stad].filter(Boolean).join(', ') }}</p>
             </div>
           </div>
-          <div v-if="client.beschrijving" class="mt-4 pt-4 border-t border-gray-100">
-            <p class="text-xs text-gray-400 mb-1">Beschrijving</p>
-            <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ client.beschrijving }}</p>
+          <div v-if="client.beschrijving" class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+            <p class="text-xs text-gray-400 dark:text-gray-500 mb-1">Beschrijving</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ client.beschrijving }}</p>
           </div>
         </div>
 
         <!-- Statistieken -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-4 text-center">
-            <p class="text-2xl font-bold text-blue-700">{{ quotes.length }}</p>
-            <p class="text-xs text-gray-400 mt-1">Totaal offertes</p>
+          <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
+            <p class="text-2xl font-bold text-blue-700 dark:text-blue-400">{{ quotes.length }}</p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Totaal offertes</p>
           </div>
-          <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-4 text-center">
-            <p class="text-2xl font-bold text-amber-600">{{ statusTelling('concept') + statusTelling('verzonden') }}</p>
-            <p class="text-xs text-gray-400 mt-1">Openstaand</p>
+          <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
+            <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">{{ statusTelling('concept') + statusTelling('verzonden') }}</p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Openstaand</p>
           </div>
-          <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-4 text-center">
-            <p class="text-2xl font-bold text-green-600">{{ statusTelling('gewonnen') }}</p>
-            <p class="text-xs text-gray-400 mt-1">Gewonnen</p>
+          <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
+            <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ statusTelling('gewonnen') }}</p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Gewonnen</p>
           </div>
-          <div class="bg-white shadow-sm border border-gray-200 rounded-xl p-4 text-center">
-            <p class="text-2xl font-bold text-green-700">{{ fmt(omzetGewonnen) }}</p>
-            <p class="text-xs text-gray-400 mt-1">Omzet gewonnen</p>
+          <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center">
+            <p class="text-2xl font-bold text-green-700 dark:text-green-400">{{ fmt(omzetGewonnen) }}</p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Omzet gewonnen</p>
           </div>
         </div>
 
         <!-- Contactpersonen -->
-        <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
-          <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-gray-700">
+        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
               Contactpersonen
-              <span class="ml-1 text-gray-400 font-normal">({{ contactpersonen.length }})</span>
+              <span class="ml-1 text-gray-400 dark:text-gray-500 font-normal">({{ contactpersonen.length }})</span>
             </h3>
             <button
               @click="openContactCreate"
@@ -173,29 +182,29 @@ function destroyOpmerking(o) {
           </div>
 
           <!-- Formulier -->
-          <div v-if="showContactForm" class="px-6 py-4 bg-gray-50 border-b border-gray-100">
+          <div v-if="showContactForm" class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
             <form @submit.prevent="submitContact" class="space-y-3">
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-xs text-gray-500 mb-1">Naam *</label>
-                  <input v-model="contactForm.naam" type="text" required class="w-full rounded border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500" />
+                  <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Naam *</label>
+                  <input v-model="contactForm.naam" type="text" required class="w-full rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:ring-blue-500 focus:border-blue-500" />
                   <p v-if="contactForm.errors.naam" class="text-xs text-red-500 mt-0.5">{{ contactForm.errors.naam }}</p>
                 </div>
                 <div>
-                  <label class="block text-xs text-gray-500 mb-1">E-mail</label>
-                  <input v-model="contactForm.email" type="email" class="w-full rounded border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500" />
+                  <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">E-mail</label>
+                  <input v-model="contactForm.email" type="email" class="w-full rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div>
-                  <label class="block text-xs text-gray-500 mb-1">Telefoon</label>
-                  <input v-model="contactForm.telefoon" type="tel" class="w-full rounded border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500" />
+                  <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Telefoon</label>
+                  <input v-model="contactForm.telefoon" type="tel" class="w-full rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div>
-                  <label class="block text-xs text-gray-500 mb-1">Geboortedatum</label>
-                  <input v-model="contactForm.geboortedatum" type="date" class="w-full rounded border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500" />
+                  <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Geboortedatum</label>
+                  <input v-model="contactForm.geboortedatum" type="date" class="w-full rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:ring-blue-500 focus:border-blue-500" />
                 </div>
               </div>
               <div class="flex gap-2 justify-end">
-                <button type="button" @click="showContactForm = false" class="text-xs px-3 py-1.5 rounded border border-gray-300 text-gray-600 hover:bg-gray-100">Annuleren</button>
+                <button type="button" @click="showContactForm = false" class="text-xs px-3 py-1.5 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Annuleren</button>
                 <button type="submit" :disabled="contactForm.processing" class="text-xs px-3 py-1.5 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50">
                   {{ editingContact ? 'Opslaan' : 'Toevoegen' }}
                 </button>
@@ -204,137 +213,147 @@ function destroyOpmerking(o) {
           </div>
 
           <!-- Lijst -->
-          <div v-if="contactpersonen.length === 0 && !showContactForm" class="px-6 py-8 text-center text-sm text-gray-400">
+          <div v-if="contactpersonen.length === 0 && !showContactForm" class="px-6 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
             Nog geen contactpersonen toegevoegd.
           </div>
-          <div v-else class="divide-y divide-gray-100">
+          <div v-else class="divide-y divide-gray-100 dark:divide-gray-700">
             <div v-for="c in contactpersonen" :key="c.id" class="px-6 py-4 flex items-center justify-between gap-4">
               <div class="min-w-0">
-                <p class="text-sm font-medium text-gray-800">{{ c.naam }}</p>
+                <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ c.naam }}</p>
                 <div class="flex flex-wrap gap-x-4 gap-y-0.5 mt-0.5">
-                  <a v-if="c.email" :href="`mailto:${c.email}`" class="text-xs text-blue-600 hover:underline">{{ c.email }}</a>
-                  <a v-if="c.telefoon" :href="`tel:${c.telefoon}`" class="text-xs text-gray-500">{{ c.telefoon }}</a>
-                  <span v-if="c.geboortedatum" class="text-xs text-gray-400">{{ fmtDatum(c.geboortedatum) }}</span>
+                  <a v-if="c.email" :href="`mailto:${c.email}`" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">{{ c.email }}</a>
+                  <a v-if="c.telefoon" :href="`tel:${c.telefoon}`" class="text-xs text-gray-500 dark:text-gray-400">{{ c.telefoon }}</a>
+                  <span v-if="c.geboortedatum" class="text-xs text-gray-400 dark:text-gray-500">{{ fmtDatum(c.geboortedatum) }}</span>
                 </div>
               </div>
               <div class="flex gap-1.5 shrink-0">
-                <button @click="openContactEdit(c)" class="text-xs px-2.5 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">Bewerken</button>
-                <button @click="destroyContact(c)" class="text-xs px-2.5 py-1 rounded border border-red-300 text-red-500 hover:bg-red-50">Verwijderen</button>
+                <button @click="openContactEdit(c)" class="text-xs px-2.5 py-1 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">Bewerken</button>
+                <button @click="destroyContact(c)" class="text-xs px-2.5 py-1 rounded border border-red-300 dark:border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">Verwijderen</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Opmerkingen (chat) -->
-        <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden flex flex-col">
-          <div class="px-6 py-4 border-b border-gray-100">
-            <h3 class="text-sm font-semibold text-gray-700">
+        <!-- Opmerkingen (ClickUp-stijl) -->
+        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
               Opmerkingen
-              <span class="ml-1 text-gray-400 font-normal">({{ opmerkingen.length }})</span>
+              <span class="ml-1 text-gray-400 dark:text-gray-500 font-normal">({{ opmerkingen.length }})</span>
             </h3>
           </div>
 
-          <!-- Berichten -->
-          <div class="flex-1 overflow-y-auto px-6 py-4 space-y-2 min-h-[180px] max-h-[400px] bg-gray-50">
-            <div v-if="opmerkingen.length === 0" class="h-full flex items-center justify-center text-sm text-gray-400">
+          <!-- Thread -->
+          <div class="divide-y divide-gray-100 dark:divide-gray-700/60">
+            <div v-if="opmerkingen.length === 0" class="px-6 py-10 text-center text-sm text-gray-400 dark:text-gray-500">
               Nog geen opmerkingen.
             </div>
+
             <div
               v-for="o in opmerkingen"
               :key="o.id"
-              class="flex group"
-              :class="o.user_id === currentUserId ? 'justify-end' : 'justify-start'"
+              class="group flex gap-3 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
             >
-              <div class="relative max-w-[75%]">
-                <!-- Naam (alleen bij anderen) -->
-                <p v-if="o.user_id !== currentUserId" class="text-xs text-gray-400 mb-1 px-1">
-                  {{ o.user?.name ?? 'Onbekend' }}
-                </p>
-                <!-- Bubbel -->
-                <div
-                  class="text-sm px-4 py-2.5 whitespace-pre-wrap leading-relaxed"
-                  :class="o.user_id === currentUserId
-                    ? 'bg-blue-600 text-white rounded-2xl rounded-br-sm'
-                    : 'bg-white border border-gray-200 text-gray-800 rounded-2xl rounded-bl-sm'"
-                >
-                  {{ o.tekst }}
-                </div>
-                <!-- Meta -->
-                <div
-                  class="flex items-center gap-2 mt-1 px-1"
-                  :class="o.user_id === currentUserId ? 'justify-end' : 'justify-start'"
-                >
-                  <span class="text-xs text-gray-400">{{ fmtTijd(o.created_at) }}</span>
-                  <button
-                    @click="destroyOpmerking(o)"
-                    class="text-xs text-gray-300 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
-                  >verwijderen</button>
-                </div>
+              <!-- Avatar -->
+              <div
+                class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white select-none mt-0.5"
+                :class="o.user_id === currentUserId ? 'bg-blue-500' : 'bg-violet-500'"
+              >
+                {{ (o.user?.name ?? '?').charAt(0).toUpperCase() }}
               </div>
+
+              <!-- Content -->
+              <div class="flex-1 min-w-0">
+                <div class="flex items-baseline gap-2 mb-1">
+                  <span class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                    {{ o.user?.name ?? 'Onbekend' }}
+                  </span>
+                  <span class="text-xs text-gray-400 dark:text-gray-500">{{ fmtTijd(o.created_at) }}</span>
+                </div>
+                <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">{{ o.tekst }}</p>
+              </div>
+
+              <!-- Delete (hover) -->
+              <button
+                v-if="o.user_id === currentUserId"
+                @click="destroyOpmerking(o)"
+                class="shrink-0 opacity-0 group-hover:opacity-100 mt-1 p-1 rounded text-gray-300 dark:text-gray-600 hover:text-red-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                title="Verwijderen"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m2-3h6a1 1 0 011 1H8a1 1 0 011-1z" />
+                </svg>
+              </button>
             </div>
           </div>
 
           <!-- Input -->
-          <div class="px-4 py-3 border-t border-gray-100 bg-white">
-            <form @submit.prevent="submitOpmerking" class="flex items-end gap-2">
-              <textarea
-                v-model="opmerkingForm.tekst"
-                rows="1"
-                placeholder="Schrijf een opmerking…"
-                class="flex-1 rounded-2xl border-gray-200 bg-gray-50 text-sm focus:ring-blue-500 focus:border-blue-500 resize-none px-4 py-2.5"
-                style="min-height: 40px; max-height: 120px;"
-                required
-                @keydown.enter.exact.prevent="submitOpmerking"
-              />
-              <button
-                type="submit"
-                :disabled="opmerkingForm.processing"
-                class="shrink-0 w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 disabled:opacity-50 transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 rotate-90">
-                  <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-                </svg>
-              </button>
-            </form>
+          <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/30">
+            <div class="flex gap-3 items-start">
+              <!-- Own avatar -->
+              <div class="shrink-0 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold text-white mt-1 select-none">
+                {{ ($page.props.auth.user.name ?? '?').charAt(0).toUpperCase() }}
+              </div>
+
+              <form @submit.prevent="submitOpmerking" class="flex-1 flex flex-col gap-2">
+                <textarea
+                  v-model="opmerkingForm.tekst"
+                  rows="2"
+                  placeholder="Schrijf een opmerking… (Enter om te versturen)"
+                  class="w-full rounded-lg border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 text-sm focus:ring-blue-500 focus:border-blue-500 resize-none px-3 py-2"
+                  required
+                  @keydown.enter.exact.prevent="submitOpmerking"
+                />
+                <div class="flex justify-end">
+                  <button
+                    type="submit"
+                    :disabled="opmerkingForm.processing || !opmerkingForm.tekst.trim()"
+                    class="px-4 py-1.5 rounded-md bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 disabled:opacity-40 transition-colors"
+                  >
+                    Versturen
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
 
         <!-- Offertes -->
-        <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
-          <div class="px-6 py-4 border-b border-gray-100">
-            <h3 class="text-sm font-semibold text-gray-700">
+        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
               Offertes
-              <span class="ml-1 text-gray-400 font-normal">({{ quotes.length }})</span>
+              <span class="ml-1 text-gray-400 dark:text-gray-500 font-normal">({{ quotes.length }})</span>
             </h3>
           </div>
-          <div v-if="quotes.length === 0" class="px-6 py-10 text-center text-sm text-gray-400">
+          <div v-if="quotes.length === 0" class="px-6 py-10 text-center text-sm text-gray-400 dark:text-gray-500">
             Nog geen offertes voor dit bedrijf.
           </div>
           <table v-else class="w-full text-sm">
-            <thead class="bg-gray-50">
+            <thead class="bg-gray-50 dark:bg-gray-700/50">
               <tr>
-                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Nummer</th>
-                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Titel</th>
-                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
-                <th class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Bedrag</th>
-                <th class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Datum</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Nummer</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Titel</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Status</th>
+                <th class="px-5 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Bedrag</th>
+                <th class="px-5 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Datum</th>
                 <th class="px-5 py-3" />
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
               <tr
                 v-for="q in quotes"
                 :key="q.id"
-                class="hover:bg-gray-50 cursor-pointer transition-colors"
+                class="hover:bg-gray-50 dark:hover:bg-gray-700/40 cursor-pointer transition-colors"
                 @click="router.visit(route('quotes.edit', q.id))"
               >
-                <td class="px-5 py-3 font-mono text-xs text-blue-700 font-medium whitespace-nowrap">{{ q.offerte_nummer }}</td>
-                <td class="px-5 py-3 text-gray-600 max-w-xs truncate">{{ q.titel }}</td>
+                <td class="px-5 py-3 font-mono text-xs text-blue-700 dark:text-blue-400 font-medium whitespace-nowrap">{{ q.offerte_nummer }}</td>
+                <td class="px-5 py-3 text-gray-600 dark:text-gray-400 max-w-xs truncate">{{ q.titel }}</td>
                 <td class="px-5 py-3"><StatusBadge :status="q.status" /></td>
-                <td class="px-5 py-3 text-right font-mono text-gray-700 whitespace-nowrap">{{ fmt(q.totaal) }}</td>
-                <td class="px-5 py-3 text-right text-gray-400 text-xs whitespace-nowrap">{{ fmtDatum(q.created_at) }}</td>
+                <td class="px-5 py-3 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ fmt(q.totaal) }}</td>
+                <td class="px-5 py-3 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.created_at) }}</td>
                 <td class="px-5 py-3 text-right">
-                  <button type="button" class="text-xs text-blue-500 hover:text-blue-700 font-medium" @click.stop="router.visit(route('quotes.edit', q.id))">
+                  <button type="button" class="text-xs text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium" @click.stop="router.visit(route('quotes.edit', q.id))">
                     Bewerken →
                   </button>
                 </td>

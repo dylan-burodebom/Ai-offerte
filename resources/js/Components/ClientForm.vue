@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import Modal from '@/Components/Modal.vue'
@@ -12,16 +12,17 @@ const props = defineProps({
   show: Boolean,
   client: Object,
   sectoren: Array,
+  relatie_statussen: Array,
 })
 
 const emit = defineEmits(['close'])
 
 const form = useForm({
   naam: '',
-  contactpersoon: '',
   email: '',
   telefoon: '',
   sector: '',
+  relatie_status: 'klant',
   adres: '',
   postcode: '',
   stad: '',
@@ -34,10 +35,10 @@ watch(
     form.reset()
     if (client) {
       form.naam = client.naam ?? ''
-      form.contactpersoon = client.contactpersoon ?? ''
       form.email = client.email ?? ''
       form.telefoon = client.telefoon ?? ''
       form.sector = client.sector ?? ''
+      form.relatie_status = client.relatie_status ?? 'klant'
       form.adres = client.adres ?? ''
       form.postcode = client.postcode ?? ''
       form.stad = client.stad ?? ''
@@ -62,7 +63,7 @@ function submit() {
 <template>
   <Modal :show="show" max-width="lg" @close="emit('close')">
     <div class="p-6">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
         {{ client ? 'Bedrijf bewerken' : 'Nieuwe klant' }}
       </h2>
 
@@ -88,17 +89,30 @@ function submit() {
           </div>
         </div>
 
-        <div>
-          <InputLabel for="sector" value="Sector" />
-          <select
-            id="sector"
-            v-model="form.sector"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="">— Kies sector —</option>
-            <option v-for="s in sectoren" :key="s" :value="s">{{ s }}</option>
-          </select>
-          <InputError :message="form.errors.sector" class="mt-1" />
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <InputLabel for="sector" value="Sector" />
+            <select
+              id="sector"
+              v-model="form.sector"
+              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">— Kies sector —</option>
+              <option v-for="s in sectoren" :key="s" :value="s">{{ s }}</option>
+            </select>
+            <InputError :message="form.errors.sector" class="mt-1" />
+          </div>
+          <div>
+            <InputLabel for="relatie_status" value="Relatiestatus" />
+            <select
+              id="relatie_status"
+              v-model="form.relatie_status"
+              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option v-for="s in relatie_statussen" :key="s" :value="s" class="capitalize">{{ s.charAt(0).toUpperCase() + s.slice(1) }}</option>
+            </select>
+            <InputError :message="form.errors.relatie_status" class="mt-1" />
+          </div>
         </div>
 
         <div>
@@ -128,11 +142,11 @@ function submit() {
             rows="4"
             maxlength="2000"
             placeholder="Notities over de klant, het bedrijf, de samenwerking…"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 resize-none"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 resize-none"
           />
           <div class="flex justify-between mt-1">
             <InputError :message="form.errors.beschrijving" />
-            <span class="text-xs text-gray-400">{{ form.beschrijving.length }}/2000</span>
+            <span class="text-xs text-gray-400 dark:text-gray-500">{{ form.beschrijving.length }}/2000</span>
           </div>
         </div>
 

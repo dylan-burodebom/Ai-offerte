@@ -277,13 +277,13 @@ function formatDatum(iso) {
     <template #header>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <h2 class="text-xl font-semibold text-gray-800 font-mono">{{ quote.offerte_nummer }}</h2>
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-white font-mono">{{ quote.offerte_nummer }}</h2>
           <StatusBadge :status="huidigStatus" />
-          <span class="text-xs text-gray-400">v{{ quote.versie }}</span>
+          <span class="text-xs text-gray-400 dark:text-gray-500">v{{ quote.versie }}</span>
           <span
             v-if="huidigeReden"
             class="text-xs px-2 py-0.5 rounded-full italic max-w-xs truncate"
-            :class="huidigStatus === 'gewonnen' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'"
+            :class="huidigStatus === 'gewonnen' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400'"
             :title="huidigeReden"
           >{{ huidigeReden }}</span>
         </div>
@@ -304,7 +304,7 @@ function formatDatum(iso) {
             v-if="kanNaar('concept')"
             type="button"
             :disabled="statusSaving"
-            class="text-sm px-3 py-1.5 rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            class="text-sm px-3 py-1.5 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
             @click="updateStatus('concept')"
           >
             ← Concept
@@ -335,7 +335,7 @@ function formatDatum(iso) {
           <!-- PDF preview -->
           <button
             type="button"
-            class="text-sm px-3 py-1.5 rounded border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
+            class="text-sm px-3 py-1.5 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             @click="openPdfPreview"
           >
             👁 Preview
@@ -351,7 +351,7 @@ function formatDatum(iso) {
 
           <button
             type="button"
-            class="text-sm px-3 py-1.5 rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            class="text-sm px-3 py-1.5 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
             :disabled="versioning"
             @click="createVersion"
           >
@@ -368,9 +368,9 @@ function formatDatum(iso) {
         <div
           v-if="redenPanel"
           class="rounded-lg border-2 p-5 space-y-3"
-          :class="redenPanel === 'gewonnen' ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'"
+          :class="redenPanel === 'gewonnen' ? 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20' : 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20'"
         >
-          <h3 class="text-sm font-semibold" :class="redenPanel === 'gewonnen' ? 'text-green-800' : 'text-red-800'">
+          <h3 class="text-sm font-semibold" :class="redenPanel === 'gewonnen' ? 'text-green-800 dark:text-green-400' : 'text-red-800 dark:text-red-400'">
             {{ redenPanel === 'gewonnen' ? '✓ Offerte gewonnen' : '✗ Offerte verloren' }} — wat is de reden?
           </h3>
           <input
@@ -378,7 +378,7 @@ function formatDatum(iso) {
             type="text"
             maxlength="500"
             :placeholder="redenPanel === 'gewonnen' ? 'Bijv. prijs, snelheid, vertrouwen…' : 'Bijv. klant koos voor lagere prijs, project uitgesteld…'"
-            class="w-full rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+            class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
             @keydown.enter="bevestigReden"
             @keydown.esc="cancelReden"
           />
@@ -394,7 +394,7 @@ function formatDatum(iso) {
             </button>
             <button
               type="button"
-              class="px-4 py-1.5 rounded text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+              class="px-4 py-1.5 rounded text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               @click="cancelReden"
             >
               Annuleren
@@ -403,37 +403,37 @@ function formatDatum(iso) {
         </div>
 
         <!-- Status foutmelding -->
-        <p v-if="statusError" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+        <p v-if="statusError" class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg px-4 py-2">
           {{ statusError }}
         </p>
 
         <!-- ── Meta ─────────────────────────────────────────────── -->
-        <div class="bg-white border border-gray-200 rounded-lg p-6">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Offerte details</h3>
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wide">Offerte details</h3>
             <span class="text-xs" :class="statusClass(metaStatus)">{{ statusLabel(metaStatus) }}</span>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-medium text-gray-500 mb-1">Klant</label>
-              <p class="text-sm text-gray-900 font-medium">{{ quote.client?.naam }}</p>
-              <p class="text-xs text-gray-400">{{ quote.client?.contactpersoon }}</p>
+              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Klant</label>
+              <p class="text-sm text-gray-900 dark:text-white font-medium">{{ quote.client?.naam }}</p>
+              <p class="text-xs text-gray-400 dark:text-gray-500">{{ quote.client?.contactpersoon }}</p>
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-500 mb-1">Geldig tot</label>
+              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Geldig tot</label>
               <input
                 v-model="meta.geldig_tot"
                 type="date"
-                class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 w-full"
+                class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 w-full"
                 @change="onMetaChange"
               />
             </div>
             <div class="col-span-2">
-              <label class="block text-xs font-medium text-gray-500 mb-1">Titel</label>
+              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Titel</label>
               <input
                 v-model="meta.titel"
                 type="text"
-                class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 w-full"
+                class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500 w-full"
                 @input="onMetaChange"
               />
             </div>
@@ -444,16 +444,16 @@ function formatDatum(iso) {
         <div
           v-for="section in sections"
           :key="section.id"
-          class="bg-white border border-gray-200 rounded-lg overflow-hidden"
+          class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
         >
-          <div class="flex items-center justify-between px-6 py-3 border-b border-gray-100 bg-gray-50">
-            <h3 class="text-sm font-semibold text-gray-800">{{ section.titel }}</h3>
+          <div class="flex items-center justify-between px-6 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+            <h3 class="text-sm font-semibold text-gray-800 dark:text-white">{{ section.titel }}</h3>
             <div class="flex items-center gap-3">
               <span class="text-xs" :class="statusClass(section.status)">{{ statusLabel(section.status) }}</span>
               <button
                 v-if="section.hasAi"
                 type="button"
-                class="text-xs text-blue-500 hover:text-blue-700 transition-colors"
+                class="text-xs text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                 title="Terug naar AI-versie"
                 @click="restoreAi(section)"
               >↺ AI-versie</button>
@@ -470,9 +470,9 @@ function formatDatum(iso) {
         </div>
 
         <!-- ── Investering ───────────────────────────────────────── -->
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <div class="flex items-center justify-between px-6 py-3 border-b border-gray-100 bg-gray-50">
-            <h3 class="text-sm font-semibold text-gray-800">Investering</h3>
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+          <div class="flex items-center justify-between px-6 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+            <h3 class="text-sm font-semibold text-gray-800 dark:text-white">Investering</h3>
             <span class="text-xs" :class="statusClass(invStatus)">{{ statusLabel(invStatus) }}</span>
           </div>
           <div class="p-6 space-y-4">
@@ -487,7 +487,7 @@ function formatDatum(iso) {
                   v-model="row.omschrijving"
                   type="text"
                   placeholder="Omschrijving"
-                  class="rounded-md border-gray-300 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                  class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
                   @input="onInvChange"
                   @blur="saveInvestments"
                 />
@@ -496,13 +496,13 @@ function formatDatum(iso) {
                   type="text"
                   inputmode="decimal"
                   placeholder="0,00"
-                  class="w-28 rounded-md border-gray-300 shadow-sm text-sm text-right focus:ring-blue-500 focus:border-blue-500"
+                  class="w-28 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 shadow-sm text-sm text-right focus:ring-blue-500 focus:border-blue-500"
                   @input="onInvChange"
                   @blur="saveInvestments"
                 />
                 <button
                   type="button"
-                  class="w-7 h-7 flex items-center justify-center rounded text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+                  class="w-7 h-7 flex items-center justify-center rounded text-gray-300 dark:text-gray-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                   :disabled="rows.length === 1"
                   :class="rows.length === 1 ? 'opacity-30 cursor-not-allowed' : ''"
                   @click="removeRow(i); onInvChange()"
@@ -511,46 +511,46 @@ function formatDatum(iso) {
 
               <button
                 type="button"
-                class="w-full rounded-lg border-2 border-dashed border-gray-200 py-2 text-sm text-gray-400 hover:border-blue-400 hover:text-blue-600 transition-colors"
+                class="w-full rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-600 py-2 text-sm text-gray-400 dark:text-gray-500 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 @click="addRow"
               >+ Regel toevoegen</button>
             </div>
 
             <div class="flex items-center gap-3">
-              <span class="text-sm text-gray-600">BTW:</span>
+              <span class="text-sm text-gray-600 dark:text-gray-300">BTW:</span>
               <div class="flex gap-2">
                 <button
                   v-for="optie in BTW_OPTIES"
                   :key="optie"
                   type="button"
                   class="px-3 py-1 rounded-full text-xs border transition-colors"
-                  :class="btw === optie ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'"
+                  :class="btw === optie ? 'bg-blue-600 text-white border-blue-600' : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'"
                   @click="btw = optie; onInvChange()"
                 >{{ optie }}</button>
               </div>
             </div>
 
-            <div class="rounded-lg bg-gray-50 border border-gray-200 divide-y divide-gray-200 text-sm">
-              <div class="flex justify-between px-4 py-2 text-gray-600">
+            <div class="rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+              <div class="flex justify-between px-4 py-2 text-gray-600 dark:text-gray-300">
                 <span>Subtotaal</span><span class="font-mono">{{ fmt(subtotaal) }}</span>
               </div>
-              <div class="flex justify-between px-4 py-2 text-gray-600">
+              <div class="flex justify-between px-4 py-2 text-gray-600 dark:text-gray-300">
                 <span>BTW ({{ btw }})</span>
                 <span class="font-mono">{{ btw === '21%' ? fmt(btwBedrag) : '—' }}</span>
               </div>
-              <div class="flex justify-between px-4 py-2.5 font-semibold text-gray-900">
-                <span>Totaal</span><span class="font-mono text-blue-700">{{ fmt(eindtotaal) }}</span>
+              <div class="flex justify-between px-4 py-2.5 font-semibold text-gray-900 dark:text-white">
+                <span>Totaal</span><span class="font-mono text-blue-700 dark:text-blue-400">{{ fmt(eindtotaal) }}</span>
               </div>
             </div>
           </div>
         </div>
 
         <!-- ── Status Historie ────────────────────────────────────── -->
-        <div v-if="statusHistory.length" class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <div class="px-6 py-3 border-b border-gray-100 bg-gray-50">
-            <h3 class="text-sm font-semibold text-gray-800">Status historie</h3>
+        <div v-if="statusHistory.length" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+          <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+            <h3 class="text-sm font-semibold text-gray-800 dark:text-white">Status historie</h3>
           </div>
-          <ul class="divide-y divide-gray-100">
+          <ul class="divide-y divide-gray-100 dark:divide-gray-700">
             <li
               v-for="(item, i) in statusHistory"
               :key="i"
@@ -560,14 +560,14 @@ function formatDatum(iso) {
                 <StatusBadge :status="item.nieuwe_status" />
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-xs text-gray-500">
-                  van <span class="font-medium text-gray-700">{{ item.oude_status }}</span>
-                  naar <span class="font-medium text-gray-700">{{ item.nieuwe_status }}</span>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  van <span class="font-medium text-gray-700 dark:text-gray-300">{{ item.oude_status }}</span>
+                  naar <span class="font-medium text-gray-700 dark:text-gray-300">{{ item.nieuwe_status }}</span>
                   <span v-if="item.user" class="ml-1">door {{ item.user.name }}</span>
                 </p>
-                <p v-if="item.reden" class="text-xs text-gray-400 mt-0.5 italic">{{ item.reden }}</p>
+                <p v-if="item.reden" class="text-xs text-gray-400 dark:text-gray-500 mt-0.5 italic">{{ item.reden }}</p>
               </div>
-              <span class="text-xs text-gray-400 flex-shrink-0">{{ formatDatum(item.datum) }}</span>
+              <span class="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">{{ formatDatum(item.datum) }}</span>
             </li>
           </ul>
         </div>
