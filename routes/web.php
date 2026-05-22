@@ -37,8 +37,11 @@ Route::middleware('auth')->group(function () {
     Route::get('quotes/create', [QuoteController::class, 'create'])->name('quotes.create');
     Route::get('quotes/{quote}/edit', [QuoteController::class, 'edit'])->name('quotes.edit');
     Route::patch('quotes/{quote}/meta', [QuoteController::class, 'updateMeta'])->name('quotes.meta');
+    Route::patch('quotes/{quote}/sections/reorder', [QuoteController::class, 'reorderSections'])->name('quotes.sections.reorder');
+    Route::post('quotes/{quote}/sections', [QuoteController::class, 'addSection'])->name('quotes.sections.store');
     Route::patch('quotes/{quote}/sections/{section}', [QuoteController::class, 'updateSection'])->name('quotes.sections.update');
     Route::post('quotes/{quote}/sections/{section}/restore', [QuoteController::class, 'restoreSection'])->name('quotes.sections.restore');
+    Route::delete('quotes/{quote}/sections/{section}', [QuoteController::class, 'deleteSection'])->name('quotes.sections.destroy');
     Route::post('quotes/{quote}/version', [QuoteController::class, 'createVersion'])->name('quotes.version');
     Route::post('quotes/draft', [QuoteController::class, 'storeDraft'])->name('quotes.draft');
     Route::patch('quotes/{quote}/draft', [QuoteController::class, 'updateDraft'])->name('quotes.draft.update');

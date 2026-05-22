@@ -29,7 +29,12 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; }
+
+/* Geen paginamarges — de tabel-thead zorgt voor ruimte boven elke pagina */
 @page { size: A4; margin: 0; }
+
+/* DOMPDF: reset word-break voor table cells zodat DOMPDF geen extra hoogte berekent */
+td, th { word-wrap: normal; overflow-wrap: normal; word-break: normal; }
 
 body {
     margin: 0;
@@ -47,6 +52,7 @@ body {
     overflow: hidden;
     background-color: #030810;
     padding: 0;
+    page-break-after: always;
 }
 .voorblad-bg {
     position: absolute; top: 0; left: 0;
@@ -92,34 +98,31 @@ body {
     font-weight: 400; color: #aabbcc;
 }
 
-/* ── CONTENT PAGINA'S ── */
-.content-page {
+/* ── CONTENT TABEL ── */
+/* De <thead> herhaalt op elke pagina — zo krijgt elke pagina de header */
+/* Elke sectie krijgt een eigen <tr> zodat DOMPDF rij-voor-rij kan pagineren */
+.content-table {
     width: 210mm;
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 10pt; color: #1a1a1a;
-    padding: 0;
-    margin: 0;
+    border-collapse: collapse;
 }
-/* ── VASTE PAGINAKOP ── */
-.page-header {
-    position: fixed;
-    top: 0;
-    left: 19.1mm;
-    width: 171.8mm;
-    padding-top: 10mm;
-    padding-bottom: 3.5mm;
+.content-table thead tr.header-row td {
+    padding: 10mm 19.1mm 4mm;
     border-bottom: 1px solid #e0e0e0;
-    display: table;
+    background: #ffffff;
 }
-.page-header-left {
+.header-inner {
+    display: table;
+    width: 100%;
+}
+.header-inner-left {
     display: table-cell;
     vertical-align: bottom;
     font-family: 'Fira Sans', sans-serif;
     font-weight: 700; font-size: 9pt;
     color: #0a0a0a;
 }
-.page-header-left span { color: #4076f0; }
-.page-header-right {
+.header-inner-left span { color: #4076f0; }
+.header-inner-right {
     display: table-cell;
     vertical-align: bottom;
     text-align: right;
@@ -127,23 +130,33 @@ body {
     font-weight: 400; font-size: 8pt;
     color: #999999;
 }
-.content-inner {
-    margin-left: 19.1mm;
-    margin-right: 19.1mm;
-    padding-top: 22mm;
-    padding-bottom: 20mm;
+/* Adempauze na de headerregel — herhaalt ook op elke pagina */
+.content-table thead tr.header-spacer td {
+    height: 9mm;
+    background: #ffffff;
+    padding: 0;
+}
+/* Elke blok-rij: padding via inline style (per rij verschilt de top-marge) */
+.content-table tbody tr td {
+    padding-left: 19.1mm;
+    padding-right: 19.1mm;
+    vertical-align: top;
+}
+
+/* ── CONTENT ── */
+.content-blok {
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 10pt; color: #1a1a1a;
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word;
+    vertical-align: top;
 }
+
 /* Voorkom slechte pagina-afbrekingen */
 .section-title { page-break-after: avoid; }
 h2 { page-break-after: avoid; }
 h3 { page-break-after: avoid; }
-strong { page-break-after: avoid; }
-p { page-break-inside: avoid; }
-ul, ol { page-break-inside: avoid; }
-li { page-break-inside: avoid; }
 .subitem { page-break-inside: avoid; padding-top: 0; padding-bottom: 14mm; margin-bottom: 0; }
 .subitem strong { display: block; margin-bottom: 2mm; }
 .subitem-section h2 { padding-bottom: 14mm; }
@@ -157,7 +170,7 @@ li { page-break-inside: avoid; }
     word-wrap: break-word;
 }
 
-/* Typography — tussenkopjes in de content (vanuit editor) */
+/* Typography */
 h2 {
     font-family: 'Fira Sans', sans-serif;
     font-weight: 700; font-size: 12pt;
@@ -198,25 +211,34 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
     width: 100%;
     border-collapse: collapse;
     font-size: 10pt;
+    font-family: 'Fira Sans', sans-serif;
+    line-height: 1.3;
 }
 .inv-table tr td {
-    padding-top: 3.5mm;
+    padding: 2.5mm 0;
     border-top: 1px solid #cccccc;
-    vertical-align: top;
+    vertical-align: middle;
+    line-height: 1.3;
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 10pt;
 }
 .inv-table tr td.toelichting {
     padding-top: 0;
-    padding-bottom: 3.5mm;
+    padding-bottom: 2.5mm;
     color: #666;
     border-top: none;
     border-bottom: 0.5px solid #cccccc;
+    line-height: 1.3;
 }
 .inv-amount { text-align: right; white-space: nowrap; }
 .inv-euro { text-align: right; }
 .totaal-row td {
-    padding-top: 4mm;
+    padding: 2.5mm 0;
     text-align: right;
     color: #555;
+    line-height: 1.3;
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 10pt;
 }
 .totaal-row td.amount { font-weight: 600; }
 
@@ -264,7 +286,7 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
 </head>
 <body>
 
-{{-- Watermark logo op elke content-pagina --}}
+{{-- Watermark logo — position: fixed verschijnt op elke pagina --}}
 <img class="watermark" src="{{ $watermark }}" alt="">
 
 {{-- ════════════════════════════════════════════════════════
@@ -304,81 +326,137 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
 </div>
 
 {{-- ════════════════════════════════════════════════════════
-     INHOUDSSECTIES
+     CONTENT TABEL — thead herhaalt de paginakop op elke pagina
      ════════════════════════════════════════════════════════ --}}
-@foreach($quote->sections as $section)
 @php
-    $inhoud = $section->content['html'] ?? '';
-    $hasSubitems = str_contains($inhoud, 'class="subitem"');
-@endphp
-<div class="content-page" style="{{ $loop->first ? 'page-break-before: always; ' : '' }}page-break-inside: avoid;">
-    <div class="content-inner {{ $hasSubitems ? 'subitem-section' : '' }}">
-        @unless($loop->first)<div class="section-title">{{ $section->titel }}</div>@endunless
-        @if($hasSubitems)
-            {!! $inhoud !!}
-        @else
-            <div style="page-break-inside: avoid;">{!! $inhoud !!}</div>
-        @endif
-    </div>
-</div>
-@endforeach
+    $blokRuimte  = $quote->pdf_blok_ruimte ?? 20;
+    $invVolgorde = $quote->inv_volgorde ?? 9999;
+    $hasInv      = $quote->investments->count() > 0;
+    $sections    = $quote->sections->sortBy('volgorde')->values();
 
-{{-- ════════════════════════════════════════════════════════
-     INVESTERING
-     ════════════════════════════════════════════════════════ --}}
-@if($quote->investments->count() > 0)
+    $allBlocks = collect();
+    foreach ($sections as $i => $s) {
+        if ($i === $invVolgorde && $hasInv) {
+            $allBlocks->push(['type' => 'investering']);
+        }
+        $allBlocks->push(['type' => 'section', 'section' => $s]);
+    }
+    if ($invVolgorde >= $sections->count() && $hasInv) {
+        $allBlocks->push(['type' => 'investering']);
+    }
+
+    $isFirst       = true;
+    $nextPageBreak = false;
+@endphp
+
+<table class="content-table">
+    <thead>
+        {{-- Paginakop --}}
+        <tr class="header-row">
+            <td>
+                <div class="header-inner">
+                    <div class="header-inner-left">buro<span>.</span>deBom</div>
+                    <div class="header-inner-right">{{ $quote->offerte_nummer }}</div>
+                </div>
+            </td>
+        </tr>
+        {{-- Adempauze na de kop — herhaalt op elke pagina --}}
+        <tr class="header-spacer"><td></td></tr>
+    </thead>
+    <tbody>
+
+@foreach($allBlocks as $block)
+
+@if($block['type'] === 'section')
+@php $section = $block['section']; $blockType = $section->content['block_type'] ?? null; @endphp
+@if($blockType === 'einde_pagina')
+@php $nextPageBreak = true; @endphp
+@else
+@php
+    $inhoud      = $section->content['html'] ?? '';
+    $hasSubitems = str_contains($inhoud, 'class="subitem"');
+    $showTitle   = !$isFirst;
+    $trStyle     = $nextPageBreak ? 'page-break-before: always;' : '';
+    $topPad      = $isFirst ? '0mm' : ($blokRuimte . 'mm');
+    $nextPageBreak = false;
+    $isFirst       = false;
+@endphp
+        <tr style="{{ $trStyle }}">
+            <td style="padding-top:{{ $topPad }};padding-bottom:0;" class="content-blok">
+                <div class="{{ $hasSubitems ? 'subitem-section' : '' }}">
+                    @if($showTitle)<div class="section-title">{{ $section->titel }}</div>@endif
+                    {!! $inhoud !!}
+                </div>
+            </td>
+        </tr>
+@endif
+
+@elseif($block['type'] === 'investering')
 @php
     $subtotaal  = $quote->investments->sum('bedrag');
     $btwTarief  = $quote->btw_tarief ?? '21%';
     $btwBedrag  = $btwTarief === '21%' ? $subtotaal * 0.21 : 0;
     $eindtotaal = $subtotaal + $btwBedrag;
     $fmt        = fn($v) => number_format($v, 2, ',', '.');
+    $trStyle    = $nextPageBreak ? 'page-break-before: always;' : '';
+    $topPad     = $isFirst ? '0mm' : ($blokRuimte . 'mm');
+    $nextPageBreak = false;
+    $isFirst       = false;
 @endphp
-<div class="content-page" style="page-break-before: always;">
-    <div class="content-inner">
-        <div class="section-title">Investering</div>
-        <table class="inv-table">
-            @foreach($quote->investments as $inv)
-            <tr>
-                <td>{{ $inv->omschrijving }}</td>
-                <td class="inv-euro">&euro;</td>
-                <td class="inv-amount">{{ $fmt($inv->bedrag) }}</td>
-            </tr>
-            @endforeach
-            <tr class="totaal-row">
-                <td>Totaal excl. btw</td>
-                <td>&euro;</td>
-                <td class="amount">{{ $fmt($subtotaal) }}</td>
-            </tr>
-            @if($btwTarief === '21%')
-            <tr class="totaal-row">
-                <td>BTW (21%)</td>
-                <td>&euro;</td>
-                <td class="amount">{{ $fmt($btwBedrag) }}</td>
-            </tr>
-            <tr class="totaal-row">
-                <td><strong>Totaal incl. btw</strong></td>
-                <td><strong>&euro;</strong></td>
-                <td class="amount"><strong>{{ $fmt($eindtotaal) }}</strong></td>
-            </tr>
-            @endif
-        </table>
+        <tr style="{{ $trStyle }}">
+            <td style="padding-top:{{ $topPad }};padding-bottom:0;" class="content-blok">
+                <div class="section-title">Investering</div>
+                @php $tdBase = 'padding:2.5mm 0;border-top:1px solid #cccccc;vertical-align:top;line-height:1.3;font-size:10pt;font-family:Fira Sans,sans-serif;'; @endphp
+                <table style="width:100%;border-collapse:collapse;font-size:10pt;font-family:Fira Sans,sans-serif;line-height:1.3;" cellpadding="0" cellspacing="0">
+                    @foreach($quote->investments as $inv)
+                    <tr>
+                        <td style="{{ $tdBase }}">{{ $inv->omschrijving }}</td>
+                        <td style="{{ $tdBase }}text-align:right;white-space:nowrap;">&euro;&nbsp;{{ $fmt($inv->bedrag) }}</td>
+                    </tr>
+                    @if($inv->toelichting ?? null)
+                    <tr>
+                        <td colspan="2" style="padding:0 0 2.5mm;border-top:none;font-size:9pt;color:#666;line-height:1.3;font-family:Fira Sans,sans-serif;">{{ $inv->toelichting }}</td>
+                    </tr>
+                    @endif
+                    @endforeach
+                    <tr>
+                        <td style="{{ $tdBase }}color:#555;">Totaal excl. btw</td>
+                        <td style="{{ $tdBase }}text-align:right;white-space:nowrap;color:#555;">&euro;&nbsp;{{ $fmt($subtotaal) }}</td>
+                    </tr>
+                    @if($btwTarief === '21%')
+                    <tr>
+                        <td style="padding:2.5mm 0;border-top:none;vertical-align:top;line-height:1.3;font-size:10pt;font-family:Fira Sans,sans-serif;color:#555;">BTW (21%)</td>
+                        <td style="padding:2.5mm 0;border-top:none;vertical-align:top;text-align:right;white-space:nowrap;line-height:1.3;font-size:10pt;font-family:Fira Sans,sans-serif;color:#555;">&euro;&nbsp;{{ $fmt($btwBedrag) }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:2.5mm 0;border-top:1px solid #cccccc;vertical-align:top;line-height:1.3;font-size:10pt;font-family:Fira Sans,sans-serif;font-weight:600;">Totaal incl. btw</td>
+                        <td style="padding:2.5mm 0;border-top:1px solid #cccccc;vertical-align:top;text-align:right;white-space:nowrap;line-height:1.3;font-size:10pt;font-family:Fira Sans,sans-serif;font-weight:600;">&euro;&nbsp;{{ $fmt($eindtotaal) }}</td>
+                    </tr>
+                    @endif
+                </table>
 
-        @if($btwTarief === '0%')
-            <p class="btw-note">BTW-tarief 0% van toepassing.</p>
-        @elseif($btwTarief === 'vrijgesteld')
-            <p class="btw-note">Vrijgesteld van BTW op basis van artikel 11 Wet OB.</p>
-        @endif
+                @if($btwTarief === '0%')
+                    <p class="btw-note">BTW-tarief 0% van toepassing.</p>
+                @elseif($btwTarief === 'vrijgesteld')
+                    <p class="btw-note">Vrijgesteld van BTW op basis van artikel 11 Wet OB.</p>
+                @endif
 
-        @if($quote->geldig_tot)
-        <div class="geldigheid-box">
-            Deze offerte is geldig tot en met <strong>{{ $quote->geldig_tot->format('d-m-Y') }}</strong>.
-            Neem contact op voor vragen of aanpassingen.
-        </div>
-        @endif
-    </div>
-</div>
+                @if($quote->geldig_tot)
+                <div class="geldigheid-box">
+                    Deze offerte is geldig tot en met <strong>{{ $quote->geldig_tot->format('d-m-Y') }}</strong>.
+                    Neem contact op voor vragen of aanpassingen.
+                </div>
+                @endif
+            </td>
+        </tr>
 @endif
+
+@endforeach
+
+        {{-- Ondermarge --}}
+        <tr><td style="height:15mm;"></td></tr>
+    </tbody>
+</table>
 
 {{-- ════════════════════════════════════════════════════════
      ACHTERBLAD

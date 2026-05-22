@@ -39,6 +39,8 @@ class Quote extends Model
         'verzonden_op',
         'fireflies_samenvatting',
         'prompt_versie',
+        'pdf_blok_ruimte',
+        'inv_volgorde',
     ];
 
     protected $casts = [

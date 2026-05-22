@@ -26,7 +26,15 @@ class Client extends Model
         'postcode',
         'stad',
         'beschrijving',
+        'logo',
     ];
+
+    protected $appends = ['logo_url'];
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        return $this->logo ? '/storage/' . $this->logo : null;
+    }
 
     public function quotes(): HasMany
     {

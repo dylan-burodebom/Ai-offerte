@@ -82,14 +82,14 @@ function getInitials(naam) {
           </div>
           <select
             v-model="sector"
-            class="px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 dark:text-white text-gray-600 dark:text-gray-300"
+            class="pl-3 pr-8 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 dark:text-white text-gray-600 dark:text-gray-300"
           >
             <option value="">Alle sectoren</option>
             <option v-for="s in sectoren" :key="s" :value="s">{{ s }}</option>
           </select>
           <select
             v-model="relatieStatus"
-            class="px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 dark:text-white text-gray-600 dark:text-gray-300"
+            class="pl-3 pr-8 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 dark:text-white text-gray-600 dark:text-gray-300"
           >
             <option value="">Alle statussen</option>
             <option v-for="s in relatie_statussen" :key="s" :value="s">{{ s.charAt(0).toUpperCase() + s.slice(1) }}</option>
@@ -98,15 +98,16 @@ function getInitials(naam) {
 
         <!-- Tabel -->
         <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm">
+          <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
               <tr class="border-b border-gray-100 dark:border-gray-700">
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Naam</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Contactpersoon</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">E-mail</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Sector</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Stad</th>
-                <th class="px-6 py-3" />
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden lg:table-cell">Contactpersoon</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden md:table-cell">E-mail</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden lg:table-cell">Sector</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden xl:table-cell">Stad</th>
+                <th class="sticky right-0 bg-white dark:bg-gray-800 px-4 py-3 border-l border-gray-100 dark:border-gray-700 w-20" />
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -116,14 +117,15 @@ function getInitials(naam) {
               <tr
                 v-for="client in clients.data"
                 :key="client.id"
-                class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors cursor-pointer"
+                class="group hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors cursor-pointer"
                 @click="router.visit(route('clients.show', client.id))"
               >
                 <!-- Naam + badge + avatar -->
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xs font-bold shrink-0 select-none">
-                      {{ getInitials(client.naam) }}
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xs font-bold shrink-0 select-none overflow-hidden">
+                      <img v-if="client.logo_url" :src="client.logo_url" class="w-full h-full object-contain" alt="" />
+                      <span v-else>{{ getInitials(client.naam) }}</span>
                     </div>
                     <div class="min-w-0">
                       <p class="font-medium text-gray-900 dark:text-white truncate">{{ client.naam }}</p>
@@ -140,18 +142,18 @@ function getInitials(naam) {
                   </div>
                 </td>
 
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{ client.contactpersoon ?? '—' }}</td>
+                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 hidden lg:table-cell">{{ client.contactpersoon ?? '—' }}</td>
 
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 max-w-[200px] truncate">{{ client.email }}</td>
+                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 max-w-[200px] truncate hidden md:table-cell">{{ client.email }}</td>
 
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 hidden lg:table-cell">
                   <span v-if="client.sector" class="inline-block px-2.5 py-0.5 rounded-full text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">{{ client.sector }}</span>
                   <span v-else class="text-gray-300 dark:text-gray-600">—</span>
                 </td>
 
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{ client.stad ?? '—' }}</td>
+                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 hidden xl:table-cell">{{ client.stad ?? '—' }}</td>
 
-                <td class="px-6 py-4 text-right">
+                <td class="sticky right-0 px-4 py-4 border-l border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/40 transition-colors">
                   <div class="flex items-center justify-end gap-1" @click.stop>
                     <a
                       :href="route('clients.show', client.id)"
@@ -178,6 +180,7 @@ function getInitials(naam) {
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
 
         <!-- Paginering -->

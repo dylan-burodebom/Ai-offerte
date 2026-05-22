@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, watch } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import TextInput from '@/Components/TextInput.vue'
 import InputError from '@/Components/InputError.vue'
@@ -16,6 +16,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const form = reactive({ ...props.modelValue, diensten: [...(props.modelValue.diensten ?? [])] })
+const contextTab = ref(props.modelValue.fireflies_samenvatting ? 'fireflies' : 'omschrijving')
 
 watch(form, () => emit('update:modelValue', { ...form, diensten: [...form.diensten] }), { deep: true })
 
@@ -49,44 +50,57 @@ const today = new Date().toISOString().slice(0, 10)
       <InputError :message="errors.titel" class="mt-1" />
     </div>
 
-    <!-- Projectbeschrijving -->
+    <!-- Project context (gecombineerd blok) -->
     <div>
-      <InputLabel for="projectbeschrijving" value="Projectbeschrijving" />
-      <p class="text-xs text-gray-400 dark:text-gray-500 mb-1">Optioneel als je een Fireflies samenvatting invult. Wordt gebruikt als aanvulling voor de AI.</p>
-      <textarea
-        id="projectbeschrijving"
-        v-model="form.projectbeschrijving"
-        rows="5"
-        placeholder="Beschrijf de wensen, doelen en context van het project..."
-        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
-      />
-      <InputError :message="errors.projectbeschrijving" class="mt-1" />
-    </div>
+      <InputLabel value="Project context *" />
+      <div class="mt-1 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden">
+        <!-- Tab switcher -->
+        <div class="flex border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
+          <button
+            type="button"
+            class="flex-1 py-2 text-xs font-semibold transition-colors border-b-2"
+            :class="contextTab === 'omschrijving'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-800'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+            @click="contextTab = 'omschrijving'"
+          >Omschrijving</button>
+          <button
+            type="button"
+            class="flex-1 py-2 text-xs font-semibold transition-colors border-b-2 flex items-center justify-center gap-1.5"
+            :class="contextTab === 'fireflies'
+              ? 'border-violet-500 text-violet-600 dark:text-violet-400 bg-white dark:bg-gray-800'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+            @click="contextTab = 'fireflies'"
+          >
+            Fireflies
+            <span class="text-xs px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400">Aanbevolen</span>
+          </button>
+        </div>
 
-    <!-- Fireflies samenvatting -->
-    <div>
-      <div class="flex items-center gap-2 mb-1">
-        <InputLabel for="fireflies_samenvatting" value="Fireflies samenvatting" class="mb-0" />
-        <span class="text-xs px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400 font-medium">Aanbevolen</span>
-      </div>
-      <p class="text-xs text-gray-400 dark:text-gray-500 mb-1">
-        Plak hier de samenvatting van je Fireflies gesprekopname. De AI gebruikt dit als primaire input voor de offerte.
-      </p>
-      <div class="relative">
+        <!-- Omschrijving textarea -->
         <textarea
-          id="fireflies_samenvatting"
-          v-model="form.fireflies_samenvatting"
-          rows="5"
-          placeholder="Plak hier de Fireflies samenvatting…"
-          class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-violet-900/10 dark:text-white dark:placeholder-gray-500 shadow-sm text-sm focus:ring-violet-500 focus:border-violet-500 bg-violet-50/40 placeholder-gray-400"
+          v-if="contextTab === 'omschrijving'"
+          v-model="form.projectbeschrijving"
+          rows="6"
+          placeholder="Beschrijf de wensen, doelen en context van het project..."
+          class="block w-full px-3 py-2.5 text-sm border-0 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 focus:ring-0 focus:outline-none resize-none"
         />
-        <span
-          v-if="form.fireflies_samenvatting"
-          class="absolute top-2 right-2 text-xs px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 font-medium pointer-events-none"
-        >
-          Fireflies
-        </span>
+
+        <!-- Fireflies textarea -->
+        <div v-else class="relative">
+          <textarea
+            v-model="form.fireflies_samenvatting"
+            rows="6"
+            placeholder="Plak hier de Fireflies samenvatting…"
+            class="block w-full px-3 py-2.5 text-sm border-0 bg-violet-50/40 dark:bg-violet-900/10 dark:text-white dark:placeholder-gray-500 focus:ring-0 focus:outline-none resize-none"
+          />
+          <span
+            v-if="form.fireflies_samenvatting"
+            class="absolute top-2 right-2 text-xs px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 font-medium pointer-events-none"
+          >Fireflies</span>
+        </div>
       </div>
+      <InputError :message="errors.projectbeschrijving" class="mt-1" />
     </div>
 
     <!-- Diensten -->

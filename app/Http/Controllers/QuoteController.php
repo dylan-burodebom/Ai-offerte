@@ -12,6 +12,7 @@ use App\Services\PdfService;
 use App\Services\PromptService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -26,7 +27,7 @@ class QuoteController extends Controller
         $sort  = in_array($request->sort, $sorteerbaar) ? $request->sort : 'created_at';
         $dir   = $request->direction === 'asc' ? 'asc' : 'desc';
 
-        $quotes = Quote::where('user_id', auth()->id())
+        $quotes = Quote::where('user_id', Auth::id())
             ->with('client:id,naam,sector')
             ->when($request->search, fn ($q, $s) => $q
                 ->where(fn ($q2) => $q2
@@ -51,7 +52,7 @@ class QuoteController extends Controller
 
     public function destroy(Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
         $quote->delete();
         return response()->json(['success' => true]);
     }
@@ -65,7 +66,7 @@ class QuoteController extends Controller
             'status' => ['nullable', 'string', 'in:' . implode(',', Quote::STATUSSEN)],
         ]);
 
-        $quotes = Quote::where('user_id', auth()->id())
+        $quotes = Quote::where('user_id', Auth::id())
             ->whereIn('id', $request->ids)
             ->get();
 
@@ -81,7 +82,7 @@ class QuoteController extends Controller
                 $oudeStatus = $quote->status;
                 $quote->update(['status' => $request->status]);
                 $quote->statusHistory()->create([
-                    'user_id'       => auth()->id(),
+                    'user_id'       => Auth::id(),
                     'oude_status'   => $oudeStatus,
                     'nieuwe_status' => $request->status,
                     'datum'         => now(),
@@ -94,7 +95,7 @@ class QuoteController extends Controller
 
     public function export(Request $request): StreamedResponse
     {
-        $quotes = Quote::where('user_id', auth()->id())
+        $quotes = Quote::where('user_id', Auth::id())
             ->with('client:id,naam')
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
             ->when($request->sector, fn ($q, $s) => $q->whereHas('client', fn ($c) => $c->where('sector', $s)))
@@ -143,7 +144,7 @@ class QuoteController extends Controller
 
         $quote = Quote::create([
             'client_id'              => $request->client_id,
-            'user_id'                => auth()->id(),
+            'user_id'                => Auth::id(),
             'offerte_nummer'         => $offerteNummer,
             'titel'                  => $request->titel,
             'projectbeschrijving'    => $request->projectbeschrijving,
@@ -178,7 +179,7 @@ class QuoteController extends Controller
 
     public function edit(Quote $quote): Response
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
         $quote->load([
             'client',
             'sections'      => fn ($q) => $q->orderBy('volgorde'),
@@ -193,26 +194,89 @@ class QuoteController extends Controller
 
     public function updateMeta(Request $request, Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
         $data = $request->validate([
-            'titel'      => ['required', 'string', 'min:3', 'max:255'],
-            'geldig_tot' => ['required', 'date'],
+            'titel'           => ['required', 'string', 'min:3', 'max:255'],
+            'geldig_tot'      => ['nullable', 'date'],
+            'pdf_blok_ruimte' => ['nullable', 'integer', 'min:0', 'max:60'],
+            'inv_volgorde'    => ['nullable', 'integer', 'min:0'],
         ]);
         $quote->update($data);
+        $this->warmPdfCache($quote->id);
         return response()->json(['saved' => true]);
+    }
+
+    public function reorderSections(Request $request, Quote $quote): JsonResponse
+    {
+        abort_if($quote->user_id !== Auth::id(), 403);
+        $request->validate([
+            'order'   => ['required', 'array'],
+            'order.*' => ['integer'],
+        ]);
+        foreach ($request->order as $volgorde => $sectionId) {
+            $quote->sections()->where('id', $sectionId)->update(['volgorde' => $volgorde]);
+        }
+        $this->warmPdfCache($quote->id);
+        return response()->json(['saved' => true]);
+    }
+
+    public function addSection(Request $request, Quote $quote): JsonResponse
+    {
+        abort_if($quote->user_id !== Auth::id(), 403);
+        $request->validate([
+            'titel'      => ['required', 'string', 'max:255'],
+            'volgorde'   => ['required', 'integer'],
+            'block_type' => ['nullable', 'string', 'max:50'],
+        ]);
+        $section = $quote->sections()->create([
+            'titel'    => $request->titel,
+            'content'  => ['html' => '', 'ai_html' => null, 'block_type' => $request->block_type],
+            'volgorde' => $request->volgorde,
+        ]);
+        $this->warmPdfCache($quote->id);
+        return response()->json([
+            'id'       => $section->id,
+            'titel'    => $section->titel,
+            'volgorde' => $section->volgorde,
+        ], 201);
+    }
+
+    public function deleteSection(Quote $quote, QuoteSection $section): JsonResponse
+    {
+        abort_if($quote->user_id !== Auth::id(), 403);
+        abort_if($section->quote_id !== $quote->id, 403);
+        $section->delete();
+        $this->warmPdfCache($quote->id);
+        return response()->json(['deleted' => true]);
     }
 
     public function updateSection(Request $request, Quote $quote, QuoteSection $section): JsonResponse
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
-        $request->validate(['html' => ['required', 'string']]);
-        $section->update(['content' => array_merge($section->content ?? [], ['html' => $request->html])]);
+        abort_if($quote->user_id !== Auth::id(), 403);
+        $data = $request->validate([
+            'html'  => ['sometimes', 'string'],
+            'titel' => ['sometimes', 'string', 'max:255'],
+        ]);
+
+        $updates = [];
+        if (array_key_exists('html', $data)) {
+            $updates['content'] = array_merge($section->content ?? [], ['html' => $data['html']]);
+        }
+        if (array_key_exists('titel', $data)) {
+            $updates['titel'] = $data['titel'];
+        }
+
+        if ($updates) {
+            $section->update($updates);
+        }
+
+        $this->warmPdfCache($quote->id);
         return response()->json(['saved' => true]);
     }
 
     public function restoreSection(Quote $quote, QuoteSection $section): JsonResponse
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
         $aiHtml = ($section->content ?? [])['ai_html'] ?? null;
         abort_if(!$aiHtml, 404, 'Geen AI-versie beschikbaar.');
         $section->update(['content' => array_merge($section->content, ['html' => $aiHtml])]);
@@ -221,7 +285,7 @@ class QuoteController extends Controller
 
     public function createVersion(Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
         $quote->load(['sections', 'investments']);
 
         $newNumber = app(OfferteNummerService::class)->nieuwVersie($quote->offerte_nummer);
@@ -249,7 +313,7 @@ class QuoteController extends Controller
 
     public function saveInvestments(Request $request, Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
 
         $request->validate([
             'rows'                => ['required', 'array', 'min:1'],
@@ -283,15 +347,35 @@ class QuoteController extends Controller
             ]);
         });
 
+        $this->warmPdfCache($quote->id);
         return response()->json(['success' => true]);
+    }
+
+    private function warmPdfCache(int $quoteId): void
+    {
+        dispatch(function () use ($quoteId) {
+            try {
+                $quote = Quote::with([
+                    'client',
+                    'sections'     => fn ($q) => $q->orderBy('volgorde'),
+                    'investments'  => fn ($q) => $q->orderBy('volgorde'),
+                ])->find($quoteId);
+
+                if ($quote) {
+                    app(PdfService::class)->generateCached($quote);
+                }
+            } catch (\Throwable) {
+                // cache warming is best-effort — nooit de response blokkeren
+            }
+        })->afterResponse();
     }
 
     public function generate(Quote $quote): StreamedResponse
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
 
         // Save session before streaming to avoid session lock issues
-        session()->save();
+        \Illuminate\Support\Facades\Session::save();
 
         return response()->stream(function () use ($quote) {
             if (ob_get_level()) ob_end_clean();
@@ -349,9 +433,19 @@ class QuoteController extends Controller
                     'tokens_gebruikt' => $tokens,
                 ]);
 
+                $quote->load('sections');
                 $sse([
                     'type'     => 'done',
-                    'sections' => $sections,
+                    'sections' => $quote->sections
+                        ->sortBy('volgorde')
+                        ->values()
+                        ->map(fn ($s) => [
+                            'id'      => $s->id,
+                            'titel'   => $s->titel,
+                            'content' => $s->content,
+                            'volgorde' => $s->volgorde,
+                        ])
+                        ->toArray(),
                     'tokens'   => $tokens,
                 ]);
             } catch (\Throwable $e) {
@@ -375,9 +469,9 @@ class QuoteController extends Controller
 
     public function pdf(Quote $quote): \Illuminate\Http\Response
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
 
-        $pdf      = app(PdfService::class)->generate($quote);
+        $pdf      = app(PdfService::class)->generateCached($quote);
         $filename = "{$quote->offerte_nummer}_v{$quote->versie}.pdf";
 
         return response($pdf, 200, [
@@ -389,9 +483,9 @@ class QuoteController extends Controller
 
     public function pdfPreview(Quote $quote): \Illuminate\Http\Response
     {
-        abort_if($quote->user_id !== auth()->id(), 403);
+        abort_if($quote->user_id !== Auth::id(), 403);
 
-        $pdf      = app(PdfService::class)->generate($quote);
+        $pdf      = app(PdfService::class)->generateCached($quote);
         $filename = "{$quote->offerte_nummer}_v{$quote->versie}.pdf";
 
         return response($pdf, 200, [

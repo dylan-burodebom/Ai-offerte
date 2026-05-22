@@ -6,7 +6,8 @@ import { useDarkMode } from '@/composables/useDarkMode'
 const { dark, toggle, init } = useDarkMode()
 onMounted(init)
 
-const avatarError = ref(false)
+const avatarError   = ref(false)
+const dropdownOpen  = ref(false)
 </script>
 
 <template>
@@ -17,8 +18,13 @@ const avatarError = ref(false)
 
             <!-- Logo -->
             <div class="px-5 pt-5 pb-5">
-                <Link :href="route('dashboard')" class="font-black text-lg tracking-tight text-gray-900 dark:text-white">
-                    buro<span class="text-blue-500">.</span>deBom
+                <Link :href="route('dashboard')" class="leading-none">
+                    <p class="font-black text-[18px] tracking-tight text-gray-900 dark:text-white leading-none">
+                        AI<span class="text-blue-500">_</span>offerte
+                    </p>
+                    <p class="text-[10px] font-medium text-gray-400 dark:text-gray-500 mt-1 leading-none tracking-wide">
+                        by buro_deBom
+                    </p>
                 </Link>
             </div>
 
@@ -80,50 +86,108 @@ const avatarError = ref(false)
 
             </nav>
 
-            <!-- Bottom: user section -->
-            <div class="border-t border-gray-100 dark:border-gray-700 p-3 space-y-0.5">
+            <!-- Bottom: profiel dropdown -->
+            <div class="border-t border-gray-100 dark:border-gray-700 p-3 relative">
 
-                <!-- Mijn profiel -->
-                <Link
-                    :href="route('profile.edit')"
-                    class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
-                    :class="route().current('profile.*')
-                        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white'"
+                <!-- Backdrop (sluit dropdown) -->
+                <div
+                    v-if="dropdownOpen"
+                    class="fixed inset-0 z-40"
+                    @click="dropdownOpen = false"
+                />
+
+                <!-- Dropdown menu (opent omhoog) -->
+                <div
+                    v-if="dropdownOpen"
+                    class="absolute bottom-full left-3 right-3 mb-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-xl overflow-hidden z-50"
                 >
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    Mijn profiel
-                </Link>
+                    <!-- Profielkop -->
+                    <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        <p class="text-xs font-semibold text-gray-900 dark:text-white leading-tight">{{ $page.props.auth.user.name }}</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 leading-tight mt-0.5">{{ $page.props.auth.user.email }}</p>
+                    </div>
 
-                <!-- Dark mode toggle -->
+                    <!-- Mijn profiel -->
+                    <Link
+                        :href="route('profile.edit')"
+                        class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white transition-colors"
+                        @click="dropdownOpen = false"
+                    >
+                        <svg class="w-4 h-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        Mijn profiel
+                    </Link>
+
+                    <!-- Donkere modus -->
+                    <button
+                        type="button"
+                        class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white transition-colors"
+                        @click="toggle"
+                    >
+                        <svg v-if="dark" class="w-4 h-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14A7 7 0 0012 5z"/>
+                        </svg>
+                        <svg v-else class="w-4 h-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                        </svg>
+                        {{ dark ? 'Lichte modus' : 'Donkere modus' }}
+                    </button>
+
+                    <!-- Scheidingslijn -->
+                    <div class="border-t border-gray-100 dark:border-gray-700 my-1" />
+
+                    <!-- Uitloggen -->
+                    <Link
+                        :href="route('logout')"
+                        method="post"
+                        as="button"
+                        class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        @click="dropdownOpen = false"
+                    >
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Uitloggen
+                    </Link>
+                </div>
+
+                <!-- Trigger knop -->
                 <button
                     type="button"
-                    class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    @click="toggle"
+                    class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors group"
+                    @click="dropdownOpen = !dropdownOpen"
                 >
-                    <svg v-if="dark" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14A7 7 0 0012 5z"/>
-                    </svg>
-                    <svg v-else class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-                    </svg>
-                    {{ dark ? 'Lichte modus' : 'Donkere modus' }}
-                </button>
+                    <!-- Avatar -->
+                    <img
+                        v-if="$page.props.auth.user.avatar_url && !avatarError"
+                        :src="$page.props.auth.user.avatar_url"
+                        class="w-8 h-8 rounded-full object-cover shrink-0 ring-2 ring-white dark:ring-gray-800"
+                        alt=""
+                        @error="avatarError = true"
+                    />
+                    <div
+                        v-else
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white text-xs font-bold shrink-0 ring-2 ring-white dark:ring-gray-800"
+                    >
+                        {{ $page.props.auth.user.name.charAt(0).toUpperCase() }}
+                    </div>
 
-                <!-- Uitloggen -->
-                <Link
-                    :href="route('logout')"
-                    method="post"
-                    as="button"
-                    class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white transition-colors"
-                >
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    <!-- Naam + rol -->
+                    <div class="flex-1 min-w-0 text-left">
+                        <p class="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate leading-tight">{{ $page.props.auth.user.name }}</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 leading-tight">{{ $page.props.auth.isAdmin ? 'Beheerder' : 'Gebruiker' }}</p>
+                    </div>
+
+                    <!-- Chevron -->
+                    <svg
+                        class="w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform duration-150"
+                        :class="dropdownOpen ? 'rotate-180' : ''"
+                        fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                     </svg>
-                    Uitloggen
-                </Link>
+                </button>
 
             </div>
         </aside>
@@ -132,29 +196,10 @@ const avatarError = ref(false)
         <div class="ml-52 flex-1 min-w-0 flex flex-col">
 
             <!-- Top header bar -->
-            <header class="sticky top-0 z-20 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 h-14 flex items-center gap-4 px-6">
+            <header class="sticky top-0 z-20 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 h-14 flex items-center px-6">
                 <div class="flex-1 min-w-0">
                     <slot name="header" />
                 </div>
-                <Link
-                    :href="route('profile.edit')"
-                    class="flex items-center gap-2.5 shrink-0 group"
-                >
-                    <img
-                        v-if="$page.props.auth.user.avatar_url && !avatarError"
-                        :src="$page.props.auth.user.avatar_url"
-                        class="w-8 h-8 rounded-full object-cover shrink-0"
-                        alt=""
-                        @error="avatarError = true"
-                    />
-                    <div v-else class="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                        {{ $page.props.auth.user.name.charAt(0).toUpperCase() }}
-                    </div>
-                    <div class="text-left hidden sm:block">
-                        <p class="text-xs font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">{{ $page.props.auth.user.name }}</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 leading-tight">{{ $page.props.auth.isAdmin ? 'Beheerder' : 'Gebruiker' }}</p>
-                    </div>
-                </Link>
             </header>
 
             <!-- Content -->

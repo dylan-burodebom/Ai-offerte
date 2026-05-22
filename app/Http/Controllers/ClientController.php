@@ -8,6 +8,7 @@ use App\Models\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -55,14 +56,30 @@ class ClientController extends Controller
 
     public function store(StoreClientRequest $request): RedirectResponse
     {
-        Client::create($request->validated());
+        $data = collect($request->validated())->except('logo')->toArray();
+
+        if ($request->hasFile('logo')) {
+            $data['logo'] = $request->file('logo')->store('client-logos', 'public');
+        }
+
+        Client::create($data);
 
         return redirect()->back()->with('success', 'Bedrijf aangemaakt.');
     }
 
     public function update(UpdateClientRequest $request, Client $client): RedirectResponse
     {
-        $client->update($request->validated());
+        $data = collect($request->validated())->except(['logo', 'verwijder_logo'])->toArray();
+
+        if ($request->hasFile('logo')) {
+            if ($client->logo) Storage::disk('public')->delete($client->logo);
+            $data['logo'] = $request->file('logo')->store('client-logos', 'public');
+        } elseif ($request->boolean('verwijder_logo')) {
+            if ($client->logo) Storage::disk('public')->delete($client->logo);
+            $data['logo'] = null;
+        }
+
+        $client->update($data);
 
         return redirect()->back()->with('success', 'Bedrijf bijgewerkt.');
     }

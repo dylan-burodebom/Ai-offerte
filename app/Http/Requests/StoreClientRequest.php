@@ -26,6 +26,7 @@ class StoreClientRequest extends FormRequest
             'postcode' => ['nullable', 'string', 'max:20'],
             'stad'         => ['nullable', 'string', 'max:255'],
             'beschrijving' => ['nullable', 'string', 'max:2000'],
+            'logo'         => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ];
     }
 }

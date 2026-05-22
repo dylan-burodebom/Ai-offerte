@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Quote;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use setasign\Fpdi\Fpdi;
 
@@ -27,6 +28,51 @@ class PdfService
         return $this->mergePdfs($mainPdf, $bijlagen);
     }
 
+    /**
+     * Return a cached PDF. Generates and stores on first call; returns instantly on
+     * subsequent calls as long as the quote content has not changed.
+     */
+    public function generateCached(Quote $quote): string
+    {
+        $quote->load(['client', 'sections' => fn ($q) => $q->orderBy('volgorde'), 'investments' => fn ($q) => $q->orderBy('volgorde')]);
+
+        $fingerprint = $this->fingerprint($quote);
+        $cachePath   = "pdf-cache/{$quote->id}_{$fingerprint}.pdf";
+        $disk        = Storage::disk('local');
+
+        if ($disk->exists($cachePath)) {
+            return $disk->get($cachePath);
+        }
+
+        $pdf = $this->renderQuote($quote);
+
+        $bijlagen = $this->collectBijlagen();
+        if (!empty($bijlagen)) {
+            $pdf = $this->mergePdfs($pdf, $bijlagen);
+        }
+
+        // Remove stale cached versions for this quote, then store the new one
+        foreach ($disk->files('pdf-cache') as $file) {
+            if (str_starts_with(basename($file), "{$quote->id}_")) {
+                $disk->delete($file);
+            }
+        }
+        $disk->put($cachePath, $pdf);
+
+        return $pdf;
+    }
+
+    private function fingerprint(Quote $quote): string
+    {
+        return md5(
+            ($quote->updated_at?->timestamp ?? 0) . '|' .
+            ($quote->sections->max(fn ($s) => $s->updated_at?->timestamp) ?? 0) . '|' .
+            ($quote->investments->max(fn ($i) => $i->updated_at?->timestamp) ?? 0) . '|' .
+            $quote->sections->count() . '|' .
+            $quote->investments->count()
+        );
+    }
+
     private function renderQuote(Quote $quote): string
     {
         $assets = $this->loadAssets();
@@ -38,17 +84,20 @@ class PdfService
 
     private function loadAssets(): array
     {
-        $fonts = [
-            'fira_regular'  => $this->b64(public_path('fonts/FiraSans-Regular.otf'),  'font/ttf'),
-            'fira_italic'   => $this->b64(public_path('fonts/FiraSans-Italic.ttf'),   'font/ttf'),
-            'fira_semibold' => $this->b64(public_path('fonts/FiraSans-SemiBold.ttf'), 'font/ttf'),
-            'fira_bold'     => $this->b64(public_path('fonts/FiraSans-Bold.otf'),     'font/ttf'),
-        ];
-        $voorblad_bg   = $this->b64(public_path('images/voorblad_bg.png'), 'image/png');
-        $achterblad_bg = $this->b64(public_path('images/achterblad_bg.png'), 'image/png');
-        $watermark     = $this->b64(public_path('images/b_.png'), 'image/png');
+        // Fonts en afbeeldingen veranderen zelden — cache ze een week
+        return Cache::remember('pdf_static_assets_v1', now()->addWeek(), function () {
+            $fonts = [
+                'fira_regular'  => $this->b64(public_path('fonts/FiraSans-Regular.otf'),  'font/ttf'),
+                'fira_italic'   => $this->b64(public_path('fonts/FiraSans-Italic.ttf'),   'font/ttf'),
+                'fira_semibold' => $this->b64(public_path('fonts/FiraSans-SemiBold.ttf'), 'font/ttf'),
+                'fira_bold'     => $this->b64(public_path('fonts/FiraSans-Bold.otf'),     'font/ttf'),
+            ];
+            $voorblad_bg   = $this->b64(public_path('images/voorblad_bg.png'),   'image/png');
+            $achterblad_bg = $this->b64(public_path('images/achterblad_bg.png'), 'image/png');
+            $watermark     = $this->b64(public_path('images/b_.png'),            'image/png');
 
-        return compact('fonts', 'voorblad_bg', 'achterblad_bg', 'watermark');
+            return compact('fonts', 'voorblad_bg', 'achterblad_bg', 'watermark');
+        });
     }
 
     private function fontUrl(string $filename): string

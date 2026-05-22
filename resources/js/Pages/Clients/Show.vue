@@ -48,28 +48,46 @@ const omzetGroei = omzetVorigjaar > 0
   : null
 
 // ── Client bewerken / verwijderen ────────────────────────────
-const showEditForm = ref(false)
+const showEditForm  = ref(false)
+const logoPreview   = ref(null)
 
 const SECTOREN          = ['Bouw', 'Industrie', 'Transport', 'Installatie', 'Overig']
 const RELATIE_STATUSSEN = ['prospect', 'klant', 'inactief']
 
 const clientForm = useForm({
-  naam:           props.client.naam           ?? '',
-  email:          props.client.email          ?? '',
-  telefoon:       props.client.telefoon       ?? '',
-  sector:         props.client.sector         ?? '',
-  relatie_status: props.client.relatie_status ?? '',
-  adres:          props.client.adres          ?? '',
-  postcode:       props.client.postcode       ?? '',
-  stad:           props.client.stad           ?? '',
-  beschrijving:   props.client.beschrijving   ?? '',
+  naam:            props.client.naam           ?? '',
+  email:           props.client.email          ?? '',
+  telefoon:        props.client.telefoon       ?? '',
+  sector:          props.client.sector         ?? '',
+  relatie_status:  props.client.relatie_status ?? '',
+  adres:           props.client.adres          ?? '',
+  postcode:        props.client.postcode       ?? '',
+  stad:            props.client.stad           ?? '',
+  beschrijving:    props.client.beschrijving   ?? '',
+  logo:            null,
+  verwijder_logo:  false,
 })
 
+function onLogoChange(e) {
+  const file = e.target.files[0]
+  if (!file) return
+  clientForm.logo = file
+  clientForm.verwijder_logo = false
+  logoPreview.value = URL.createObjectURL(file)
+}
+
+function verwijderLogo() {
+  clientForm.logo = null
+  clientForm.verwijder_logo = true
+  logoPreview.value = null
+}
+
 function submitClientEdit() {
-  clientForm.patch(route('clients.update', props.client.id), {
-    preserveScroll: true,
-    onSuccess: () => { showEditForm.value = false },
-  })
+  clientForm.transform(data => ({ ...data, _method: 'PATCH' }))
+    .post(route('clients.update', props.client.id), {
+      preserveScroll: true,
+      onSuccess: () => { showEditForm.value = false },
+    })
 }
 
 
@@ -188,8 +206,9 @@ function destroyOpmerking(o) {
 
           <!-- Top row: avatar + naam + badges + Bewerken -->
           <div class="flex items-start gap-4">
-            <div class="shrink-0 w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xl font-bold select-none">
-              {{ getInitials(client.naam) }}
+            <div class="shrink-0 w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xl font-bold select-none overflow-hidden">
+              <img v-if="client.logo_url" :src="client.logo_url" class="w-full h-full object-contain" alt="" />
+              <span v-else>{{ getInitials(client.naam) }}</span>
             </div>
             <div class="flex-1 min-w-0">
               <h1 class="text-xl font-bold text-gray-900 dark:text-white leading-tight">{{ client.naam }}</h1>
@@ -217,6 +236,38 @@ function destroyOpmerking(o) {
           <template v-if="showEditForm">
             <hr class="my-5 border-gray-100 dark:border-gray-700">
             <form @submit.prevent="submitClientEdit" class="space-y-4">
+
+              <!-- Logo -->
+              <div>
+                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Bedrijfslogo</label>
+                <div class="flex items-center gap-4">
+                  <div class="w-14 h-14 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 flex items-center justify-center overflow-hidden shrink-0">
+                    <img
+                      v-if="logoPreview || (!clientForm.verwijder_logo && client.logo_url)"
+                      :src="logoPreview ?? client.logo_url"
+                      class="w-full h-full object-contain"
+                      alt=""
+                    />
+                    <svg v-else class="w-6 h-6 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                    </svg>
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                      Afbeelding kiezen
+                      <input type="file" accept="image/*" class="hidden" @change="onLogoChange" />
+                    </label>
+                    <button
+                      v-if="logoPreview || (!clientForm.verwijder_logo && client.logo_url)"
+                      type="button"
+                      class="text-xs text-red-500 hover:text-red-700 text-left transition-colors"
+                      @click="verwijderLogo"
+                    >Logo verwijderen</button>
+                  </div>
+                </div>
+              </div>
+
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Naam *</label>
