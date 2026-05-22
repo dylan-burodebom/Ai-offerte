@@ -329,7 +329,7 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
      CONTENT TABEL — thead herhaalt de paginakop op elke pagina
      ════════════════════════════════════════════════════════ --}}
 @php
-    $blokRuimte  = $quote->pdf_blok_ruimte ?? 20;
+    $blokRuimte  = $quote->pdf_blok_ruimte ?? 10;
     $invVolgorde = $quote->inv_volgorde ?? 9999;
     $hasInv      = $quote->investments->count() > 0;
     $sections    = $quote->sections->sortBy('volgorde')->values();

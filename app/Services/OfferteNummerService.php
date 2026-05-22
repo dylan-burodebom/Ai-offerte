@@ -13,7 +13,7 @@ class OfferteNummerService
         $versieLabel = 'V' . str_pad($versie, 2, '0', STR_PAD_LEFT);
 
         $laatste = Quote::where('offerte_nummer', 'like', "OFF{$jaar}%")
-            ->orderByDesc('id')
+            ->orderByDesc('offerte_nummer')
             ->value('offerte_nummer');
 
         $volgend = 1;

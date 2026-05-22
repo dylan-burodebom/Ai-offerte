@@ -41,7 +41,7 @@ const BLOK_TYPES = [
 const meta = reactive({
   titel:           props.quote.titel,
   geldig_tot:      props.quote.geldig_tot?.slice(0, 10) ?? '',
-  pdf_blok_ruimte: props.quote.pdf_blok_ruimte ?? 20,
+  pdf_blok_ruimte: props.quote.pdf_blok_ruimte ?? 10,
   inv_volgorde:    props.quote.inv_volgorde ?? 9999,
 })
 const metaStatus = ref(null)
@@ -297,19 +297,6 @@ async function saveInvestments() {
   }
 }
 
-// ── Versiebeheer ──────────────────────────────────────────────────────────────
-const versioning = ref(false)
-async function createVersion() {
-  if (!confirm('Een nieuwe versie aanmaken? De huidige versie blijft bewaard.')) return
-  versioning.value = true
-  try {
-    const res = await window.axios.post(route('quotes.version', props.quote.id))
-    router.visit(route('quotes.edit', res.data.id))
-  } catch {
-    alert('Fout bij aanmaken nieuwe versie.')
-    versioning.value = false
-  }
-}
 
 // ── Status beheer ─────────────────────────────────────────────────────────────
 const GELDIGE_OVERGANGEN = { concept: ['verzonden'], verzonden: ['gewonnen', 'verloren', 'concept'], gewonnen: [], verloren: [] }
@@ -646,7 +633,16 @@ function blockOmschrijving(block) {
         <div ref="rightPdfContainer" class="flex-1 flex flex-col bg-gray-100 dark:bg-gray-950 overflow-hidden">
           <!-- Preview header -->
           <div class="flex items-center justify-between px-5 py-2.5 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shrink-0">
-            <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Preview</span>
+            <!-- Preview refresh knop -->
+            <button
+              type="button"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              :class="rightPdfLoading ? 'pointer-events-none text-blue-500 border-blue-300 dark:border-blue-700' : ''"
+              @click="rightPdfData = null; loadRightPdf()"
+            >
+              <svg class="w-3.5 h-3.5" :class="rightPdfLoading ? 'animate-spin' : ''" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Preview
+            </button>
             <!-- Device toggle -->
             <div class="flex items-center gap-0.5 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
               <button
@@ -658,18 +654,7 @@ function blockOmschrijving(block) {
                 @click="previewDevice = d.key; updateRightPdfWidth()"
               >{{ d.label }}</button>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs text-gray-400 dark:text-gray-500">Pagina 1 van {{ rightPdfPageCount || '…' }}</span>
-              <button
-                type="button"
-                title="Preview verversen"
-                class="p-1.5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                :class="rightPdfLoading ? 'animate-spin text-blue-500 pointer-events-none' : ''"
-                @click="rightPdfData = null; loadRightPdf()"
-              >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              </button>
-            </div>
+            <span class="text-xs text-gray-400 dark:text-gray-500">Pagina 1 van {{ rightPdfPageCount || '…' }}</span>
           </div>
           <!-- PDF content -->
           <div class="flex-1 overflow-y-auto flex justify-center p-6">
@@ -864,14 +849,6 @@ function blockOmschrijving(block) {
             </div>
           </div>
 
-          <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Versiebeheer</h3>
-            <button type="button" :disabled="versioning" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors" @click="createVersion">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-              {{ versioning ? 'Bezig…' : 'Nieuwe versie aanmaken' }}
-            </button>
-            <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">De huidige versie blijft bewaard als archief.</p>
-          </div>
 
         </div>
       </div>

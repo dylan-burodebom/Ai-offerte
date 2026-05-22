@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('quotes', function (Blueprint $table) {
-            $table->unsignedSmallInteger('pdf_blok_ruimte')->default(20)->after('prompt_versie');
+            $table->unsignedSmallInteger('pdf_blok_ruimte')->default(10)->after('prompt_versie');
         });
     }
 

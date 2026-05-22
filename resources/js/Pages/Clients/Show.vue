@@ -501,7 +501,7 @@ function destroyOpmerking(o) {
               <span>Sorteren op:</span>
               <select
                 v-model="sortOrder"
-                class="border-0 bg-transparent text-xs font-medium text-gray-600 dark:text-gray-300 focus:ring-0 pr-5 py-0 cursor-pointer"
+                class="border-0 bg-transparent text-xs font-medium text-gray-600 dark:text-gray-300 focus:ring-0 pr-7 py-0 cursor-pointer"
               >
                 <option value="nieuwste">Nieuwste eerst</option>
                 <option value="oudste">Oudste eerst</option>

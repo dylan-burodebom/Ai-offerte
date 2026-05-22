@@ -216,7 +216,6 @@ class QuoteController extends Controller
         foreach ($request->order as $volgorde => $sectionId) {
             $quote->sections()->where('id', $sectionId)->update(['volgorde' => $volgorde]);
         }
-        $this->warmPdfCache($quote->id);
         return response()->json(['saved' => true]);
     }
 
@@ -233,7 +232,6 @@ class QuoteController extends Controller
             'content'  => ['html' => '', 'ai_html' => null, 'block_type' => $request->block_type],
             'volgorde' => $request->volgorde,
         ]);
-        $this->warmPdfCache($quote->id);
         return response()->json([
             'id'       => $section->id,
             'titel'    => $section->titel,
@@ -246,7 +244,6 @@ class QuoteController extends Controller
         abort_if($quote->user_id !== Auth::id(), 403);
         abort_if($section->quote_id !== $quote->id, 403);
         $section->delete();
-        $this->warmPdfCache($quote->id);
         return response()->json(['deleted' => true]);
     }
 
@@ -347,7 +344,6 @@ class QuoteController extends Controller
             ]);
         });
 
-        $this->warmPdfCache($quote->id);
         return response()->json(['success' => true]);
     }
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 
@@ -57,6 +57,8 @@ function start() {
 function retry() {
   start()
 }
+
+onMounted(() => start())
 </script>
 
 <template>

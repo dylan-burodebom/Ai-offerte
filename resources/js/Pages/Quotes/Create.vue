@@ -22,9 +22,10 @@ const STEPS = ['Klant', 'Offerte', 'Generatie']
 
 const currentStep = ref(props.preselectedClient ? 2 : 1)
 const saving      = ref(false)
-const step2Errors = ref({})
-const finalized   = ref(false)
-const editorMode  = ref(false)
+const step2Errors    = ref({})
+const step2SaveError = ref(null)
+const finalized      = ref(false)
+const editorMode     = ref(false)
 
 const wizard = reactive({
   clientId:               props.preselectedClient?.id ?? null,
@@ -82,6 +83,7 @@ const validationMessage = computed(() => {
 async function saveDraft() {
   saving.value = true
   step2Errors.value = {}
+  step2SaveError.value = null
   const payload = {
     client_id:               wizard.clientId,
     titel:                   wizard.titel,
@@ -101,7 +103,14 @@ async function saveDraft() {
     }
     return true
   } catch (e) {
-    if (e.response?.status === 422) step2Errors.value = e.response.data.errors ?? {}
+    if (e.response?.status === 422) {
+      step2Errors.value = e.response.data.errors ?? {}
+      const firstError = Object.values(step2Errors.value).flat()[0]
+      if (firstError) step2SaveError.value = firstError
+    } else {
+      step2SaveError.value = 'Er is een fout opgetreden. Controleer de verbinding en probeer opnieuw.'
+      console.error('saveDraft fout:', e)
+    }
     return false
   } finally {
     saving.value = false
@@ -853,7 +862,8 @@ function blockOmschrijving(section) {
               >← Vorige</button>
               <div v-else />
               <div class="flex items-center gap-3">
-                <p v-if="validationMessage && currentStep < 3" class="text-xs text-amber-600 dark:text-amber-400">{{ validationMessage }}</p>
+                <p v-if="step2SaveError && currentStep === 2" class="text-xs text-red-600 dark:text-red-400">{{ step2SaveError }}</p>
+                <p v-else-if="validationMessage && currentStep < 3" class="text-xs text-amber-600 dark:text-amber-400">{{ validationMessage }}</p>
                 <button
                   v-if="currentStep === 1 || currentStep === 2"
                   type="button"

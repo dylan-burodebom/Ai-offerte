@@ -142,7 +142,7 @@ function getInitials(naam) {
                   </div>
                 </td>
 
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 hidden lg:table-cell">{{ client.contactpersoon ?? '—' }}</td>
+                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 hidden lg:table-cell">{{ client.contactpersoon || client.contactpersonen?.[0]?.naam || '—' }}</td>
 
                 <td class="px-6 py-4 text-gray-500 dark:text-gray-400 max-w-[200px] truncate hidden md:table-cell">{{ client.email }}</td>
 

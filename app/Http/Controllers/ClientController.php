@@ -17,6 +17,7 @@ class ClientController extends Controller
     public function index(Request $request): Response
     {
         $clients = Client::query()
+            ->with(['contactpersonen' => fn ($q) => $q->select('id', 'client_id', 'naam')->limit(1)])
             ->when($request->search, fn ($q, $s) => $q
                 ->where('naam', 'like', "%{$s}%")
                 ->orWhere('contactpersoon', 'like', "%{$s}%")
