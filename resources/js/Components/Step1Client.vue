@@ -135,18 +135,6 @@ async function submitNewClient() {
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <InputLabel for="nc_contact" value="Contactpersoon" />
-            <TextInput id="nc_contact" v-model="form.contactpersoon" class="mt-1 block w-full" />
-            <InputError :message="errors.contactpersoon?.[0]" class="mt-1" />
-          </div>
-          <div>
-            <InputLabel for="nc_telefoon" value="Telefoon" />
-            <TextInput id="nc_telefoon" v-model="form.telefoon" class="mt-1 block w-full" />
-          </div>
-        </div>
-
         <div>
           <InputLabel for="nc_sector" value="Sector" />
           <select

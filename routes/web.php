@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\PromptController as AdminPromptController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientOpmerkingController;
 use App\Http\Controllers\ContactpersoonController;
@@ -69,6 +70,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('prompts/sectoren', [AdminPromptController::class, 'storeSector'])->name('prompts.sector.store');
     Route::patch('prompts/sectoren/{sector}', [AdminPromptController::class, 'updateSector'])->name('prompts.sector');
     Route::post('prompts/preview', [AdminPromptController::class, 'preview'])->name('prompts.preview');
+
+    Route::get('gebruikers', [AdminUserController::class, 'index'])->name('gebruikers');
+    Route::post('gebruikers', [AdminUserController::class, 'store'])->name('gebruikers.store');
+    Route::delete('gebruikers/{user}', [AdminUserController::class, 'destroy'])->name('gebruikers.destroy');
 });
 
 require __DIR__.'/auth.php';

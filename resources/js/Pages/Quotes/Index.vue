@@ -271,11 +271,11 @@ function fmtDatum(iso) {
         </Transition>
 
         <!-- Tabel -->
-        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
           <table class="min-w-full text-sm">
-            <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+            <thead class="bg-gray-50/60 dark:bg-gray-700/30 border-b border-gray-100 dark:border-gray-700">
               <tr>
-                <th class="px-4 py-3 w-10">
+                <th class="px-4 py-3.5 w-10">
                   <input
                     type="checkbox"
                     :checked="alleGeselecteerd"
@@ -283,74 +283,59 @@ function fmtDatum(iso) {
                     @change="toggleAlles"
                   />
                 </th>
-                <th
-                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 select-none whitespace-nowrap"
-                  @click="setSort('offerte_nummer')"
-                >
+                <th class="px-4 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap" @click="setSort('offerte_nummer')">
                   <span class="inline-flex items-center gap-1">Nummer
                     <svg class="w-3 h-3" :class="sortState('offerte_nummer') !== 'none' ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      <path v-if="sortState('offerte_nummer') === 'asc'"  stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+                      <path v-if="sortState('offerte_nummer') === 'asc'" stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
                       <path v-else-if="sortState('offerte_nummer') === 'desc'" stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                       <path v-else stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4M8 15l4 4 4-4"/>
                     </svg>
                   </span>
                 </th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Klant</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Titel</th>
-                <th
-                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 select-none"
-                  @click="setSort('status')"
-                >
+                <th class="px-4 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500">Klant</th>
+                <th class="px-4 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500">Titel</th>
+                <th class="px-4 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none" @click="setSort('status')">
                   <span class="inline-flex items-center gap-1">Status
                     <svg class="w-3 h-3" :class="sortState('status') !== 'none' ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      <path v-if="sortState('status') === 'asc'"  stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+                      <path v-if="sortState('status') === 'asc'" stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
                       <path v-else-if="sortState('status') === 'desc'" stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                       <path v-else stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4M8 15l4 4 4-4"/>
                     </svg>
                   </span>
                 </th>
-                <th
-                  class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 select-none whitespace-nowrap"
-                  @click="setSort('totaal')"
-                >
+                <th class="px-4 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap" @click="setSort('totaal')">
                   <span class="inline-flex items-center justify-end gap-1">Bedrag
                     <svg class="w-3 h-3" :class="sortState('totaal') !== 'none' ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      <path v-if="sortState('totaal') === 'asc'"  stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+                      <path v-if="sortState('totaal') === 'asc'" stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
                       <path v-else-if="sortState('totaal') === 'desc'" stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                       <path v-else stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4M8 15l4 4 4-4"/>
                     </svg>
                   </span>
                 </th>
-                <th
-                  class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 select-none whitespace-nowrap"
-                  @click="setSort('geldig_tot')"
-                >
+                <th class="px-4 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap" @click="setSort('geldig_tot')">
                   <span class="inline-flex items-center justify-end gap-1">Geldig tot
                     <svg class="w-3 h-3" :class="sortState('geldig_tot') !== 'none' ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      <path v-if="sortState('geldig_tot') === 'asc'"  stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+                      <path v-if="sortState('geldig_tot') === 'asc'" stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
                       <path v-else-if="sortState('geldig_tot') === 'desc'" stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                       <path v-else stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4M8 15l4 4 4-4"/>
                     </svg>
                   </span>
                 </th>
-                <th
-                  class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 select-none whitespace-nowrap"
-                  @click="setSort('created_at')"
-                >
+                <th class="px-4 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap" @click="setSort('created_at')">
                   <span class="inline-flex items-center justify-end gap-1">Aangemaakt
                     <svg class="w-3 h-3" :class="sortState('created_at') !== 'none' ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      <path v-if="sortState('created_at') === 'asc'"  stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+                      <path v-if="sortState('created_at') === 'asc'" stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
                       <path v-else-if="sortState('created_at') === 'desc'" stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                       <path v-else stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4M8 15l4 4 4-4"/>
                     </svg>
                   </span>
                 </th>
-                <th class="px-4 py-3 w-10" />
+                <th class="px-4 py-3.5 w-10" />
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700/60">
               <tr v-if="quotes.data.length === 0">
-                <td colspan="9" class="px-4 py-10 text-center text-gray-400 dark:text-gray-500">
+                <td colspan="9" class="px-4 py-14 text-center text-gray-400 dark:text-gray-500">
                   Geen offertes gevonden.
                   <a :href="route('quotes.create')" class="text-blue-600 dark:text-blue-400 hover:underline ml-1">Maak de eerste aan.</a>
                 </td>
@@ -358,10 +343,10 @@ function fmtDatum(iso) {
               <tr
                 v-for="q in quotes.data"
                 :key="q.id"
-                class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors"
-                :class="selected.has(q.id) ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''"
+                class="hover:bg-gray-50/80 dark:hover:bg-gray-700/30 transition-colors"
+                :class="selected.has(q.id) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''"
               >
-                <td class="px-4 py-3" @click.stop>
+                <td class="px-4 py-4" @click.stop>
                   <input
                     type="checkbox"
                     :checked="selected.has(q.id)"
@@ -370,27 +355,27 @@ function fmtDatum(iso) {
                   />
                 </td>
 
-                <td class="px-4 py-3 font-mono text-xs text-blue-700 dark:text-blue-400 font-medium whitespace-nowrap cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
+                <td class="px-4 py-4 font-mono text-xs text-blue-600 dark:text-blue-400 font-semibold whitespace-nowrap cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
                   {{ q.offerte_nummer }}
                 </td>
 
-                <td class="px-4 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
+                <td class="px-4 py-4 font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
                   {{ q.client?.naam ?? '—' }}
                 </td>
 
-                <td class="px-4 py-3 text-gray-600 dark:text-gray-400 max-w-[180px] truncate cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
+                <td class="px-4 py-4 text-gray-500 dark:text-gray-400 max-w-[180px] truncate cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
                   {{ q.titel }}
                 </td>
 
-                <td class="px-4 py-3">
+                <td class="px-4 py-4">
                   <StatusBadge :status="q.status" />
                 </td>
 
-                <td class="px-4 py-3 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ fmt(q.totaal) }}</td>
+                <td class="px-4 py-4 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ fmt(q.totaal) }}</td>
 
-                <td class="px-4 py-3 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.geldig_tot) }}</td>
+                <td class="px-4 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.geldig_tot) }}</td>
 
-                <td class="px-4 py-3 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.created_at) }}</td>
+                <td class="px-4 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.created_at) }}</td>
 
                 <!-- Actiemenu -->
                 <td class="px-4 py-3 relative" @click.stop>
@@ -458,7 +443,7 @@ function fmtDatum(iso) {
         </div>
 
         <!-- Paginering + telling -->
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between px-1">
           <p class="text-xs text-gray-400 dark:text-gray-500">
             {{ quotes.from }}–{{ quotes.to }} van {{ quotes.total }} offertes
           </p>
@@ -469,7 +454,7 @@ function fmtDatum(iso) {
               :is="link.url ? 'a' : 'span'"
               :href="link.url ?? undefined"
               v-html="link.label"
-              class="px-3 py-1.5 rounded-lg text-sm border transition-colors"
+              class="px-3 py-1.5 rounded-lg text-xs border transition-colors"
               :class="link.active
                 ? 'bg-blue-600 text-white border-blue-600'
                 : link.url

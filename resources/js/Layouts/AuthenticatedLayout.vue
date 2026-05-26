@@ -74,7 +74,7 @@ const dropdownOpen  = ref(false)
                     v-if="$page.props.auth.isAdmin"
                     :href="route('admin.prompts')"
                     class="flex items-center gap-3 py-2.5 pr-3 text-sm font-medium transition-colors"
-                    :class="route().current('admin.*')
+                    :class="route().current('admin.prompts*')
                         ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
                         : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
                 >
@@ -82,6 +82,20 @@ const dropdownOpen  = ref(false)
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m1.636-6.364l.707.707M6.343 17.657l-.707.707M17.657 17.657l.707.707M12 21v-1M15.536 8.464a5 5 0 11-7.072 0"/>
                     </svg>
                     Prompts
+                </Link>
+
+                <Link
+                    v-if="$page.props.auth.isAdmin"
+                    :href="route('admin.gebruikers')"
+                    class="flex items-center gap-3 py-2.5 pr-3 text-sm font-medium transition-colors"
+                    :class="route().current('admin.gebruikers*')
+                        ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                >
+                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Gebruikers
                 </Link>
 
             </nav>
