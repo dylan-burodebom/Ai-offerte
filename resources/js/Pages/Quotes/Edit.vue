@@ -29,10 +29,8 @@ const BLOK_TYPES = [
   { type: 'referenties', titel: 'Referenties',    omschrijving: 'Eerdere projecten' },
   { type: 'werkwijze',   titel: 'Werkwijze',      omschrijving: 'Aanpak & proces' },
   { type: 'planning',    titel: 'Planning',       omschrijving: 'Tijdlijn' },
-  { type: 'team',        titel: 'Team',           omschrijving: 'Medewerkers' },
   { type: 'garantie',    titel: 'Garantie',       omschrijving: 'Voorwaarden' },
   { type: 'faq',         titel: 'FAQ',            omschrijving: 'Veelgestelde vragen' },
-  { type: 'bijlage',     titel: 'Bijlage',        omschrijving: 'Extra document' },
   { type: 'custom',       titel: 'Aangepast blok', omschrijving: 'Eigen inhoud' },
   { type: 'einde_pagina', titel: 'Einde pagina',   omschrijving: 'Volgende blok op nieuwe pagina' },
 ]
@@ -99,11 +97,11 @@ function toggleCollapsed(block) {
 const sections = ref(
   props.quote.sections.map(s => ({
     ...s,
-    html:      s.content?.html ?? '',
-    hasAi:     !!(s.content?.ai_html),
-    blockType: s.content?.block_type ?? null,
-    status:    null,
-    collapsed: isCollapsed(s.id),
+    html:             s.content?.html ?? '',
+    hasAi:            !!(s.content?.ai_html),
+    blockType:        s.content?.block_type ?? null,
+    status:           null,
+    collapsed:        isCollapsed(s.id),
   }))
 )
 
