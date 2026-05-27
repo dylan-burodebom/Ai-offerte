@@ -27,8 +27,7 @@ class QuoteController extends Controller
         $sort  = in_array($request->sort, $sorteerbaar) ? $request->sort : 'created_at';
         $dir   = $request->direction === 'asc' ? 'asc' : 'desc';
 
-        $quotes = Quote::where('user_id', Auth::id())
-            ->with('client:id,naam,sector')
+        $quotes = Quote::with('client:id,naam,sector')
             ->when($request->search, fn ($q, $s) => $q
                 ->where(fn ($q2) => $q2
                     ->where('offerte_nummer', 'like', "%{$s}%")
@@ -52,7 +51,6 @@ class QuoteController extends Controller
 
     public function destroy(Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
         $quote->delete();
         return response()->json(['success' => true]);
     }
@@ -66,9 +64,7 @@ class QuoteController extends Controller
             'status' => ['nullable', 'string', 'in:' . implode(',', Quote::STATUSSEN)],
         ]);
 
-        $quotes = Quote::where('user_id', Auth::id())
-            ->whereIn('id', $request->ids)
-            ->get();
+        $quotes = Quote::whereIn('id', $request->ids)->get();
 
         if ($request->actie === 'verwijderen') {
             $count = $quotes->count();
@@ -95,8 +91,7 @@ class QuoteController extends Controller
 
     public function export(Request $request): StreamedResponse
     {
-        $quotes = Quote::where('user_id', Auth::id())
-            ->with('client:id,naam')
+        $quotes = Quote::with('client:id,naam')
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
             ->when($request->sector, fn ($q, $s) => $q->whereHas('client', fn ($c) => $c->where('sector', $s)))
             ->orderByDesc('created_at')
@@ -179,7 +174,6 @@ class QuoteController extends Controller
 
     public function edit(Quote $quote): Response
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
         $quote->load([
             'client',
             'sections'      => fn ($q) => $q->orderBy('volgorde'),
@@ -194,7 +188,6 @@ class QuoteController extends Controller
 
     public function updateMeta(Request $request, Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
         $data = $request->validate([
             'titel'           => ['required', 'string', 'min:3', 'max:255'],
             'geldig_tot'      => ['nullable', 'date'],
@@ -208,7 +201,6 @@ class QuoteController extends Controller
 
     public function reorderSections(Request $request, Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
         $request->validate([
             'order'   => ['required', 'array'],
             'order.*' => ['integer'],
@@ -221,7 +213,6 @@ class QuoteController extends Controller
 
     public function addSection(Request $request, Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
         $request->validate([
             'titel'      => ['required', 'string', 'max:255'],
             'volgorde'   => ['required', 'integer'],
@@ -241,7 +232,6 @@ class QuoteController extends Controller
 
     public function deleteSection(Quote $quote, QuoteSection $section): JsonResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
         abort_if($section->quote_id !== $quote->id, 403);
         $section->delete();
         return response()->json(['deleted' => true]);
@@ -249,7 +239,6 @@ class QuoteController extends Controller
 
     public function updateSection(Request $request, Quote $quote, QuoteSection $section): JsonResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
         $data = $request->validate([
             'html'  => ['sometimes', 'string'],
             'titel' => ['sometimes', 'string', 'max:255'],
@@ -273,7 +262,6 @@ class QuoteController extends Controller
 
     public function restoreSection(Quote $quote, QuoteSection $section): JsonResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
         $aiHtml = ($section->content ?? [])['ai_html'] ?? null;
         abort_if(!$aiHtml, 404, 'Geen AI-versie beschikbaar.');
         $section->update(['content' => array_merge($section->content, ['html' => $aiHtml])]);
@@ -282,7 +270,6 @@ class QuoteController extends Controller
 
     public function createVersion(Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
         $quote->load(['sections', 'investments']);
 
         $newNumber = app(OfferteNummerService::class)->nieuwVersie($quote->offerte_nummer);
@@ -310,8 +297,6 @@ class QuoteController extends Controller
 
     public function saveInvestments(Request $request, Quote $quote): JsonResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
-
         $request->validate([
             'rows'                => ['required', 'array', 'min:1'],
             'rows.*.omschrijving' => ['required', 'string', 'max:255'],
@@ -368,7 +353,6 @@ class QuoteController extends Controller
 
     public function generate(Quote $quote): StreamedResponse
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
 
         // Save session before streaming to avoid session lock issues
         \Illuminate\Support\Facades\Session::save();
@@ -465,7 +449,6 @@ class QuoteController extends Controller
 
     public function pdf(Quote $quote): \Illuminate\Http\Response
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
 
         $pdf      = app(PdfService::class)->generateCached($quote);
         $filename = "{$quote->offerte_nummer}_v{$quote->versie}.pdf";
@@ -479,7 +462,6 @@ class QuoteController extends Controller
 
     public function pdfPreview(Quote $quote): \Illuminate\Http\Response
     {
-        abort_if($quote->user_id !== Auth::id(), 403);
 
         $pdf      = app(PdfService::class)->generateCached($quote);
         $filename = "{$quote->offerte_nummer}_v{$quote->versie}.pdf";
