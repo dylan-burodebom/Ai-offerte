@@ -137,7 +137,6 @@ function prev() {
 
 // ── Editor tabs & preview ─────────────────────────────────────────────────────
 const activeTab     = ref('opbouw')
-const sidebarTab    = ref('blokken')
 const previewDevice = ref('desktop')
 
 const TABS = [
@@ -485,20 +484,10 @@ function blockOmschrijving(section) {
 
         <!-- ── Linker sidebar ── -->
         <aside class="w-60 shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-white dark:bg-gray-800 overflow-hidden">
-          <!-- Blokken | Bibliotheek tabs -->
-          <div class="flex border-b border-gray-200 dark:border-gray-700 shrink-0">
-            <button
-              v-for="t in ['blokken', 'bibliotheek']"
-              :key="t"
-              type="button"
-              class="flex-1 py-2.5 text-xs font-semibold transition-colors"
-              :class="sidebarTab === t ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
-              @click="sidebarTab = t"
-            >{{ t.charAt(0).toUpperCase() + t.slice(1) }}</button>
+          <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 shrink-0">
+            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Blokken</p>
           </div>
-
-          <!-- Blokken -->
-          <div v-if="sidebarTab === 'blokken'" class="flex-1 flex flex-col overflow-hidden">
+          <div class="flex-1 flex flex-col overflow-hidden">
             <div class="flex-1 overflow-y-auto p-3">
               <draggable
                 :list="BLOK_TYPES"
@@ -523,17 +512,6 @@ function blockOmschrijving(section) {
             </div>
             <div class="m-3 mt-0 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/40">
               <p class="text-xs text-blue-600 dark:text-blue-400 leading-relaxed">Sleep blokken naar de editor of laat AI ze voor je plaatsen.</p>
-            </div>
-          </div>
-
-          <!-- Bibliotheek -->
-          <div v-else class="flex-1 flex items-center justify-center p-6">
-            <div class="text-center">
-              <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-3">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
-              </div>
-              <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">Bibliotheek</p>
-              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Binnenkort beschikbaar</p>
             </div>
           </div>
         </aside>
@@ -609,7 +587,7 @@ function blockOmschrijving(section) {
 
             <!-- + Blok toevoegen -->
             <div class="p-3 border-t border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-800">
-              <button type="button" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 text-sm text-gray-400 dark:text-gray-500 hover:border-blue-400 dark:hover:border-blue-600 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" @click="sidebarTab = 'blokken'">
+              <button type="button" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 text-sm text-gray-400 dark:text-gray-500 hover:border-blue-400 dark:hover:border-blue-600 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 Blok toevoegen
               </button>
@@ -755,9 +733,8 @@ function blockOmschrijving(section) {
 
         <!-- Linker sidebar (decoratief) -->
         <aside class="w-60 shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-white dark:bg-gray-800 overflow-hidden">
-          <div class="flex border-b border-gray-200 dark:border-gray-700 shrink-0">
-            <div class="flex-1 py-2.5 text-xs font-semibold text-center text-blue-600 dark:text-blue-400 border-b-2 border-blue-500">Blokken</div>
-            <div class="flex-1 py-2.5 text-xs font-semibold text-center text-gray-400 dark:text-gray-500">Bibliotheek</div>
+          <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 shrink-0">
+            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Blokken</p>
           </div>
           <div class="flex-1 overflow-y-auto p-3">
             <div

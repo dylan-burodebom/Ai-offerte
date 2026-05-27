@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientOpmerkingController;
 use App\Http\Controllers\ContactpersoonController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KlantController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\QuoteStatusController;
@@ -15,18 +16,26 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+        'canLogin'      => Route::has('login'),
+        'canRegister'   => Route::has('register'),
+        'laravelVersion'=> Application::VERSION,
+        'phpVersion'    => PHP_VERSION,
     ]);
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->middleware(['auth', 'verified'])->name('dashboard.stats');
-Route::get('/dashboard/redenen', [DashboardController::class, 'redenen'])->middleware(['auth', 'verified'])->name('dashboard.redenen');
+// ── Klant routes (read-only portal) ─────────────────────────
+Route::middleware(['auth', 'role:klant'])->prefix('klant')->name('klant.')->group(function () {
+    Route::get('dashboard', [KlantController::class, 'dashboard'])->name('dashboard');
+    Route::get('quotes/{quote}/pdf', [KlantController::class, 'pdf'])->name('quotes.pdf');
+});
 
-Route::middleware('auth')->group(function () {
+// ── Staff routes (admin + medewerker only) ───────────────────
+Route::middleware(['auth', 'verified', 'role:admin,medewerker'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->name('dashboard.stats');
+    Route::get('/dashboard/redenen', [DashboardController::class, 'redenen'])->name('dashboard.redenen');
+
+    // Profile (all authenticated users can access their profile)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar');
@@ -52,6 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::get('quotes/{quote}/generate', [QuoteController::class, 'generate'])->name('quotes.generate');
     Route::get('quotes/{quote}/pdf', [QuoteController::class, 'pdf'])->name('quotes.pdf');
     Route::get('quotes/{quote}/pdf/preview', [QuoteController::class, 'pdfPreview'])->name('quotes.pdf.preview');
+
     Route::post('clients/inline', [ClientController::class, 'storeInline'])->name('clients.store-inline');
     Route::get('clients/search', [ClientController::class, 'search'])->name('clients.search');
     Route::resource('clients', ClientController::class)->except(['create', 'edit']);
@@ -64,6 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('clients/{client}/opmerkingen/{opmerking}', [ClientOpmerkingController::class, 'destroy'])->name('clients.opmerkingen.destroy');
 });
 
+// ── Admin-only routes ────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('prompts', [AdminPromptController::class, 'index'])->name('prompts');
     Route::patch('prompts/stijlgids', [AdminPromptController::class, 'updateStijlgids'])->name('prompts.stijlgids');
@@ -73,6 +84,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('gebruikers', [AdminUserController::class, 'index'])->name('gebruikers');
     Route::post('gebruikers', [AdminUserController::class, 'store'])->name('gebruikers.store');
+    Route::patch('gebruikers/{user}', [AdminUserController::class, 'update'])->name('gebruikers.update');
     Route::delete('gebruikers/{user}', [AdminUserController::class, 'destroy'])->name('gebruikers.destroy');
 });
 

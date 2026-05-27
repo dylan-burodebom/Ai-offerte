@@ -60,35 +60,48 @@ body {
 }
 .voorblad-content {
     position: absolute;
-    left: 56mm; top: 116mm;
-    max-width: 100%;
+    left: 19mm; top: 116mm;
+    max-width: 160mm;
 }
 .voorblad-label {
     font-family: 'Fira Sans', sans-serif;
-    font-weight: 400; font-size: 10pt;
+    font-weight: 400; font-size: 14pt;
     color: #e0e0e0; letter-spacing: 0.05em;
-    margin-bottom: 5mm;
+    margin-bottom: 4mm;
+    padding-left: 11mm;
+}
+.voorblad-titel-wrapper {
+    border-collapse: collapse;
+    margin-bottom: 6mm;
+}
+.voorblad-streep-cel {
+    width: 11mm; padding: 0;
+    vertical-align: middle;
 }
 .voorblad-streep {
-    width: 11mm; height: 2.5px;
+    width: 7mm; height: 4px;
     background-color: #4076f0;
-    margin-bottom: 14mm;
+}
+.voorblad-titel-cel {
+    padding: 0;
+    vertical-align: top;
 }
 .voorblad-titel {
     font-family: 'OxideSolidPro', sans-serif;
     font-weight: bold; font-size: 20pt;
     color: #ffffff; letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 14mm; line-height: 1.15;
+    line-height: 1.15;
     max-width: 100%;
     word-wrap: break-word;
 }
 .voorblad-meta {
     font-size: 9.5pt;
     max-width: 100%;
+    padding-left: 11mm;
 }
 .voorblad-meta table { border-collapse: collapse; }
-.voorblad-meta td { padding: 1.8mm 0; vertical-align: top; line-height: 1.3; }
+.voorblad-meta td { padding: 0.9mm 0; vertical-align: top; line-height: 1.3; }
 .voorblad-meta td.label {
     font-family: 'Fira Sans', sans-serif;
     font-weight: 600; min-width: 40mm; color: #ffffff;
@@ -295,9 +308,45 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
 <div class="voorblad">
     <img class="voorblad-bg" src="{{ $voorblad_bg }}" alt="">
     <div class="voorblad-content">
-        <div class="voorblad-label">Offerte &nbsp;·&nbsp; {{ $quote->offerte_nummer }}</div>
-        <div class="voorblad-streep"></div>
-        <div class="voorblad-titel">{{ $quote->titel }}</div>
+        <div class="voorblad-label">Offerte</div>
+        @php
+            // Max 2 opeenvolgende woorden met 6+ letters op één regel
+            $words   = explode(' ', $quote->titel);
+            $lines   = [];
+            $current = [];
+            $streak  = 0;
+            foreach ($words as $w) {
+                if (mb_strlen($w) >= 6) {
+                    $streak++;
+                    if ($streak > 2) {
+                        $lines[]  = implode(' ', $current);
+                        $current  = [$w];
+                        $streak   = 1;
+                    } else {
+                        $current[] = $w;
+                    }
+                } else {
+                    $streak    = 0;
+                    $current[] = $w;
+                }
+            }
+            if (!empty($current)) $lines[] = implode(' ', $current);
+            $titelHtml = implode('<br>', array_filter($lines));
+        @endphp
+        <table class="voorblad-titel-wrapper">
+            <tr>
+                <td class="voorblad-streep-cel">
+                    <div class="voorblad-streep"></div>
+                </td>
+                <td class="voorblad-titel-cel">
+                    <div class="voorblad-titel">{!! $titelHtml !!}</div>
+                </td>
+            </tr>
+        </table>
+        @php
+            $contactpersoon = $quote->client->contactpersonen->first()?->naam
+                ?? ($quote->client->contactpersoon ?: null);
+        @endphp
         <div class="voorblad-meta">
             <table>
                 <tr>
@@ -314,10 +363,10 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
                     <td class="label">Relatie</td>
                     <td class="value">{{ $quote->client->naam }}</td>
                 </tr>
-                @if($quote->client->contactpersoon)
+                @if($contactpersoon)
                 <tr>
                     <td class="label">Contactpersoon</td>
-                    <td class="value">{{ $quote->client->contactpersoon }}</td>
+                    <td class="value">{{ $contactpersoon }}</td>
                 </tr>
                 @endif
             </table>
@@ -419,6 +468,7 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
                     </tr>
                     @endif
                     @endforeach
+                    @if($quote->toon_btw)
                     <tr>
                         <td style="{{ $tdBase }}color:#555;">Totaal excl. btw</td>
                         <td style="{{ $tdBase }}text-align:right;white-space:nowrap;color:#555;">&euro;&nbsp;{{ $fmt($subtotaal) }}</td>
@@ -433,12 +483,20 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
                         <td style="padding:2.5mm 0;border-top:1px solid #cccccc;vertical-align:top;text-align:right;white-space:nowrap;line-height:1.3;font-size:10pt;font-family:Fira Sans,sans-serif;font-weight:600;">&euro;&nbsp;{{ $fmt($eindtotaal) }}</td>
                     </tr>
                     @endif
+                    @else
+                    <tr>
+                        <td style="padding:2.5mm 0;border-top:1px solid #cccccc;vertical-align:top;line-height:1.3;font-size:10pt;font-family:Fira Sans,sans-serif;font-weight:600;">Totaal</td>
+                        <td style="padding:2.5mm 0;border-top:1px solid #cccccc;vertical-align:top;text-align:right;white-space:nowrap;line-height:1.3;font-size:10pt;font-family:Fira Sans,sans-serif;font-weight:600;">&euro;&nbsp;{{ $fmt($subtotaal) }}</td>
+                    </tr>
+                    @endif
                 </table>
 
-                @if($btwTarief === '0%')
-                    <p class="btw-note">BTW-tarief 0% van toepassing.</p>
-                @elseif($btwTarief === 'vrijgesteld')
-                    <p class="btw-note">Vrijgesteld van BTW op basis van artikel 11 Wet OB.</p>
+                @if($quote->toon_btw)
+                    @if($btwTarief === '0%')
+                        <p class="btw-note">BTW-tarief 0% van toepassing.</p>
+                    @elseif($btwTarief === 'vrijgesteld')
+                        <p class="btw-note">Vrijgesteld van BTW op basis van artikel 11 Wet OB.</p>
+                    @endif
                 @endif
 
                 @if($quote->geldig_tot)

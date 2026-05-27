@@ -40,6 +40,7 @@ const meta = reactive({
   titel:           props.quote.titel,
   geldig_tot:      props.quote.geldig_tot?.slice(0, 10) ?? '',
   pdf_blok_ruimte: props.quote.pdf_blok_ruimte ?? 10,
+  toon_btw:        props.quote.toon_btw ?? true,
   inv_volgorde:    props.quote.inv_volgorde ?? 9999,
 })
 const metaStatus = ref(null)
@@ -838,7 +839,26 @@ function blockOmschrijving(block) {
                 <span class="text-xs text-gray-400 dark:text-gray-500">mm</span>
               </div>
             </div>
-            <div class="flex items-center justify-between pt-4 mt-4 border-t border-gray-100 dark:border-gray-700">
+            <div class="flex items-center justify-between py-3 border-t border-gray-100 dark:border-gray-700">
+              <div>
+                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Toon BTW bedrag</p>
+                <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">BTW-uitsplitsing weergeven op de offerte-PDF</p>
+              </div>
+              <button
+                type="button"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                :class="meta.toon_btw ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'"
+                role="switch"
+                :aria-checked="meta.toon_btw"
+                @click="meta.toon_btw = !meta.toon_btw; onMetaChange()"
+              >
+                <span
+                  class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform duration-200"
+                  :class="meta.toon_btw ? 'translate-x-5' : 'translate-x-0'"
+                />
+              </button>
+            </div>
+            <div class="flex items-center justify-between pt-4 mt-0 border-t border-gray-100 dark:border-gray-700">
               <span class="text-xs" :class="statusClass(metaStatus)">{{ statusLabel(metaStatus) }}</span>
               <button type="button" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors disabled:opacity-50" :disabled="metaStatus === 'saving'" @click="saveMeta">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>

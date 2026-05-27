@@ -192,6 +192,7 @@ class QuoteController extends Controller
             'titel'           => ['required', 'string', 'min:3', 'max:255'],
             'geldig_tot'      => ['nullable', 'date'],
             'pdf_blok_ruimte' => ['nullable', 'integer', 'min:0', 'max:60'],
+            'toon_btw'        => ['nullable', 'boolean'],
             'inv_volgorde'    => ['nullable', 'integer', 'min:0'],
         ]);
         $quote->update($data);

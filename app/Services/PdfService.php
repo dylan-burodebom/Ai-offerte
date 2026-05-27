@@ -15,7 +15,7 @@ class PdfService
      */
     public function generate(Quote $quote): string
     {
-        $quote->load(['client', 'sections' => fn ($q) => $q->orderBy('volgorde'), 'investments' => fn ($q) => $q->orderBy('volgorde')]);
+        $quote->load(['client.contactpersonen', 'sections' => fn ($q) => $q->orderBy('volgorde'), 'investments' => fn ($q) => $q->orderBy('volgorde')]);
 
         $mainPdf = $this->renderQuote($quote);
 
@@ -34,7 +34,7 @@ class PdfService
      */
     public function generateCached(Quote $quote): string
     {
-        $quote->load(['client', 'sections' => fn ($q) => $q->orderBy('volgorde'), 'investments' => fn ($q) => $q->orderBy('volgorde')]);
+        $quote->load(['client.contactpersonen', 'sections' => fn ($q) => $q->orderBy('volgorde'), 'investments' => fn ($q) => $q->orderBy('volgorde')]);
 
         $fingerprint = $this->fingerprint($quote);
         $cachePath   = "pdf-cache/{$quote->id}_{$fingerprint}.pdf";

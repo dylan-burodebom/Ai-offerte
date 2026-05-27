@@ -40,6 +40,7 @@ class Quote extends Model
         'fireflies_samenvatting',
         'prompt_versie',
         'pdf_blok_ruimte',
+        'toon_btw',
         'inv_volgorde',
     ];
 
@@ -48,6 +49,7 @@ class Quote extends Model
         'verzonden_op' => 'datetime',
         'totaal'       => 'decimal:2',
         'diensten'     => 'array',
+        'toon_btw'     => 'boolean',
     ];
 
     public function kanNaarStatus(string $nieuweStatus): bool

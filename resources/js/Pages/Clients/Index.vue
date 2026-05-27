@@ -10,6 +10,9 @@ const props = defineProps({
   filters: Object,
   sectoren: Array,
   relatie_statussen: Array,
+  rechtsvormen: Array,
+  talen: Object,
+  gebruikers: Array,
 })
 
 const search        = ref(props.filters.search ?? '')
@@ -205,6 +208,9 @@ function getInitials(naam) {
       :client="editingClient"
       :sectoren="sectoren"
       :relatie_statussen="relatie_statussen"
+      :rechtsvormen="rechtsvormen"
+      :talen="talen"
+      :gebruikers="gebruikers"
       @close="showForm = false"
     />
   </AuthenticatedLayout>

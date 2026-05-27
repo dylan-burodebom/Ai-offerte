@@ -190,7 +190,7 @@ const dropdownOpen  = ref(false)
                     <!-- Naam + rol -->
                     <div class="flex-1 min-w-0 text-left">
                         <p class="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate leading-tight">{{ $page.props.auth.user.name }}</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 leading-tight">{{ $page.props.auth.isAdmin ? 'Beheerder' : 'Gebruiker' }}</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 leading-tight capitalize">{{ $page.props.auth.role === 'admin' ? 'Beheerder' : $page.props.auth.role === 'klant' ? 'Klant' : 'Medewerker' }}</p>
                     </div>
 
                     <!-- Chevron -->

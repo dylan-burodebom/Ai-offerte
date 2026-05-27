@@ -10,9 +10,7 @@ class AdminOnly
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $adminEmail = config('app.admin_email');
-
-        if (! $adminEmail || $request->user()?->email !== $adminEmail) {
+        if (! $request->user()?->isAdmin()) {
             abort(403, 'Geen toegang.');
         }
 

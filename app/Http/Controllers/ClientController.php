@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Client;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,41 +30,60 @@ class ClientController extends Controller
             ->withQueryString();
 
         return Inertia::render('Clients/Index', [
-            'clients'          => $clients,
-            'filters'          => $request->only(['search', 'sector', 'relatie_status']),
-            'sectoren'         => Client::SECTOREN,
+            'clients'           => $clients,
+            'filters'           => $request->only(['search', 'sector', 'relatie_status']),
+            'sectoren'          => Client::SECTOREN,
             'relatie_statussen' => Client::RELATIE_STATUSSEN,
+            'rechtsvormen'      => Client::RECHTSVORMEN,
+            'talen'             => Client::TALEN,
+            'gebruikers'        => User::orderBy('name')->get(['id', 'name']),
         ]);
     }
 
     public function show(Client $client): Response
     {
-        $client->loadCount('quotes');
+        $client->load('relatiebeheerder:id,name')->loadCount('quotes');
+
         $quotes = $client->quotes()
             ->with('user:id,name')
             ->orderByDesc('created_at')
             ->get(['id', 'user_id', 'offerte_nummer', 'titel', 'status', 'totaal', 'geldig_tot', 'created_at', 'verzonden_op']);
 
         $contactpersonen = $client->contactpersonen()->get();
-        $opmerkingen = $client->opmerkingen()->with('user:id,name')->get();
+        $opmerkingen     = $client->opmerkingen()->with('user:id,name')->get();
 
         return Inertia::render('Clients/Show', [
-            'client'          => $client,
-            'quotes'          => $quotes,
-            'contactpersonen' => $contactpersonen,
-            'opmerkingen'     => $opmerkingen,
+            'client'            => $client,
+            'quotes'            => $quotes,
+            'contactpersonen'   => $contactpersonen,
+            'opmerkingen'       => $opmerkingen,
+            'sectoren'          => Client::SECTOREN,
+            'relatie_statussen' => Client::RELATIE_STATUSSEN,
+            'rechtsvormen'      => Client::RECHTSVORMEN,
+            'talen'             => Client::TALEN,
+            'gebruikers'        => User::orderBy('name')->get(['id', 'name']),
         ]);
     }
 
     public function store(StoreClientRequest $request): RedirectResponse
     {
-        $data = collect($request->validated())->except('logo')->toArray();
+        $data = collect($request->validated())->except(['logo', 'contactpersonen'])->toArray();
 
         if ($request->hasFile('logo')) {
             $data['logo'] = $request->file('logo')->store('client-logos', 'public');
         }
 
-        Client::create($data);
+        $client = Client::create($data);
+
+        foreach ($request->get('contactpersonen', []) as $cp) {
+            if (!empty(trim($cp['naam'] ?? ''))) {
+                $client->contactpersonen()->create([
+                    'naam'     => $cp['naam'],
+                    'email'    => $cp['email'] ?? null,
+                    'telefoon' => $cp['telefoon'] ?? null,
+                ]);
+            }
+        }
 
         return redirect()->back()->with('success', 'Bedrijf aangemaakt.');
     }
