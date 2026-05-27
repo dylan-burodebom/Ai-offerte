@@ -20,7 +20,7 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->avatar ? '/storage/' . $this->avatar : null;
+        return $this->avatar ? url('/file/' . $this->avatar) : null;
     }
 
     protected function casts(): array

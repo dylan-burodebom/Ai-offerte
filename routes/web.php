@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\PromptController as AdminPromptController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\ClientOpmerkingController;
 use App\Http\Controllers\ContactpersoonController;
 use App\Http\Controllers\DashboardController;
@@ -13,6 +14,10 @@ use App\Http\Controllers\QuoteStatusController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::get('/file/{path}', [FileController::class, 'serve'])
+    ->where('path', '.*')
+    ->name('storage.file');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

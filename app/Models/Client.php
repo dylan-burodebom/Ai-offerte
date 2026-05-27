@@ -61,7 +61,7 @@ class Client extends Model
 
     public function getLogoUrlAttribute(): ?string
     {
-        return $this->logo ? '/storage/' . $this->logo : null;
+        return $this->logo ? url('/file/' . $this->logo) : null;
     }
 
     public function quotes(): HasMany
