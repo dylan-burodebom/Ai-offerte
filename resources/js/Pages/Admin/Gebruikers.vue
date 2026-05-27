@@ -205,13 +205,13 @@ const SELECT_CLASS = 'w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:
                   <p class="text-xs text-gray-400 dark:text-gray-500 truncate mt-0.5">{{ g.email }}</p>
                 </div>
 
-                <span class="text-xs text-gray-300 dark:text-gray-600 shrink-0 hidden sm:block">{{ formatDatum(g.created_at) }}</span>
+                <span class="text-xs text-gray-400 dark:text-gray-400 shrink-0 hidden sm:block">{{ formatDatum(g.created_at) }}</span>
 
                 <!-- Bewerken -->
                 <button
                   v-if="!g.role === 'admin' || g.id !== mijnId"
                   type="button"
-                  class="w-8 h-8 flex items-center justify-center rounded-xl text-gray-300 dark:text-gray-600 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors shrink-0"
+                  class="w-8 h-8 flex items-center justify-center rounded-xl text-gray-400 dark:text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors shrink-0"
                   title="Bewerken"
                   :disabled="g.role === 'admin'"
                   :class="g.role === 'admin' ? 'opacity-30 cursor-not-allowed' : ''"
@@ -224,7 +224,7 @@ const SELECT_CLASS = 'w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:
                 <button
                   v-if="g.role !== 'admin' && g.id !== mijnId"
                   type="button"
-                  class="w-8 h-8 flex items-center justify-center rounded-xl text-gray-300 dark:text-gray-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shrink-0"
+                  class="w-8 h-8 flex items-center justify-center rounded-xl text-gray-400 dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shrink-0"
                   title="Verwijderen"
                   @click="verwijderen(g)"
                 >
