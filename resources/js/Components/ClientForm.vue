@@ -163,7 +163,7 @@ const SELECT_CLASS = 'mt-1 block w-full rounded-md border-gray-300 dark:border-g
 </script>
 
 <template>
-  <Modal :show="show" max-width="xl" @close="emit('close')">
+  <Modal :show="show" max-width="2xl" @close="emit('close')">
     <div class="flex flex-col max-h-[90vh]">
 
       <!-- Header -->
@@ -183,7 +183,7 @@ const SELECT_CLASS = 'mt-1 block w-full rounded-md border-gray-300 dark:border-g
       </div>
 
       <!-- Tabs -->
-      <div class="flex gap-0 px-6 mt-4 border-b border-gray-100 dark:border-gray-700 shrink-0 overflow-x-auto">
+      <div class="flex px-6 mt-4 border-b border-gray-100 dark:border-gray-700 shrink-0">
         <button
           v-for="tab in TABS"
           :key="tab.key"

@@ -213,12 +213,12 @@ function taalLabel(code) {
           </div>
 
           <!-- Detail tabs -->
-          <div class="flex border-b border-gray-100 dark:border-gray-700 px-6 overflow-x-auto">
+          <div class="flex flex-wrap border-b border-gray-100 dark:border-gray-700 px-6">
             <button
               v-for="tab in DETAIL_TABS"
               :key="tab.key"
               type="button"
-              class="px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap"
+              class="w-1/2 sm:w-auto px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium border-b-2 transition-colors -mb-px text-center"
               :class="detailTab === tab.key
                 ? 'border-blue-500 text-blue-600 dark:text-blue-400'
                 : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'"
