@@ -111,10 +111,23 @@ async function doBulkActie(actie) {
   }
 }
 
-const actiemenu = ref(null)
+const actiemenu      = ref(null)
+const actiemenuQuote = ref(null)
+const actiemenuPos   = ref({ top: 0, right: 0 })
 
-function toggleActiemenu(id) {
-  actiemenu.value = actiemenu.value === id ? null : id
+function toggleActiemenu(quote, event) {
+  if (actiemenu.value === quote.id) {
+    actiemenu.value = null
+    actiemenuQuote.value = null
+    return
+  }
+  actiemenu.value = quote.id
+  actiemenuQuote.value = quote
+  const rect = event.currentTarget.getBoundingClientRect()
+  const spaceBelow = window.innerHeight - rect.bottom
+  actiemenuPos.value = spaceBelow >= 220
+    ? { top: rect.bottom + 4 + 'px', bottom: 'auto', right: window.innerWidth - rect.right + 'px' }
+    : { top: 'auto', bottom: window.innerHeight - rect.top + 4 + 'px', right: window.innerWidth - rect.right + 'px' }
 }
 
 async function dupliceer(quote) {
@@ -180,7 +193,55 @@ function fmtDatum(iso) {
     </template>
 
     <Teleport to="body">
-      <div v-if="actiemenu !== null" class="fixed inset-0 z-10" @click="actiemenu = null" />
+      <div v-if="actiemenu !== null" class="fixed inset-0 z-40" @click="actiemenu = null" />
+      <div
+        v-if="actiemenu !== null && actiemenuQuote"
+        class="fixed z-50 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 w-48"
+        :style="actiemenuPos"
+      >
+        <a
+          :href="route('quotes.pdf.preview', actiemenuQuote.id)"
+          target="_blank"
+          class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
+          @click="actiemenu = null"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          Bekijken
+        </a>
+        <button
+          type="button"
+          class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
+          @click="router.visit(route('quotes.edit', actiemenuQuote.id)); actiemenu = null"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+          Bewerken
+        </button>
+        <a
+          :href="route('quotes.pdf', actiemenuQuote.id)"
+          class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
+          @click="actiemenu = null"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          PDF downloaden
+        </a>
+        <button
+          type="button"
+          class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
+          @click="dupliceer(actiemenuQuote)"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          Dupliceren (V{{ (actiemenuQuote.versie ?? 1) + 1 }})
+        </button>
+        <div class="border-t border-gray-100 dark:border-gray-700 my-1" />
+        <button
+          type="button"
+          class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          @click="verwijder(actiemenuQuote)"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m2-3h6a1 1 0 011 1H8a1 1 0 011-1z"/></svg>
+          Verwijderen
+        </button>
+      </div>
     </Teleport>
 
     <div class="py-6">
@@ -378,64 +439,16 @@ function fmtDatum(iso) {
                 <td class="px-4 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.created_at) }}</td>
 
                 <!-- Actiemenu -->
-                <td class="px-4 py-3 relative" @click.stop>
+                <td class="px-4 py-3" @click.stop>
                   <button
                     type="button"
                     class="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                    @click="toggleActiemenu(q.id)"
+                    @click="toggleActiemenu(q, $event)"
                   >
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                       <circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>
                     </svg>
                   </button>
-
-                  <div
-                    v-if="actiemenu === q.id"
-                    class="absolute right-8 top-2 z-20 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 w-48"
-                  >
-                    <a
-                      :href="route('quotes.pdf.preview', q.id)"
-                      target="_blank"
-                      class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
-                      @click="actiemenu = null"
-                    >
-                      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                      Bekijken
-                    </a>
-                    <button
-                      type="button"
-                      class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
-                      @click="router.visit(route('quotes.edit', q.id)); actiemenu = null"
-                    >
-                      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                      Bewerken
-                    </button>
-                    <a
-                      :href="route('quotes.pdf', q.id)"
-                      class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
-                      @click="actiemenu = null"
-                    >
-                      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                      PDF downloaden
-                    </a>
-                    <button
-                      type="button"
-                      class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
-                      @click="dupliceer(q)"
-                    >
-                      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                      Dupliceren (V{{ (q.versie ?? 1) + 1 }})
-                    </button>
-                    <div class="border-t border-gray-100 dark:border-gray-700 my-1" />
-                    <button
-                      type="button"
-                      class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                      @click="verwijder(q)"
-                    >
-                      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m2-3h6a1 1 0 011 1H8a1 1 0 011-1z"/></svg>
-                      Verwijderen
-                    </button>
-                  </div>
                 </td>
               </tr>
             </tbody>
