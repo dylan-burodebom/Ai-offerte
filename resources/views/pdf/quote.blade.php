@@ -330,12 +330,11 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
             foreach ($words as $w) {
                 if (mb_strlen($w) >= 6) {
                     $streak++;
-                    if ($streak > 2) {
+                    $current[] = $w;
+                    if ($streak >= 2) {
                         $lines[]  = implode(' ', $current);
-                        $current  = [$w];
-                        $streak   = 1;
-                    } else {
-                        $current[] = $w;
+                        $current  = [];
+                        $streak   = 0;
                     }
                 } else {
                     $streak    = 0;
