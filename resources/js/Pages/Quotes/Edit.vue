@@ -821,17 +821,17 @@ function blockOmschrijving(block) {
               </div>
               <div>
                 <p class="text-xs text-gray-400 dark:text-gray-500 mb-1.5">Geldig tot</p>
-                <input v-model="meta.geldig_tot" type="date" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" @change="onMetaChange" />
+                <input v-model="meta.geldig_tot" type="date" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
               </div>
             </div>
             <div class="mb-5">
               <p class="text-xs text-gray-400 dark:text-gray-500 mb-1.5">Titel</p>
-              <input v-model="meta.titel" type="text" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" @input="onMetaChange" />
+              <input v-model="meta.titel" type="text" class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </div>
             <div>
               <p class="text-xs text-gray-400 dark:text-gray-500 mb-1.5">Ruimte tussen blokken (PDF)</p>
               <div class="flex items-center gap-2">
-                <input v-model.number="meta.pdf_blok_ruimte" type="number" min="0" max="60" class="w-24 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" @change="onMetaChange" />
+                <input v-model.number="meta.pdf_blok_ruimte" type="number" min="0" max="60" class="w-24 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
                 <span class="text-xs text-gray-400 dark:text-gray-500">mm</span>
               </div>
             </div>
@@ -846,7 +846,7 @@ function blockOmschrijving(block) {
                 :class="meta.toon_btw ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'"
                 role="switch"
                 :aria-checked="meta.toon_btw"
-                @click="meta.toon_btw = !meta.toon_btw; onMetaChange()"
+                @click="meta.toon_btw = !meta.toon_btw"
               >
                 <span
                   class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform duration-200"
