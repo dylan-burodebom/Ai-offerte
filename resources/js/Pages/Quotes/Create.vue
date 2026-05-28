@@ -400,14 +400,14 @@ function blockOmschrijving(section) {
           <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 font-medium shrink-0">concept</span>
         </div>
         <div class="flex items-center gap-1.5 shrink-0">
-          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" @click="prev">
+          <button type="button" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" @click="prev">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            Opnieuw genereren
+            <span class="hidden sm:inline">Opnieuw genereren</span>
           </button>
-          <button type="button" :disabled="saving" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors" @click="saveEditor">
+          <button type="button" :disabled="saving" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors" @click="saveEditor">
             <svg v-if="saving" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
             <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            {{ saving ? 'Opslaan…' : 'Offerte opslaan' }}
+            <span class="hidden sm:inline">{{ saving ? 'Opslaan…' : 'Offerte opslaan' }}</span>
           </button>
         </div>
       </div>
@@ -433,7 +433,7 @@ function blockOmschrijving(section) {
             <svg v-if="i < 3" class="w-3 h-3 text-gray-300 dark:text-gray-600 mx-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
           </template>
         </div>
-        <div class="w-24" />
+        <div class="hidden sm:block w-24" />
       </div>
     </template>
 
@@ -483,7 +483,7 @@ function blockOmschrijving(section) {
       <div class="flex overflow-hidden" style="height: calc(100vh - 6.25rem)">
 
         <!-- ── Linker sidebar ── -->
-        <aside class="w-60 shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-white dark:bg-gray-800 overflow-hidden">
+        <aside class="hidden lg:flex w-60 shrink-0 border-r border-gray-200 dark:border-gray-700 flex-col bg-white dark:bg-gray-800 overflow-hidden">
           <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 shrink-0">
             <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Blokken</p>
           </div>
@@ -520,7 +520,7 @@ function blockOmschrijving(section) {
         <!-- OPBOUW tab: compacte structuurlijst                           -->
         <!-- ══════════════════════════════════════════════════════════════ -->
         <template v-if="activeTab === 'opbouw'">
-          <div class="w-[22rem] shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden">
+          <div class="flex-1 lg:w-[22rem] lg:flex-none lg:shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden">
 
             <div class="px-5 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shrink-0">
               <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Offerte structuur</h2>
@@ -595,7 +595,7 @@ function blockOmschrijving(section) {
           </div>
 
           <!-- Rechts: PDF preview -->
-          <div ref="rightPdfContainer" class="flex-1 flex flex-col bg-gray-100 dark:bg-gray-950 overflow-hidden">
+          <div ref="rightPdfContainer" class="hidden lg:flex flex-1 flex-col bg-gray-100 dark:bg-gray-950 overflow-hidden">
             <div class="flex items-center justify-between px-5 py-2.5 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shrink-0">
               <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Preview</span>
               <div class="flex items-center gap-0.5 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
@@ -620,7 +620,7 @@ function blockOmschrijving(section) {
         <!-- INHOUD tab: volledige editors                                 -->
         <!-- ══════════════════════════════════════════════════════════════ -->
         <div v-else-if="activeTab === 'inhoud'" class="flex-1 overflow-y-auto py-6">
-          <div class="max-w-2xl mx-auto px-6 space-y-5">
+          <div class="max-w-2xl mx-auto px-3 sm:px-6 space-y-5">
 
             <!-- Secties editors -->
             <div
@@ -732,7 +732,7 @@ function blockOmschrijving(section) {
       <div class="flex overflow-hidden" style="height: calc(100vh - 6.25rem)">
 
         <!-- Linker sidebar (decoratief) -->
-        <aside class="w-60 shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-white dark:bg-gray-800 overflow-hidden">
+        <aside class="hidden lg:flex w-60 shrink-0 border-r border-gray-200 dark:border-gray-700 flex-col bg-white dark:bg-gray-800 overflow-hidden">
           <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 shrink-0">
             <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Blokken</p>
           </div>
@@ -758,7 +758,7 @@ function blockOmschrijving(section) {
 
         <!-- Midden: formulier per stap -->
         <div class="flex-1 overflow-y-auto py-8">
-          <div class="max-w-xl mx-auto px-6">
+          <div class="max-w-xl mx-auto px-3 sm:px-6">
 
             <!-- Stap 1: Klant selecteren -->
             <div v-if="currentStep === 1">

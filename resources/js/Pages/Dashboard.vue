@@ -95,7 +95,7 @@ const chartSeries = computed(() => [
     </template>
 
     <div class="py-6">
-      <div class="max-w-7xl mx-auto px-6 space-y-6">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 space-y-6">
 
         <!-- ── Verjaardagen ───────────────────────────────────────── -->
         <div v-if="jarigen.length" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-sm">
@@ -135,23 +135,23 @@ const chartSeries = computed(() => [
         </div>
 
         <!-- ── Greeting + period filter ──────────────────────────── -->
-        <div class="flex items-end justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ greeting }}, {{ userName }} 👋</h1>
             <p class="text-sm text-gray-400 dark:text-gray-500 mt-0.5">Hier is wat er speelt in je offertes.</p>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <svg v-if="loading" class="w-4 h-4 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
+          <div class="flex items-center gap-2">
+            <svg v-if="loading" class="w-4 h-4 animate-spin text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
             </svg>
-            <div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+            <div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1 overflow-x-auto">
               <button
                 v-for="p in PERIODES"
                 :key="p.key"
                 type="button"
                 :disabled="loading"
-                class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors disabled:opacity-50"
+                class="px-2.5 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors disabled:opacity-50 whitespace-nowrap"
                 :class="periode === p.key
                   ? 'bg-blue-600 text-white shadow-sm'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'"
@@ -167,43 +167,43 @@ const chartSeries = computed(() => [
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
           <!-- Totaal offertes -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 sm:p-5 flex items-start gap-2 sm:gap-4">
+            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
               <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
               </svg>
             </div>
             <div class="min-w-0">
               <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Totaal offertes</p>
-              <p class="text-3xl font-bold text-gray-900 dark:text-white mt-0.5 leading-none">{{ stats.totaal }}</p>
+              <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-0.5 leading-none">{{ stats.totaal }}</p>
               <p class="text-sm text-gray-400 dark:text-gray-500 mt-1.5">{{ periodeLabel }}</p>
             </div>
           </div>
 
           <!-- Openstaand -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-orange-50 dark:bg-orange-900/30 flex items-center justify-center shrink-0">
+          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 sm:p-5 flex items-start gap-2 sm:gap-4">
+            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-50 dark:bg-orange-900/30 flex items-center justify-center shrink-0">
               <svg class="w-6 h-6 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
             <div class="min-w-0">
               <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Openstaand</p>
-              <p class="text-3xl font-bold text-gray-900 dark:text-white mt-0.5 leading-none">{{ stats.openstaand }}</p>
+              <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-0.5 leading-none">{{ stats.openstaand }}</p>
               <p class="text-sm text-gray-400 dark:text-gray-500 mt-1.5">{{ stats.omzetOpenstaand ? fmt(stats.omzetOpenstaand) : `${stats.verzonden ?? 0} verzonden` }}</p>
             </div>
           </div>
 
           <!-- Gewonnen -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center shrink-0">
+          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 sm:p-5 flex items-start gap-2 sm:gap-4">
+            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center shrink-0">
               <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
             <div class="min-w-0">
               <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Gewonnen</p>
-              <p class="text-3xl font-bold text-gray-900 dark:text-white mt-0.5 leading-none">{{ stats.gewonnen }}</p>
+              <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-0.5 leading-none">{{ stats.gewonnen }}</p>
               <p class="text-sm text-gray-400 dark:text-gray-500 mt-1.5">
                 {{ stats.conversie !== null ? `${stats.conversie}% conversie` : 'Geen data' }}
               </p>
@@ -211,8 +211,8 @@ const chartSeries = computed(() => [
           </div>
 
           <!-- Omzet gewonnen -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center shrink-0">
+          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 sm:p-5 flex items-start gap-2 sm:gap-4">
+            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center shrink-0">
               <svg class="w-6 h-6 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
@@ -309,16 +309,17 @@ const chartSeries = computed(() => [
             Nog geen offertes. <a :href="route('quotes.create')" class="text-blue-600 dark:text-blue-400 hover:underline">Maak je eerste offerte aan.</a>
           </div>
 
-          <table v-else class="w-full text-sm">
+          <div class="overflow-x-auto">
+          <table v-if="stats.recente?.length" class="w-full text-sm">
             <thead class="bg-gray-50 dark:bg-gray-700/50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Nummer</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Klant</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Titel</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Status</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Bedrag</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Geldig tot</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Acties</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Nummer</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden sm:table-cell">Klant</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden md:table-cell">Titel</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Status</th>
+                <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden sm:table-cell">Bedrag</th>
+                <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden lg:table-cell">Geldig tot</th>
+                <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Acties</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -328,42 +329,30 @@ const chartSeries = computed(() => [
                 class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors cursor-pointer"
                 @click="router.visit(route('quotes.edit', q.id))"
               >
-                <td class="px-6 py-3 font-mono text-xs text-blue-600 dark:text-blue-400 font-medium">{{ q.offerte_nummer }}</td>
-                <td class="px-6 py-3 text-gray-700 dark:text-gray-300">{{ q.client?.naam ?? '—' }}</td>
-                <td class="px-6 py-3 text-gray-500 dark:text-gray-400 max-w-[180px] truncate">{{ q.titel }}</td>
-                <td class="px-6 py-3"><StatusBadge :status="q.status" /></td>
-                <td class="px-6 py-3 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                <td class="px-4 sm:px-6 py-3 font-mono text-xs text-blue-600 dark:text-blue-400 font-medium whitespace-nowrap">{{ q.offerte_nummer }}</td>
+                <td class="px-4 sm:px-6 py-3 text-gray-700 dark:text-gray-300 hidden sm:table-cell">{{ q.client?.naam ?? '—' }}</td>
+                <td class="px-4 sm:px-6 py-3 text-gray-500 dark:text-gray-400 max-w-[180px] truncate hidden md:table-cell">{{ q.titel }}</td>
+                <td class="px-4 sm:px-6 py-3"><StatusBadge :status="q.status" /></td>
+                <td class="px-4 sm:px-6 py-3 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap hidden sm:table-cell">
                   {{ q.totaal ? fmt(q.totaal) : '—' }}
                 </td>
-                <td class="px-6 py-3 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.geldig_tot) }}</td>
-                <td class="px-6 py-3 text-right">
-                  <div class="flex items-center justify-end gap-1">
-                    <button
-                      type="button"
-                      class="p-1.5 rounded-md text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                      title="Bekijken"
-                      @click.stop="router.visit(route('quotes.edit', q.id))"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      class="p-1.5 rounded-md text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                      title="Bewerken"
-                      @click.stop="router.visit(route('quotes.edit', q.id))"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                      </svg>
-                    </button>
-                  </div>
+                <td class="px-4 sm:px-6 py-3 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap hidden lg:table-cell">{{ fmtDatum(q.geldig_tot) }}</td>
+                <td class="px-4 sm:px-6 py-3 text-right">
+                  <button
+                    type="button"
+                    class="p-1.5 rounded-md text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                    title="Bewerken"
+                    @click.stop="router.visit(route('quotes.edit', q.id))"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                    </svg>
+                  </button>
                 </td>
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
 
       </div>

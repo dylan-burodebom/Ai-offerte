@@ -75,7 +75,7 @@ function getInitials(naam) {
     </template>
 
     <div class="py-6">
-      <div class="max-w-7xl mx-auto px-6 space-y-4">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 space-y-4">
 
         <!-- Filter bar -->
         <div class="flex gap-2 flex-wrap">

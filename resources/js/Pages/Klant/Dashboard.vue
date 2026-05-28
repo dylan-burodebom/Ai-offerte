@@ -78,7 +78,7 @@ function closePdf() {
   <KlantLayout>
     <template #title>{{ client.naam }}</template>
 
-    <div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
 
       <!-- Header -->
       <div class="flex items-center gap-4 mb-8">
@@ -102,16 +102,17 @@ function closePdf() {
           <p class="text-sm text-gray-400 dark:text-gray-500">Nog geen offertes beschikbaar.</p>
         </div>
 
-        <table v-else class="w-full text-sm">
+        <div class="overflow-x-auto">
+        <table v-if="visibleQuotes.length" class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-              <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Nummer</th>
-              <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Omschrijving</th>
-              <th class="px-6 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Status</th>
-              <th class="px-6 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Bedrag</th>
-              <th class="px-6 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Datum</th>
-              <th class="px-6 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Geldig tot</th>
-              <th class="px-6 py-3.5 w-12" />
+              <th class="px-4 sm:px-6 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Nummer</th>
+              <th class="px-4 sm:px-6 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden sm:table-cell">Omschrijving</th>
+              <th class="px-4 sm:px-6 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Status</th>
+              <th class="px-4 sm:px-6 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden sm:table-cell">Bedrag</th>
+              <th class="px-4 sm:px-6 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden md:table-cell">Datum</th>
+              <th class="px-4 sm:px-6 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden lg:table-cell">Geldig tot</th>
+              <th class="px-4 sm:px-6 py-3.5 w-12" />
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -121,31 +122,32 @@ function closePdf() {
               class="hover:bg-gray-50 dark:hover:bg-gray-700/40 cursor-pointer transition-colors group"
               @click="openPdf(q)"
             >
-              <td class="px-6 py-4 font-mono text-xs text-blue-600 dark:text-blue-400 font-medium whitespace-nowrap">
+              <td class="px-4 sm:px-6 py-4 font-mono text-xs text-blue-600 dark:text-blue-400 font-medium whitespace-nowrap">
                 {{ q.offerte_nummer }}
                 <span v-if="q.versie > 1" class="ml-1 text-gray-400 text-[10px]">v{{ q.versie }}</span>
               </td>
-              <td class="px-6 py-4 text-gray-700 dark:text-gray-300 max-w-xs truncate">{{ q.titel }}</td>
-              <td class="px-6 py-4">
+              <td class="px-4 sm:px-6 py-4 text-gray-700 dark:text-gray-300 max-w-xs truncate hidden sm:table-cell">{{ q.titel }}</td>
+              <td class="px-4 sm:px-6 py-4">
                 <span
                   class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
                   :class="STATUS_CLASSES[q.status] ?? 'bg-gray-100 text-gray-600'"
                 >{{ STATUS_LABELS[q.status] ?? q.status }}</span>
               </td>
-              <td class="px-6 py-4 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ fmtBedrag(q.totaal) }}</td>
-              <td class="px-6 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.created_at) }}</td>
-              <td class="px-6 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.geldig_tot) }}</td>
-              <td class="px-6 py-4 text-right">
-                <span class="inline-flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity font-medium whitespace-nowrap">
+              <td class="px-4 sm:px-6 py-4 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap hidden sm:table-cell">{{ fmtBedrag(q.totaal) }}</td>
+              <td class="px-4 sm:px-6 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap hidden md:table-cell">{{ fmtDatum(q.created_at) }}</td>
+              <td class="px-4 sm:px-6 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap hidden lg:table-cell">{{ fmtDatum(q.geldig_tot) }}</td>
+              <td class="px-4 sm:px-6 py-4 text-right">
+                <span class="inline-flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400 group-hover:opacity-100 opacity-50 sm:opacity-0 transition-opacity font-medium whitespace-nowrap">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                   </svg>
-                  Bekijken
+                  <span class="hidden sm:inline">Bekijken</span>
                 </span>
               </td>
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
 
       <p class="text-center text-xs text-gray-300 dark:text-gray-600 mt-8">

@@ -6,19 +6,30 @@ import { useDarkMode } from '@/composables/useDarkMode'
 const { dark, toggle, init } = useDarkMode()
 onMounted(init)
 
-const avatarError   = ref(false)
-const dropdownOpen  = ref(false)
+const avatarError  = ref(false)
+const dropdownOpen = ref(false)
+const sidebarOpen  = ref(false)
 </script>
 
 <template>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
 
+        <!-- Mobile sidebar overlay -->
+        <div
+            v-if="sidebarOpen"
+            class="fixed inset-0 bg-black/50 z-20 md:hidden"
+            @click="sidebarOpen = false"
+        />
+
         <!-- ── Sidebar ────────────────────────────────────────── -->
-        <aside class="fixed inset-y-0 left-0 w-52 bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 flex flex-col z-30">
+        <aside
+            class="fixed inset-y-0 left-0 w-52 bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 flex flex-col z-30 transition-transform duration-200"
+            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
+        >
 
             <!-- Logo -->
             <div class="px-5 pt-5 pb-5">
-                <Link :href="route('dashboard')" class="leading-none">
+                <Link :href="route('dashboard')" class="leading-none" @click="sidebarOpen = false">
                     <p class="font-black text-[18px] tracking-tight text-gray-900 dark:text-white leading-none">
                         AI<span class="text-blue-500">_</span>offerte
                     </p>
@@ -37,6 +48,7 @@ const dropdownOpen  = ref(false)
                     :class="route().current('dashboard')
                         ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
                         : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                    @click="sidebarOpen = false"
                 >
                     <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -50,6 +62,7 @@ const dropdownOpen  = ref(false)
                     :class="route().current('clients.*')
                         ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
                         : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                    @click="sidebarOpen = false"
                 >
                     <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
@@ -63,6 +76,7 @@ const dropdownOpen  = ref(false)
                     :class="route().current('quotes.*')
                         ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
                         : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                    @click="sidebarOpen = false"
                 >
                     <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -77,6 +91,7 @@ const dropdownOpen  = ref(false)
                     :class="route().current('admin.prompts*')
                         ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
                         : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                    @click="sidebarOpen = false"
                 >
                     <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m1.636-6.364l.707.707M6.343 17.657l-.707.707M17.657 17.657l.707.707M12 21v-1M15.536 8.464a5 5 0 11-7.072 0"/>
@@ -91,6 +106,7 @@ const dropdownOpen  = ref(false)
                     :class="route().current('admin.gebruikers*')
                         ? 'pl-[17px] border-l-[3px] border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
                         : 'mx-2 pl-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'"
+                    @click="sidebarOpen = false"
                 >
                     <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -103,25 +119,17 @@ const dropdownOpen  = ref(false)
             <!-- Bottom: profiel dropdown -->
             <div class="border-t border-gray-100 dark:border-gray-700 p-3 relative">
 
-                <!-- Backdrop (sluit dropdown) -->
-                <div
-                    v-if="dropdownOpen"
-                    class="fixed inset-0 z-40"
-                    @click="dropdownOpen = false"
-                />
+                <div v-if="dropdownOpen" class="fixed inset-0 z-40" @click="dropdownOpen = false" />
 
-                <!-- Dropdown menu (opent omhoog) -->
                 <div
                     v-if="dropdownOpen"
                     class="absolute bottom-full left-3 right-3 mb-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-xl overflow-hidden z-50"
                 >
-                    <!-- Profielkop -->
                     <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                         <p class="text-xs font-semibold text-gray-900 dark:text-white leading-tight">{{ $page.props.auth.user.name }}</p>
                         <p class="text-xs text-gray-400 dark:text-gray-500 leading-tight mt-0.5">{{ $page.props.auth.user.email }}</p>
                     </div>
 
-                    <!-- Mijn profiel -->
                     <Link
                         :href="route('profile.edit')"
                         class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -133,7 +141,6 @@ const dropdownOpen  = ref(false)
                         Mijn profiel
                     </Link>
 
-                    <!-- Donkere modus -->
                     <button
                         type="button"
                         class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -148,10 +155,8 @@ const dropdownOpen  = ref(false)
                         {{ dark ? 'Lichte modus' : 'Donkere modus' }}
                     </button>
 
-                    <!-- Scheidingslijn -->
                     <div class="border-t border-gray-100 dark:border-gray-700 my-1" />
 
-                    <!-- Uitloggen -->
                     <Link
                         :href="route('logout')"
                         method="post"
@@ -166,13 +171,11 @@ const dropdownOpen  = ref(false)
                     </Link>
                 </div>
 
-                <!-- Trigger knop -->
                 <button
                     type="button"
                     class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors group"
                     @click="dropdownOpen = !dropdownOpen"
                 >
-                    <!-- Avatar -->
                     <img
                         v-if="$page.props.auth.user.avatar_url && !avatarError"
                         :src="$page.props.auth.user.avatar_url"
@@ -186,14 +189,10 @@ const dropdownOpen  = ref(false)
                     >
                         {{ $page.props.auth.user.name.charAt(0).toUpperCase() }}
                     </div>
-
-                    <!-- Naam + rol -->
                     <div class="flex-1 min-w-0 text-left">
                         <p class="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate leading-tight">{{ $page.props.auth.user.name }}</p>
                         <p class="text-xs text-gray-400 dark:text-gray-500 leading-tight capitalize">{{ $page.props.auth.role === 'admin' ? 'Beheerder' : $page.props.auth.role === 'klant' ? 'Klant' : 'Medewerker' }}</p>
                     </div>
-
-                    <!-- Chevron -->
                     <svg
                         class="w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform duration-150"
                         :class="dropdownOpen ? 'rotate-180' : ''"
@@ -207,10 +206,20 @@ const dropdownOpen  = ref(false)
         </aside>
 
         <!-- ── Main ──────────────────────────────────────────── -->
-        <div class="ml-52 flex-1 min-w-0 flex flex-col">
+        <div class="flex-1 min-w-0 flex flex-col md:ml-52">
 
             <!-- Top header bar -->
-            <header class="sticky top-0 z-20 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 h-14 flex items-center px-6">
+            <header class="sticky top-0 z-20 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 h-14 flex items-center gap-3 px-3 md:px-6">
+                <!-- Hamburger (mobile only) -->
+                <button
+                    type="button"
+                    class="md:hidden p-2 -ml-1 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shrink-0"
+                    @click="sidebarOpen = true"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
                 <div class="flex-1 min-w-0">
                     <slot name="header" />
                 </div>

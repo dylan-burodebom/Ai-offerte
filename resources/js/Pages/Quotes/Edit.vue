@@ -440,7 +440,7 @@ function blockOmschrijving(block) {
           <svg class="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
           <span class="text-sm font-semibold font-mono text-gray-800 dark:text-white truncate">{{ quote.offerte_nummer }}</span>
           <StatusBadge :status="huidigStatus" />
-          <span v-if="huidigeReden" class="text-xs px-2 py-0.5 rounded-full italic max-w-[140px] truncate shrink-0" :class="huidigStatus === 'gewonnen' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'" :title="huidigeReden">{{ huidigeReden }}</span>
+          <span v-if="huidigeReden" class="hidden sm:inline text-xs px-2 py-0.5 rounded-full italic max-w-[140px] truncate shrink-0" :class="huidigStatus === 'gewonnen' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'" :title="huidigeReden">{{ huidigeReden }}</span>
         </div>
 
         <!-- Action buttons -->
@@ -448,17 +448,17 @@ function blockOmschrijving(block) {
           <!-- Save status indicator -->
           <span class="text-xs mr-1" :class="statusClass(metaStatus)">{{ statusLabel(metaStatus) }}</span>
 
-          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" @click="openPdfPreview">
+          <button type="button" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" @click="openPdfPreview">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-            Preview
+            <span class="hidden sm:inline">Preview</span>
           </button>
-          <a :href="route('quotes.pdf', quote.id)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          <a :href="route('quotes.pdf', quote.id)" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-            PDF
+            <span class="hidden sm:inline">PDF</span>
           </a>
-          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" @click="saveAll">
+          <button type="button" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" @click="saveAll">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            Opslaan
+            <span class="hidden sm:inline">Opslaan</span>
           </button>
         </div>
 
@@ -488,7 +488,7 @@ function blockOmschrijving(block) {
       <!-- ── LINKER SIDEBAR (opbouw & inhoud tabs) ── -->
       <aside
         v-if="activeTab === 'opbouw' || activeTab === 'inhoud'"
-        class="w-60 shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-white dark:bg-gray-800 overflow-hidden"
+        class="hidden lg:flex w-60 shrink-0 border-r border-gray-200 dark:border-gray-700 flex-col bg-white dark:bg-gray-800 overflow-hidden"
       >
         <!-- Blokken tab -->
         <div class="flex-1 flex flex-col overflow-hidden">
@@ -529,7 +529,7 @@ function blockOmschrijving(block) {
       <template v-if="activeTab === 'opbouw'">
 
         <!-- Midden: Offerte structuur -->
-        <div class="w-[22rem] shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden">
+        <div class="flex-1 lg:w-[22rem] lg:flex-none lg:shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden">
 
           <!-- Header -->
           <div class="px-5 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shrink-0">
@@ -625,7 +625,7 @@ function blockOmschrijving(block) {
         </div>
 
         <!-- Rechts: PDF preview -->
-        <div ref="rightPdfContainer" class="flex-1 flex flex-col bg-gray-100 dark:bg-gray-950 overflow-hidden">
+        <div ref="rightPdfContainer" class="hidden lg:flex flex-1 flex-col bg-gray-100 dark:bg-gray-950 overflow-hidden">
           <!-- Preview header -->
           <div class="flex items-center justify-between px-5 py-2.5 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shrink-0">
             <!-- Preview refresh knop -->
@@ -676,7 +676,7 @@ function blockOmschrijving(block) {
       <!-- INHOUD tab: volledige editors                                     -->
       <!-- ══════════════════════════════════════════════════════════════════ -->
       <div v-else-if="activeTab === 'inhoud'" class="flex-1 overflow-y-auto py-6">
-        <div class="max-w-2xl mx-auto px-6 space-y-5">
+        <div class="max-w-2xl mx-auto px-3 sm:px-6 space-y-5">
 
           <!-- Reden panel -->
           <div v-if="redenPanel" class="rounded-xl border-2 p-5 space-y-3" :class="redenPanel === 'gewonnen' ? 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20' : 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20'">
@@ -807,13 +807,13 @@ function blockOmschrijving(block) {
       <!-- INSTELLINGEN tab                                                  -->
       <!-- ══════════════════════════════════════════════════════════════════ -->
       <div v-else-if="activeTab === 'instellingen'" class="flex-1 overflow-y-auto py-6">
-        <div class="max-w-xl mx-auto px-6 space-y-5">
+        <div class="max-w-xl mx-auto px-3 sm:px-6 space-y-5">
 
           <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
             <div class="flex items-center justify-between mb-5">
               <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Offerte details</h3>
             </div>
-            <div class="grid grid-cols-2 gap-5 mb-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
               <div>
                 <p class="text-xs text-gray-400 dark:text-gray-500 mb-1.5">Klant</p>
                 <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ quote.client?.naam }}</p>
@@ -871,7 +871,7 @@ function blockOmschrijving(block) {
       <!-- ACTIVITEITEN tab                                                  -->
       <!-- ══════════════════════════════════════════════════════════════════ -->
       <div v-else-if="activeTab === 'activiteiten'" class="flex-1 overflow-y-auto py-6">
-        <div class="max-w-xl mx-auto px-6 space-y-5">
+        <div class="max-w-xl mx-auto px-3 sm:px-6 space-y-5">
 
           <!-- Status kaart -->
           <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">

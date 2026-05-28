@@ -19,7 +19,7 @@ defineProps({
         </template>
 
         <div class="py-6">
-            <div class="max-w-2xl mx-auto px-6 space-y-5">
+            <div class="max-w-2xl mx-auto px-3 sm:px-6 space-y-5">
 
                 <!-- Profielfoto + gegevens -->
                 <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">

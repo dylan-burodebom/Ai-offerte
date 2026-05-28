@@ -119,7 +119,7 @@ async function loadPreview() {
           <h2 class="text-base font-semibold text-gray-800 dark:text-white">Prompt Beheer</h2>
           <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400">v{{ versie }}</span>
           <Transition enter-active-class="transition duration-200" enter-from-class="opacity-0" leave-to-class="opacity-0">
-            <span v-if="savedAt && !saveError" class="text-xs text-green-600 dark:text-green-400 font-medium">
+            <span v-if="savedAt && !saveError" class="hidden sm:inline text-xs text-green-600 dark:text-green-400 font-medium">
               Opgeslagen om {{ savedAt }}
             </span>
           </Transition>
@@ -127,7 +127,7 @@ async function loadPreview() {
         <div class="flex items-center gap-2 shrink-0">
           <button
             type="button"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             @click="previewOpen = !previewOpen"
           >
             <svg v-if="!previewOpen" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -137,12 +137,12 @@ async function loadPreview() {
             <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
-            {{ previewOpen ? 'Preview sluiten' : 'Preview prompt' }}
+            <span class="hidden sm:inline">{{ previewOpen ? 'Preview sluiten' : 'Preview prompt' }}</span>
           </button>
           <button
             type="button"
             :disabled="saving"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 disabled:opacity-50 transition-colors"
+            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 disabled:opacity-50 transition-colors"
             @click="save"
           >
             <svg v-if="saving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -152,14 +152,14 @@ async function loadPreview() {
             <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
             </svg>
-            {{ saving ? 'Opslaan…' : 'Opslaan' }}
+            <span class="hidden sm:inline">{{ saving ? 'Opslaan…' : 'Opslaan' }}</span>
           </button>
         </div>
       </div>
     </template>
 
     <div class="py-6">
-      <div class="max-w-6xl mx-auto px-6 space-y-5">
+      <div class="max-w-6xl mx-auto px-3 sm:px-6 space-y-5">
 
         <!-- Foutmelding -->
         <p v-if="saveError" class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl px-4 py-3">

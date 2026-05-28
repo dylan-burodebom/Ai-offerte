@@ -172,12 +172,12 @@ function fmtDatum(iso) {
         <div class="flex items-center gap-2">
           <a
             :href="route('quotes.export', { status: filters.status, sector: filters.sector })"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            class="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
             </svg>
-            CSV export
+            <span class="hidden sm:inline">CSV export</span>
           </a>
           <a
             :href="route('quotes.create')"
@@ -245,11 +245,11 @@ function fmtDatum(iso) {
     </Teleport>
 
     <div class="py-6">
-      <div class="max-w-7xl mx-auto px-6 space-y-4">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 space-y-4">
 
         <!-- Filters -->
         <div class="flex gap-3 flex-wrap">
-          <div class="relative flex-1 min-w-48">
+          <div class="relative flex-1 min-w-40 sm:min-w-48">
             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
@@ -333,6 +333,7 @@ function fmtDatum(iso) {
 
         <!-- Tabel -->
         <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+          <div class="overflow-x-auto">
           <table class="min-w-full text-sm">
             <thead class="bg-gray-50/60 dark:bg-gray-700/30 border-b border-gray-100 dark:border-gray-700">
               <tr>
@@ -353,8 +354,8 @@ function fmtDatum(iso) {
                     </svg>
                   </span>
                 </th>
-                <th class="px-4 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500">Klant</th>
-                <th class="px-4 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500">Titel</th>
+                <th class="px-4 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 hidden sm:table-cell">Klant</th>
+                <th class="px-4 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 hidden md:table-cell">Titel</th>
                 <th class="px-4 py-3.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none" @click="setSort('status')">
                   <span class="inline-flex items-center gap-1">Status
                     <svg class="w-3 h-3" :class="sortState('status') !== 'none' ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -364,7 +365,7 @@ function fmtDatum(iso) {
                     </svg>
                   </span>
                 </th>
-                <th class="px-4 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap" @click="setSort('totaal')">
+                <th class="px-4 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap hidden sm:table-cell" @click="setSort('totaal')">
                   <span class="inline-flex items-center justify-end gap-1">Bedrag
                     <svg class="w-3 h-3" :class="sortState('totaal') !== 'none' ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                       <path v-if="sortState('totaal') === 'asc'" stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
@@ -373,7 +374,7 @@ function fmtDatum(iso) {
                     </svg>
                   </span>
                 </th>
-                <th class="px-4 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap" @click="setSort('geldig_tot')">
+                <th class="px-4 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap hidden lg:table-cell" @click="setSort('geldig_tot')">
                   <span class="inline-flex items-center justify-end gap-1">Geldig tot
                     <svg class="w-3 h-3" :class="sortState('geldig_tot') !== 'none' ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                       <path v-if="sortState('geldig_tot') === 'asc'" stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
@@ -382,7 +383,7 @@ function fmtDatum(iso) {
                     </svg>
                   </span>
                 </th>
-                <th class="px-4 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap" @click="setSort('created_at')">
+                <th class="px-4 py-3.5 text-right text-xs font-medium text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 select-none whitespace-nowrap hidden lg:table-cell" @click="setSort('created_at')">
                   <span class="inline-flex items-center justify-end gap-1">Aangemaakt
                     <svg class="w-3 h-3" :class="sortState('created_at') !== 'none' ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                       <path v-if="sortState('created_at') === 'asc'" stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
@@ -396,7 +397,7 @@ function fmtDatum(iso) {
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700/60">
               <tr v-if="quotes.data.length === 0">
-                <td colspan="9" class="px-4 py-14 text-center text-gray-400 dark:text-gray-500">
+                <td colspan="9" class="px-4 py-14 text-center text-gray-400 dark:text-gray-500 whitespace-nowrap">
                   Geen offertes gevonden.
                   <a :href="route('quotes.create')" class="text-blue-600 dark:text-blue-400 hover:underline ml-1">Maak de eerste aan.</a>
                 </td>
@@ -420,11 +421,11 @@ function fmtDatum(iso) {
                   {{ q.offerte_nummer }}
                 </td>
 
-                <td class="px-4 py-4 font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
+                <td class="px-4 py-4 font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap cursor-pointer hidden sm:table-cell" @click="router.visit(route('quotes.edit', q.id))">
                   {{ q.client?.naam ?? '—' }}
                 </td>
 
-                <td class="px-4 py-4 text-gray-500 dark:text-gray-400 max-w-[180px] truncate cursor-pointer" @click="router.visit(route('quotes.edit', q.id))">
+                <td class="px-4 py-4 text-gray-500 dark:text-gray-400 max-w-[180px] truncate cursor-pointer hidden md:table-cell" @click="router.visit(route('quotes.edit', q.id))">
                   {{ q.titel }}
                 </td>
 
@@ -432,11 +433,11 @@ function fmtDatum(iso) {
                   <StatusBadge :status="q.status" />
                 </td>
 
-                <td class="px-4 py-4 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ fmt(q.totaal) }}</td>
+                <td class="px-4 py-4 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap hidden sm:table-cell">{{ fmt(q.totaal) }}</td>
 
-                <td class="px-4 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.geldig_tot) }}</td>
+                <td class="px-4 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap hidden lg:table-cell">{{ fmtDatum(q.geldig_tot) }}</td>
 
-                <td class="px-4 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.created_at) }}</td>
+                <td class="px-4 py-4 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap hidden lg:table-cell">{{ fmtDatum(q.created_at) }}</td>
 
                 <!-- Actiemenu -->
                 <td class="px-4 py-3" @click.stop>
@@ -453,6 +454,7 @@ function fmtDatum(iso) {
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
 
         <!-- Paginering + telling -->

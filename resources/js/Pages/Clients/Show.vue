@@ -148,10 +148,10 @@ function taalLabel(code) {
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
           <h2 class="text-base font-semibold text-gray-800 dark:text-white truncate">{{ client.naam }}</h2>
-          <span v-if="client.sector" class="shrink-0 text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400">{{ client.sector }}</span>
+          <span v-if="client.sector" class="hidden sm:inline shrink-0 text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400">{{ client.sector }}</span>
           <span
             v-if="client.relatie_status"
-            class="shrink-0 text-xs px-2 py-0.5 rounded-full capitalize"
+            class="hidden sm:inline shrink-0 text-xs px-2 py-0.5 rounded-full capitalize"
             :class="{
               'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400': client.relatie_status === 'klant',
               'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400': client.relatie_status === 'prospect',
@@ -174,7 +174,7 @@ function taalLabel(code) {
     </template>
 
     <div class="py-6">
-      <div class="max-w-5xl mx-auto px-6 space-y-6">
+      <div class="max-w-5xl mx-auto px-3 sm:px-6 space-y-6">
 
         <!-- ── Hero card ─────────────────────────────────────── -->
         <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
@@ -231,7 +231,7 @@ function taalLabel(code) {
 
             <!-- Algemeen -->
             <template v-if="detailTab === 'algemeen'">
-              <div class="grid grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div>
                   <p class="text-xs text-gray-400 dark:text-gray-500 mb-1">E-mail</p>
                   <a v-if="client.email" :href="`mailto:${client.email}`" class="text-sm text-blue-600 dark:text-blue-400 hover:underline break-all">{{ client.email }}</a>
@@ -273,7 +273,7 @@ function taalLabel(code) {
 
             <!-- Bank -->
             <template v-else-if="detailTab === 'bank'">
-              <div class="grid grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div>
                   <p class="text-xs text-gray-400 dark:text-gray-500 mb-1">Bank</p>
                   <p class="text-sm text-gray-700 dark:text-gray-300">{{ client.bank || '—' }}</p>
@@ -317,7 +317,7 @@ function taalLabel(code) {
 
             <!-- Extra -->
             <template v-else-if="detailTab === 'extra'">
-              <div class="grid grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div>
                   <p class="text-xs text-gray-400 dark:text-gray-500 mb-1">KvK-nummer</p>
                   <p class="text-sm text-gray-700 dark:text-gray-300">{{ client.kvk_nummer || '—' }}</p>
@@ -339,7 +339,7 @@ function taalLabel(code) {
 
             <!-- Instellingen -->
             <template v-else-if="detailTab === 'instellingen'">
-              <div class="grid grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div>
                   <p class="text-xs text-gray-400 dark:text-gray-500 mb-1">Relatiebeheerder</p>
                   <p class="text-sm text-gray-700 dark:text-gray-300">{{ client.relatiebeheerder?.name || '—' }}</p>
@@ -477,12 +477,18 @@ function taalLabel(code) {
             Nog geen contactpersonen toegevoegd.
           </div>
           <div v-else class="divide-y divide-gray-100 dark:divide-gray-700">
-            <div v-for="c in contactpersonen" :key="c.id" class="px-6 py-4 flex items-center gap-4">
-              <div class="shrink-0 w-9 h-9 rounded-full bg-violet-500 flex items-center justify-center text-white text-xs font-bold select-none">
+            <div v-for="c in contactpersonen" :key="c.id" class="px-6 py-4 flex items-start gap-4">
+              <div class="shrink-0 w-9 h-9 rounded-full bg-violet-500 flex items-center justify-center text-white text-xs font-bold select-none mt-0.5">
                 {{ getInitials(c.naam) }}
               </div>
               <div class="min-w-0 flex-1">
-                <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-1">{{ c.naam }}</p>
+                <div class="flex items-start justify-between gap-2 mb-1">
+                  <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ c.naam }}</p>
+                  <div class="flex gap-2 shrink-0">
+                    <button type="button" @click="openContactEdit(c)" class="text-xs px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Bewerken</button>
+                    <button type="button" @click="destroyContact(c)" class="text-xs px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Verwijderen</button>
+                  </div>
+                </div>
                 <div class="flex flex-wrap gap-4">
                   <a v-if="c.email" :href="`mailto:${c.email}`" class="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline">
                     <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -497,10 +503,6 @@ function taalLabel(code) {
                     {{ fmtDatum(c.geboortedatum) }}
                   </span>
                 </div>
-              </div>
-              <div class="flex gap-2 shrink-0">
-                <button type="button" @click="openContactEdit(c)" class="text-xs px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Bewerken</button>
-                <button type="button" @click="destroyContact(c)" class="text-xs px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Verwijderen</button>
               </div>
             </div>
           </div>
@@ -598,15 +600,16 @@ function taalLabel(code) {
             <a :href="route('quotes.create', { client_id: client.id })" class="text-blue-600 dark:text-blue-400 hover:underline ml-1">Maak de eerste aan.</a>
           </div>
 
-          <table v-else class="w-full text-sm">
+          <div class="overflow-x-auto">
+          <table v-if="quotes.length" class="w-full text-sm">
             <thead class="bg-gray-50 dark:bg-gray-700/50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Nummer</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Titel</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Status</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Bedrag</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Datum</th>
-                <th class="px-6 py-3" />
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Nummer</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden sm:table-cell">Titel</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Status</th>
+                <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden sm:table-cell">Bedrag</th>
+                <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide hidden md:table-cell">Datum</th>
+                <th class="px-4 sm:px-6 py-3" />
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -616,12 +619,12 @@ function taalLabel(code) {
                 class="hover:bg-gray-50 dark:hover:bg-gray-700/40 cursor-pointer transition-colors"
                 @click="router.visit(route('quotes.edit', q.id))"
               >
-                <td class="px-6 py-3 font-mono text-xs text-blue-600 dark:text-blue-400 font-medium whitespace-nowrap">{{ q.offerte_nummer }}</td>
-                <td class="px-6 py-3 text-gray-600 dark:text-gray-400 max-w-xs truncate">{{ q.titel }}</td>
-                <td class="px-6 py-3"><StatusBadge :status="q.status" /></td>
-                <td class="px-6 py-3 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ fmt(q.totaal) }}</td>
-                <td class="px-6 py-3 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{{ fmtDatum(q.created_at) }}</td>
-                <td class="px-6 py-3 text-right">
+                <td class="px-4 sm:px-6 py-3 font-mono text-xs text-blue-600 dark:text-blue-400 font-medium whitespace-nowrap">{{ q.offerte_nummer }}</td>
+                <td class="px-4 sm:px-6 py-3 text-gray-600 dark:text-gray-400 max-w-xs truncate hidden sm:table-cell">{{ q.titel }}</td>
+                <td class="px-4 sm:px-6 py-3"><StatusBadge :status="q.status" /></td>
+                <td class="px-4 sm:px-6 py-3 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap hidden sm:table-cell">{{ fmt(q.totaal) }}</td>
+                <td class="px-4 sm:px-6 py-3 text-right text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap hidden md:table-cell">{{ fmtDatum(q.created_at) }}</td>
+                <td class="px-4 sm:px-6 py-3 text-right">
                   <button
                     type="button"
                     class="text-xs text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium whitespace-nowrap"
@@ -631,6 +634,7 @@ function taalLabel(code) {
               </tr>
             </tbody>
           </table>
+          </div>
 
           <div v-if="quotes.length > 0" class="px-6 py-4 border-t border-gray-100 dark:border-gray-700 text-center">
             <a

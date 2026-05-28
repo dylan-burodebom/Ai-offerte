@@ -99,7 +99,7 @@ const SELECT_CLASS = 'w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:
       </div>
     </template>
 
-    <div class="max-w-5xl mx-auto px-6 py-8">
+    <div class="max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
 
         <!-- ── Nieuw account formulier ── -->
