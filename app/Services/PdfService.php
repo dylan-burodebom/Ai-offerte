@@ -85,12 +85,14 @@ class PdfService
     private function loadAssets(): array
     {
         // Fonts en afbeeldingen veranderen zelden — cache ze een week
-        return Cache::remember('pdf_static_assets_v1', now()->addWeek(), function () {
+        return Cache::remember('pdf_static_assets_v3', now()->addWeek(), function () {
             $fonts = [
-                'fira_regular'  => $this->b64(public_path('fonts/FiraSans-Regular.otf'),  'font/ttf'),
-                'fira_italic'   => $this->b64(public_path('fonts/FiraSans-Italic.ttf'),   'font/ttf'),
-                'fira_semibold' => $this->b64(public_path('fonts/FiraSans-SemiBold.ttf'), 'font/ttf'),
-                'fira_bold'     => $this->b64(public_path('fonts/FiraSans-Bold.otf'),     'font/ttf'),
+                'fira_regular'  => $this->b64(public_path('fonts/FiraSans-Regular.otf'),     'font/ttf'),
+                'fira_italic'   => $this->b64(public_path('fonts/FiraSans-Italic.ttf'),      'font/ttf'),
+                'fira_semibold' => $this->b64(public_path('fonts/FiraSans-SemiBold.ttf'),    'font/ttf'),
+                'fira_bold'     => $this->b64(public_path('fonts/FiraSans-Bold.otf'),        'font/ttf'),
+                'oxide_regular' => $this->b64(public_path('fonts/OxideSolidPro.ttf'),        'font/ttf'),
+                'oxide_bold'    => $this->b64(public_path('fonts/OxideSolidPro-Bold.ttf'),   'font/ttf'),
             ];
             $voorblad_bg   = $this->b64(public_path('images/voorblad_bg.png'),   'image/png');
             $achterblad_bg = $this->b64(public_path('images/achterblad_bg.png'), 'image/png');
@@ -98,13 +100,6 @@ class PdfService
 
             return compact('fonts', 'voorblad_bg', 'achterblad_bg', 'watermark');
         });
-    }
-
-    private function fontUrl(string $filename): string
-    {
-        $path = public_path('fonts/' . $filename);
-
-        return 'file:///' . str_replace('\\', '/', $path);
     }
 
     private function b64(string $path, string $mime): string

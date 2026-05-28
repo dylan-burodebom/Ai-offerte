@@ -20,6 +20,15 @@ return [
      */
     'convert_entities' => true,
 
+    'fonts' => [
+        'OxideSolidPro' => [
+            'R'  => public_path('fonts/OxideSolidPro.ttf'),
+            'B'  => public_path('fonts/OxideSolidPro-Bold.ttf'),
+            'I'  => public_path('fonts/OxideSolidPro.ttf'),
+            'BI' => public_path('fonts/OxideSolidPro-Bold.ttf'),
+        ],
+    ],
+
     'options' => [
         /**
          * The location of the DOMPDF font directory

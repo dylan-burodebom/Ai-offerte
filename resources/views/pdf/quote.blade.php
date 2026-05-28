@@ -27,6 +27,18 @@
     font-style: normal;
     src: url('{{ $fonts["fira_bold"] }}') format('truetype');
 }
+@font-face {
+    font-family: 'OxideSolidPro';
+    font-weight: 400;
+    font-style: normal;
+    src: url('{{ $fonts["oxide_regular"] }}') format('truetype');
+}
+@font-face {
+    font-family: 'OxideSolidPro';
+    font-weight: 700;
+    font-style: normal;
+    src: url('{{ $fonts["oxide_bold"] }}') format('truetype');
+}
 
 * { margin: 0; padding: 0; box-sizing: border-box; word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; }
 
@@ -84,7 +96,7 @@ body {
 }
 .voorblad-titel-cel {
     padding: 0;
-    vertical-align: top;
+    vertical-align: middle;
 }
 .voorblad-titel {
     font-family: 'OxideSolidPro', sans-serif;
@@ -331,14 +343,19 @@ strong { font-family: 'Fira Sans', sans-serif; font-weight: 600; color: #111111;
                 }
             }
             if (!empty($current)) $lines[] = implode(' ', $current);
-            $titelHtml = implode('<br>', array_filter($lines));
+            $titelHtml   = implode('<br>', array_filter($lines));
+            $isMultiLine = str_contains($titelHtml, '<br>');
+            $streepStyle = $isMultiLine
+                ? 'vertical-align: middle;'
+                : 'vertical-align: bottom; padding-bottom: 1.5mm;';
+            $titelStyle  = $isMultiLine ? 'vertical-align: middle;' : 'vertical-align: bottom;';
         @endphp
         <table class="voorblad-titel-wrapper">
             <tr>
-                <td class="voorblad-streep-cel">
+                <td class="voorblad-streep-cel" style="{{ $streepStyle }}">
                     <div class="voorblad-streep"></div>
                 </td>
-                <td class="voorblad-titel-cel">
+                <td class="voorblad-titel-cel" style="{{ $titelStyle }}">
                     <div class="voorblad-titel">{!! $titelHtml !!}</div>
                 </td>
             </tr>

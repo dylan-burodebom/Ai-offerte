@@ -137,6 +137,33 @@ function removeLabel(i) {
   form.labels.splice(i, 1)
 }
 
+const IBAN_BANK_MAP = {
+  ABNA: { naam: 'ABN AMRO',            bic: 'ABNANL2A' },
+  RABO: { naam: 'Rabobank',            bic: 'RABONL2U' },
+  INGB: { naam: 'ING',                 bic: 'INGBNL2A' },
+  KNAB: { naam: 'Knab',                bic: 'KNABNL2H' },
+  TRIO: { naam: 'Triodos Bank',        bic: 'TRIONL2U' },
+  BUNQ: { naam: 'Bunq',                bic: 'BUNQNL2A' },
+  ASNB: { naam: 'ASN Bank',            bic: 'ASNBNL21' },
+  SNSB: { naam: 'SNS Bank',            bic: 'SNSBNL2A' },
+  RBRB: { naam: 'RegioBank',           bic: 'RBRBNL21' },
+  HAND: { naam: 'Handelsbanken',       bic: 'HANDNL2A' },
+  FVLB: { naam: 'Van Lanschot Kempen', bic: 'FVLBNL22' },
+  DELA: { naam: 'DELA',                bic: 'DELANL22' },
+  REVO: { naam: 'Revolut',             bic: 'REVOLT21' },
+  NTSB: { naam: 'N26',                 bic: 'NTSBDEB1' },
+}
+
+function onIbanInput() {
+  const iban = form.iban.replace(/\s/g, '').toUpperCase()
+  if (iban.length < 8) return
+  const code = iban.slice(4, 8)
+  const bank = IBAN_BANK_MAP[code]
+  if (!bank) return
+  if (!form.bank) form.bank = bank.naam
+  if (!form.bic)  form.bic  = bank.bic
+}
+
 function submit() {
   if (props.client) {
     form.transform(data => ({ ...data, _method: 'PATCH' }))
@@ -205,8 +232,8 @@ const SELECT_CLASS = 'mt-1 block w-full rounded-md border-gray-300 dark:border-g
           <!-- ── Tab: Algemeen ── -->
           <template v-if="activeTab === 'algemeen'">
 
-            <!-- Logo upload -->
-            <div>
+            <!-- Logo upload — alleen bij bewerken -->
+            <div v-if="client">
               <InputLabel value="Bedrijfslogo" />
               <div class="mt-1.5 flex items-center gap-4">
                 <div class="w-14 h-14 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 flex items-center justify-center overflow-hidden shrink-0">
@@ -429,7 +456,7 @@ const SELECT_CLASS = 'mt-1 block w-full rounded-md border-gray-300 dark:border-g
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <InputLabel for="iban" value="IBAN" />
-                <TextInput id="iban" v-model="form.iban" placeholder="NL00 BANK 0000 0000 00" class="mt-1 block w-full" />
+                <TextInput id="iban" v-model="form.iban" placeholder="NL00 BANK 0000 0000 00" class="mt-1 block w-full" @input="onIbanInput" />
                 <InputError :message="form.errors.iban" class="mt-1" />
               </div>
               <div>
